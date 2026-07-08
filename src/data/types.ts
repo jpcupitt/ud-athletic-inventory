@@ -92,12 +92,18 @@ export interface Person {
 export interface Athlete extends Person {
   athleteId: string;
   year: 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | 'Graduate';
+  shirtSize?: string;
+  shortsSize?: string;
+  shoeSize?: string;
 }
 
 export interface StaffMember extends Person {
   staffId: string;
   title: string;
   locker?: string;
+  shirtSize?: string;
+  shortsSize?: string;
+  shoeSize?: string;
 }
 
 // ── Orders ──────────────────────────────────────────────────
@@ -151,6 +157,8 @@ export interface AppUser {
   id: string;
   name: string;
   email: string;
+  role: 'manager' | 'viewer';
+  isLead: boolean;
   assignedSports: Sport[];
 }
 

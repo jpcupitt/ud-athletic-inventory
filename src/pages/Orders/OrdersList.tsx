@@ -215,7 +215,7 @@ export default function OrdersList() {
               <span className="text-gray-300">|</span>
               <button
                 onClick={() => { resetNewOrder(); setShowNewOrder(true); }}
-                className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md"
+                className="text-[#003c71] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md"
                 style={{ backgroundColor: '#FFD200', padding: '0.025in 0.1in' }}
               >
                 + New Order
@@ -363,7 +363,7 @@ export default function OrdersList() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col" style={{ maxHeight: '90vh' }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#002855' }}>
+            <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#003c71' }}>
               <span className="text-white font-semibold text-sm">New Order</span>
               <button onClick={() => setShowNewOrder(false)} className="text-white hover:opacity-70">
                 <X className="w-4 h-4" />
@@ -505,7 +505,7 @@ export default function OrdersList() {
                 </table>
                 <button
                   onClick={addLine}
-                  className="mt-1 text-xs text-[#002855] hover:text-[#00539F] bg-transparent border-none cursor-pointer"
+                  className="mt-1 text-xs text-[#003c71] hover:text-[#00539F] bg-transparent border-none cursor-pointer"
                   style={{ padding: '0.05in 0' }}
                 >
                   + Add Line Item
@@ -532,7 +532,7 @@ export default function OrdersList() {
                   onClick={handleAddOrder}
                   disabled={!newSport || !newRefNumber || !newVendor}
                   className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
-                  style={{ backgroundColor: '#002855', padding: '0.08in' }}
+                  style={{ backgroundColor: '#003c71', padding: '0.08in' }}
                 >
                   Add Order
                 </button>

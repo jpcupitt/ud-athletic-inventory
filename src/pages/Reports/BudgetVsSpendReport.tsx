@@ -102,7 +102,7 @@ export default function BudgetVsSpendReport() {
               <button
                 key={v}
                 onClick={() => setView(v)}
-                className={`text-xs rounded capitalize font-medium ${view === v ? 'bg-[#002855] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`text-xs rounded capitalize font-medium ${view === v ? 'bg-[#003c71] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 style={{ padding: '0.05in 0.12in' }}
               >
                 {v}
@@ -114,8 +114,8 @@ export default function BudgetVsSpendReport() {
         {/* Sport budget summary cards */}
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label: 'Budgeted', value: `$${sportBudget.budgeted.toLocaleString()}`, color: 'text-[#002855]' },
-            { label: 'Spent', value: `$${sportBudget.spent.toLocaleString()}`, color: 'text-[#002855]' },
+            { label: 'Budgeted', value: `$${sportBudget.budgeted.toLocaleString()}`, color: 'text-[#003c71]' },
+            { label: 'Spent', value: `$${sportBudget.spent.toLocaleString()}`, color: 'text-[#003c71]' },
             { label: 'Remaining', value: `${rem >= 0 ? '' : '-'}$${Math.abs(rem).toLocaleString()}`, color: rem >= 0 ? 'text-green-600' : 'text-red-600' },
             { label: '% Used', value: `${pct}%`, color: pct >= 100 ? 'text-red-600' : pct >= 90 ? 'text-amber-600' : 'text-green-600' },
           ].map(({ label, value, color }) => (
@@ -237,7 +237,7 @@ export default function BudgetVsSpendReport() {
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`text-xs rounded capitalize font-medium ${view === v ? 'bg-[#002855] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`text-xs rounded capitalize font-medium ${view === v ? 'bg-[#003c71] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
               style={{ padding: '0.05in 0.12in' }}
             >
               {v}
@@ -249,8 +249,8 @@ export default function BudgetVsSpendReport() {
       {/* Summary cards */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: 'Total Budgeted', value: `$${(totalBudgeted / 1000).toFixed(0)}K`, color: 'text-[#002855]' },
-          { label: 'Total Spent', value: `$${(totalSpent / 1000).toFixed(0)}K`, color: 'text-[#002855]' },
+          { label: 'Total Budgeted', value: `$${(totalBudgeted / 1000).toFixed(0)}K`, color: 'text-[#003c71]' },
+          { label: 'Total Spent', value: `$${(totalSpent / 1000).toFixed(0)}K`, color: 'text-[#003c71]' },
           { label: 'Remaining', value: `$${(remaining / 1000).toFixed(0)}K`, color: remaining >= 0 ? 'text-green-600' : 'text-red-600' },
           { label: '% Used', value: `${pctUsed}%`, color: pctUsed > 90 ? 'text-red-600' : pctUsed > 75 ? 'text-amber-600' : 'text-green-600' },
         ].map(({ label, value, color }) => (

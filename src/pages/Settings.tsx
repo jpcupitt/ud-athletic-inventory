@@ -62,7 +62,7 @@ function NotifRow({ label, description, checked, onChange }: { label: string; de
 }
 
 export default function Settings() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const { isLead } = useSportsAccess();
   const [tab, setTab] = useState<Tab>('general');
 
@@ -116,7 +116,7 @@ export default function Settings() {
     setCurrentPw(''); setNewPw(''); setConfirmPw('');
   }
 
-  const initials = user?.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() ?? 'UD';
+  const initials = (name || 'UD').split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
     <div>
@@ -176,8 +176,8 @@ export default function Settings() {
                       onChange={(e) => setName(e.target.value)}
                       className="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
                     />
-                    <button onClick={() => setEditingName(false)} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
-                    <button onClick={() => setEditingName(false)} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
+                    <button onClick={() => { updateUser({ name }); setEditingName(false); }} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
+                    <button onClick={() => { setName(user?.name ?? ''); setEditingName(false); }} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
                   </div>
                 </div>
               ) : (
@@ -195,8 +195,8 @@ export default function Settings() {
                       onChange={(e) => setEmail(e.target.value)}
                       className="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
                     />
-                    <button onClick={() => setEditingEmail(false)} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
-                    <button onClick={() => setEditingEmail(false)} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
+                    <button onClick={() => { updateUser({ email }); setEditingEmail(false); }} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
+                    <button onClick={() => { setEmail(user?.email ?? ''); setEditingEmail(false); }} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
                   </div>
                 </div>
               ) : (

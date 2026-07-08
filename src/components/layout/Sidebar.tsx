@@ -17,7 +17,7 @@ export default function Sidebar() {
     <aside className="w-52 shrink-0 bg-[#111827] flex flex-col min-h-screen">
       {/* Logo */}
       <div className="flex items-center px-5 py-4 border-b border-white/10">
-        <img src="/Delaware-Blue-Hens-logo.png" alt="Delaware Blue Hens" className="h-8 w-auto" />
+        <img src="/ud-athletics-logo-white.png" alt="Delaware Blue Hens" className="h-6 w-auto" />
       </div>
 
       {/* Nav */}

@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { transactions } from '../data/mock/transactions';
-import { inventoryItems } from '../data/mock/inventory';
-import { orders } from '../data/mock/orders';
-import { athletes } from '../data/mock/athletes';
-import { staffMembers } from '../data/mock/staff';
+import { useInventory } from '../context/InventoryContext';
+import { useOrders } from '../context/OrdersContext';
+import { useAthletes } from '../context/AthletesContext';
+import { useStaff } from '../context/StaffContext';
 
 export interface OverdueReturn {
   key: string;
@@ -30,6 +30,10 @@ export interface PendingOrder {
 }
 
 export function useNotifications() {
+  const { items: inventoryItems } = useInventory();
+  const { localOrders: orders } = useOrders();
+  const { athletes } = useAthletes();
+  const { staff: staffMembers } = useStaff();
   const today = new Date();
 
   const overdueReturns = useMemo<OverdueReturn[]>(() => {
@@ -67,13 +71,13 @@ export function useNotifications() {
       }
     }
     return result;
-  }, []);
+  }, [athletes, staffMembers]);
 
   const lowInventory = useMemo<LowInventoryItem[]>(
     () => inventoryItems
       .filter((i) => i.qtyOnHand < 3)
       .map((i) => ({ key: `low-${i.id}`, id: i.id, description: i.description, qtyOnHand: i.qtyOnHand })),
-    []
+    [inventoryItems]
   );
 
   const ordersForApproval = useMemo<PendingOrder[]>(() => {
@@ -82,7 +86,7 @@ export function useNotifications() {
     return orders
       .filter((o) => o.status === 'incomplete' && new Date(o.orderDate) >= oneWeekAgo)
       .map((o) => ({ key: `order-${o.id}`, id: o.id, refNumber: o.refNumber, sport: o.sport, vendor: o.vendor }));
-  }, []);
+  }, [orders]);
 
   const recentTransactions = useMemo(
     () => [...transactions].sort((a, b) => b.timestamp.localeCompare(a.timestamp)).slice(0, 10),

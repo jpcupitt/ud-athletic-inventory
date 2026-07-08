@@ -59,12 +59,13 @@ export default function OrderDetail() {
   }
 
   function markAllReceived() {
+    if (!order) return;
     setEditedLines(order.lines.map((l) => ({ ...l, qtyReceived: l.qtyOrdered })));
     setSaved(false);
   }
 
   function handleSave() {
-    if (!editedLines) return;
+    if (!order || !editedLines) return;
     const newStatus = computeStatus(editedLines);
     updateOrder(order.id, { lines: editedLines, status: newStatus });
     setEditedLines(null);

@@ -23,7 +23,7 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl" style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)', padding: '2.5rem' }}>
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
-          <img src="/Delaware-Blue-Hens-logo.png" alt="Delaware Blue Hens" className="h-28 w-auto" />
+          <img src="/ud-athletics-logo-white.png" alt="Delaware Blue Hens" className="h-16 w-auto" />
         </div>
 
         {/* Form */}

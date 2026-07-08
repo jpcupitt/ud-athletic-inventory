@@ -1,12 +1,15 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Package, Tag, AlertTriangle } from 'lucide-react';
-import { inventoryItems } from '../../data/mock/inventory';
-import { athletes } from '../../data/mock/athletes';
-import { staffMembers } from '../../data/mock/staff';
+import { useInventory } from '../../context/InventoryContext';
+import { useAthletes } from '../../context/AthletesContext';
+import { useStaff } from '../../context/StaffContext';
 
 export default function InventoryDetail() {
   const { itemId } = useParams<{ itemId: string }>();
-  const item = inventoryItems.find((i) => i.id === itemId);
+  const { items } = useInventory();
+  const { athletes } = useAthletes();
+  const { staff } = useStaff();
+  const item = items.find((i) => i.id === itemId);
 
   if (!item) {
     return (
@@ -22,12 +25,12 @@ export default function InventoryDetail() {
   const issuedTo = [
     ...athletes.flatMap((a) =>
       a.issuedItems
-        .filter((i) => i.itemId === item.itemId && !i.returned)
+        .filter((i) => i.itemId === item.id && !i.returned)
         .map((i) => ({ name: `${a.lastName}, ${a.firstName}`, type: 'Athlete' as const, id: a.id, ...i }))
     ),
-    ...staffMembers.flatMap((s) =>
+    ...staff.flatMap((s) =>
       s.issuedItems
-        .filter((i) => i.itemId === item.itemId && !i.returned)
+        .filter((i) => i.itemId === item.id && !i.returned)
         .map((i) => ({ name: `${s.lastName}, ${s.firstName}`, type: 'Staff' as const, id: s.id, ...i }))
     ),
   ];

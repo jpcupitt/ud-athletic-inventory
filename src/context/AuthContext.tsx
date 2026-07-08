@@ -8,17 +8,10 @@ interface AuthContextValue {
   setPage: (p: 'login' | 'signup') => void;
   login: (role?: 'manager' | 'viewer') => void;
   logout: () => void;
+  updateUser: (changes: Partial<AppUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-const ALL_SPORTS: AppUser['assignedSports'] = [
-  'Baseball', "Basketball, Men's", "Basketball, Women's", 'Cross Country', 'Field Hockey',
-  'Football', "Golf, Men's", "Golf, Women's", 'Ice Hockey', "Lacrosse, Men's", "Lacrosse, Women's",
-  'Rowing', "Soccer, Men's", "Soccer, Women's", 'Softball', "Swimming & Diving, Men's",
-  "Swimming & Diving, Women's", "Tennis, Men's", "Tennis, Women's", 'Track & Field, Indoor',
-  'Track & Field, Outdoor', 'Volleyball',
-];
 
 const MANAGER_USER: AppUser = {
   id: 'st2',
@@ -53,8 +46,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPage('login');
   }
 
+  function updateUser(changes: Partial<AppUser>) {
+    setUser((prev) => (prev ? { ...prev, ...changes } : prev));
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, page, setPage, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, page, setPage, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

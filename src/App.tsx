@@ -26,7 +26,7 @@ function AppRoutes() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#002855] flex items-center justify-center">
+      <div className="min-h-screen bg-[#003c71] flex items-center justify-center">
         <div className="text-white text-lg">Loading...</div>
       </div>
     );

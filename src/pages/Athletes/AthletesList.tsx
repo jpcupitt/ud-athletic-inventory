@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { Fragment, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -161,7 +161,7 @@ export default function AthletesList() {
               <span className="text-gray-300">|</span>
               <button
                 onClick={() => { resetNewAthlete(); setShowNewAthlete(true); }}
-                className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md"
+                className="text-[#003c71] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md"
                 style={{ backgroundColor: '#FFD200', padding: '0.025in 0.1in' }}
               >
                 + New Athlete
@@ -173,16 +173,15 @@ export default function AthletesList() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-sm">
             {(['active', 'archived'] as ViewMode[]).map((mode, i) => (
-              <>
-                {i > 0 && <span key={`sep-${mode}`} className="text-gray-300">|</span>}
+              <Fragment key={mode}>
+                {i > 0 && <span className="text-gray-300">|</span>}
                 <button
-                  key={mode}
                   onClick={() => { setViewMode(mode); setSelectedIds(new Set()); }}
                   className={`capitalize bg-transparent border-none focus:outline-none cursor-pointer text-sm hover:text-gray-700 ${viewMode === mode ? 'font-semibold text-gray-700' : 'text-gray-500'}`}
                 >
                   {mode}
                 </button>
-              </>
+              </Fragment>
             ))}
           </div>
           <div className="relative">
@@ -305,7 +304,7 @@ export default function AthletesList() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col" style={{ maxHeight: '90vh' }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#002855' }}>
+            <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#003c71' }}>
               <span className="text-white font-semibold text-sm">New Athlete</span>
               <button onClick={() => setShowNewAthlete(false)} className="text-white hover:opacity-70">
                 <X className="w-4 h-4" />
@@ -324,7 +323,7 @@ export default function AthletesList() {
                   ) : (
                     <div className="w-14 h-14 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 text-xs">Photo</div>
                   )}
-                  <label className="cursor-pointer text-xs text-[#002855] hover:text-[#00539F] border border-gray-200 rounded" style={{ padding: '0.05in 0.1in' }}>
+                  <label className="cursor-pointer text-xs text-[#003c71] hover:text-[#00539F] border border-gray-200 rounded" style={{ padding: '0.05in 0.1in' }}>
                     Upload
                     <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                   </label>
@@ -452,7 +451,7 @@ export default function AthletesList() {
                   onClick={handleAddAthlete}
                   disabled={!newFirstName || !newLastName || !newYear || !newSport}
                   className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
-                  style={{ backgroundColor: '#002855', padding: '0.08in' }}
+                  style={{ backgroundColor: '#003c71', padding: '0.08in' }}
                 >
                   Add Athlete
                 </button>

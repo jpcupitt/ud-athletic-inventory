@@ -12,10 +12,14 @@ button, a {
 }
 
 body {
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   background-color: #f3f4f6;
   color: #111827;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .heading {
+  font-family: 'Oswald', sans-serif;
 }
 
 #root {

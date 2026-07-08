@@ -52,7 +52,7 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col" style={{ maxHeight: '85vh' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#002855' }}>
+        <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#003c71' }}>
           <span className="text-white font-semibold text-sm">Issue Items to {personName}</span>
           <button onClick={onClose} className="text-white hover:opacity-70">
             <X className="w-4 h-4" />
@@ -157,7 +157,7 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
             onClick={handleIssue}
             disabled={!selectedItem || qty < 1 || qty > (selectedItem?.qtyOnHand ?? 0)}
             className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
-            style={{ backgroundColor: '#002855', padding: '0.08in', marginTop: '0.05in' }}
+            style={{ backgroundColor: '#003c71', padding: '0.08in', marginTop: '0.05in' }}
           >
             Issue {qty > 0 && selectedItem ? `${qty}× ${selectedItem.description}` : 'Item'}
           </button>

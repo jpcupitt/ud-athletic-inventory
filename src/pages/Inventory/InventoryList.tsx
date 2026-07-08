@@ -169,7 +169,7 @@ export default function InventoryList() {
           {isManager && (
             <>
               <span className="text-gray-300">|</span>
-              <button onClick={() => { resetNewItem(); setShowNewItem(true); }} className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md" style={{ backgroundColor: '#FFD200', padding: '0.025in 0.1in' }}>
+              <button onClick={() => { resetNewItem(); setShowNewItem(true); }} className="text-[#003c71] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md" style={{ backgroundColor: '#FFD200', padding: '0.025in 0.1in' }}>
                 + New Item
               </button>
             </>
@@ -368,7 +368,7 @@ export default function InventoryList() {
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden" style={{ width: '420px', maxHeight: '90vh' }} onClick={(e) => e.stopPropagation()}>
 
             {/* Header */}
-            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
               <h2 className="text-sm font-semibold text-white">New Item</h2>
               <button onClick={() => setShowNewItem(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}>✕</button>
             </div>

@@ -59,14 +59,14 @@ export default function OrderDetail() {
   }
 
   function markAllReceived() {
-    setEditedLines(order.lines.map((l) => ({ ...l, qtyReceived: l.qtyOrdered })));
+    setEditedLines(order!.lines.map((l) => ({ ...l, qtyReceived: l.qtyOrdered })));
     setSaved(false);
   }
 
   function handleSave() {
     if (!editedLines) return;
     const newStatus = computeStatus(editedLines);
-    updateOrder(order.id, { lines: editedLines, status: newStatus });
+    updateOrder(order!.id, { lines: editedLines, status: newStatus });
     setEditedLines(null);
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
@@ -100,7 +100,7 @@ export default function OrderDetail() {
           <StatusBadge status={previewStatus} />
         </div>
 
-        <dl className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm pt-5 border-t border-gray-100">
+        <dl className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm pt-5 border-t border-gray-100">
           {[
             ['Order Date', order.orderDate],
             ['Vendor', order.vendor],
@@ -133,9 +133,9 @@ export default function OrderDetail() {
 
       {/* Line items */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-sm font-semibold text-gray-700">Line Items</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {isDirty && (
               <>
                 <button
@@ -167,50 +167,52 @@ export default function OrderDetail() {
           </div>
         </div>
 
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
-              <th className="pb-2 font-medium">Description</th>
-              <th className="pb-2 font-medium text-right">Ordered</th>
-              <th className="pb-2 font-medium text-right">Received</th>
-              <th className="pb-2 font-medium text-right">Outstanding</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {lines.map((line, i) => {
-              const outstanding = line.qtyOrdered - line.qtyReceived;
-              return (
-                <tr key={i}>
-                  <td className="py-2.5 font-medium text-gray-800">{line.description}</td>
-                  <td className="py-2.5 text-right text-gray-600">{line.qtyOrdered}</td>
-                  <td className="py-2.5 text-right">
-                    <input
-                      type="number"
-                      min={0}
-                      max={line.qtyOrdered}
-                      value={line.qtyReceived}
-                      onChange={(e) => setLineReceived(i, parseInt(e.target.value) || 0)}
-                      className="w-16 text-right border border-gray-200 rounded text-xs px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-[#00539F] text-gray-700"
-                    />
-                  </td>
-                  <td className={`py-2.5 text-right font-medium ${outstanding > 0 ? 'text-amber-600' : 'text-green-600'}`}>
-                    {outstanding > 0 ? outstanding : '✓'}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-          <tfoot className="border-t border-gray-200">
-            <tr>
-              <td className="pt-3 text-sm font-semibold text-gray-700">Totals</td>
-              <td className="pt-3 text-right font-semibold text-gray-800">{totalOrdered}</td>
-              <td className="pt-3 text-right font-semibold text-gray-800">{totalReceived}</td>
-              <td className={`pt-3 text-right font-semibold ${totalOrdered - totalReceived > 0 ? 'text-amber-600' : 'text-green-600'}`}>
-                {totalOrdered - totalReceived > 0 ? totalOrdered - totalReceived : '✓'}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
+                <th className="pb-2 font-medium">Description</th>
+                <th className="pb-2 font-medium text-right">Ordered</th>
+                <th className="pb-2 font-medium text-right">Received</th>
+                <th className="pb-2 font-medium text-right">Outstanding</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {lines.map((line, i) => {
+                const outstanding = line.qtyOrdered - line.qtyReceived;
+                return (
+                  <tr key={i}>
+                    <td className="py-2.5 font-medium text-gray-800">{line.description}</td>
+                    <td className="py-2.5 text-right text-gray-600">{line.qtyOrdered}</td>
+                    <td className="py-2.5 text-right">
+                      <input
+                        type="number"
+                        min={0}
+                        max={line.qtyOrdered}
+                        value={line.qtyReceived}
+                        onChange={(e) => setLineReceived(i, parseInt(e.target.value) || 0)}
+                        className="w-16 text-right border border-gray-200 rounded text-xs px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-[#00539F] text-gray-700"
+                      />
+                    </td>
+                    <td className={`py-2.5 text-right font-medium ${outstanding > 0 ? 'text-amber-600' : 'text-green-600'}`}>
+                      {outstanding > 0 ? outstanding : '✓'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot className="border-t border-gray-200">
+              <tr>
+                <td className="pt-3 text-sm font-semibold text-gray-700">Totals</td>
+                <td className="pt-3 text-right font-semibold text-gray-800">{totalOrdered}</td>
+                <td className="pt-3 text-right font-semibold text-gray-800">{totalReceived}</td>
+                <td className={`pt-3 text-right font-semibold ${totalOrdered - totalReceived > 0 ? 'text-amber-600' : 'text-green-600'}`}>
+                  {totalOrdered - totalReceived > 0 ? totalOrdered - totalReceived : '✓'}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </div>
   );

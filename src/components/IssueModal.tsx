@@ -50,16 +50,16 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col" style={{ maxHeight: '85vh' }}>
+      <div className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-lg md:h-auto md:max-h-[85vh] md:rounded-xl" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#002855' }}>
+        <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl shrink-0" style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
           <span className="text-white font-semibold text-sm">Issue Items to {personName}</span>
           <button onClick={onClose} className="text-white hover:opacity-70">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex flex-col gap-4 overflow-y-auto" style={{ padding: '0.15in 0.2in' }}>
+        <div className="flex flex-col gap-4 overflow-y-auto flex-1 md:flex-none" style={{ padding: '0.15in 0.2in' }}>
           {/* Item search */}
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Search Inventory</label>
@@ -115,7 +115,7 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
                 <span>Item #{selectedItem.itemId}</span>
                 <span>{selectedItem.manufacturer}</span>
                 <span className={selectedItem.isNonExpendable ? 'text-orange-600 font-medium' : ''}>
-                  {selectedItem.isNonExpendable ? 'Non-Expendable' : 'Expendable'}
+                  {selectedItem.isNonExpendable ? 'Must be returned' : 'Theirs to keep'}
                 </span>
               </div>
             </div>

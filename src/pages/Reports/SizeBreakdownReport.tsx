@@ -92,7 +92,7 @@ export default function SizeBreakdownReport() {
   }, [allPeople]);
 
   return (
-    <div className="flex flex-col" style={{ gap: '0.1in' }}>
+    <div className="flex flex-col gap-2 md:gap-[0.1in]">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-800">Size Breakdown</h1>
         <span className="text-sm text-gray-400">{allPeople.length} person{allPeople.length !== 1 ? 's' : ''}</span>
@@ -130,7 +130,7 @@ export default function SizeBreakdownReport() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Size distribution chart */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
           <h2 className="text-sm font-semibold text-gray-700 mb-4 capitalize">{sizeType} Size Distribution</h2>
@@ -149,7 +149,7 @@ export default function SizeBreakdownReport() {
         </div>
 
         {/* Stats */}
-        <div className="flex flex-col" style={{ gap: '0.1in' }}>
+        <div className="flex flex-col gap-2 md:gap-[0.1in]">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
             <h2 className="text-sm font-semibold text-gray-700 mb-3">Summary</h2>
             <dl className="space-y-2 text-sm">
@@ -209,6 +209,7 @@ export default function SizeBreakdownReport() {
         <div className="px-4 py-3 border-b border-gray-200">
           <h2 className="text-sm font-semibold text-gray-700">Individual Records</h2>
         </div>
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr className="text-left text-xs text-gray-500">
@@ -241,6 +242,7 @@ export default function SizeBreakdownReport() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

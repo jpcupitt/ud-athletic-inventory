@@ -76,6 +76,8 @@ export interface IssuedItem {
   isNonExpendable: boolean;
   returnByDate?: string;
   returned: boolean;
+  /** Set on Return Day: how the item was closed out. Missing/damaged feed the owes list. */
+  resolution?: 'returned' | 'missing' | 'damaged';
 }
 
 export interface Person {

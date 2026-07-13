@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import type { Order } from '../data/types';
+import { usePersistentState } from '../hooks/usePersistentState';
 
 export interface SubmittedOrderRecord {
   recordId: string;
@@ -16,7 +17,7 @@ interface SubmittedOrdersContextValue {
 const SubmittedOrdersContext = createContext<SubmittedOrdersContextValue | null>(null);
 
 export function SubmittedOrdersProvider({ children }: { children: ReactNode }) {
-  const [submittedRecords, setSubmittedRecords] = useState<SubmittedOrderRecord[]>([]);
+  const [submittedRecords, setSubmittedRecords] = usePersistentState<SubmittedOrderRecord[]>('submittedOrders', () => []);
 
   function recordSubmission(order: Order, submittedBy: string) {
     setSubmittedRecords((prev) => [

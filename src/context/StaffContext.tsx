@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import type { StaffMember, IssuedItem } from '../data/types';
 import { staffMembers as mockStaff } from '../data/mock/staff';
+import { usePersistentState } from '../hooks/usePersistentState';
 
 interface StaffContextValue {
   staff: StaffMember[];
@@ -12,7 +13,7 @@ interface StaffContextValue {
 const StaffContext = createContext<StaffContextValue | null>(null);
 
 export function StaffProvider({ children }: { children: ReactNode }) {
-  const [staff, setStaff] = useState<StaffMember[]>([...mockStaff]);
+  const [staff, setStaff] = usePersistentState<StaffMember[]>('staff', () => [...mockStaff]);
 
   function addStaff(member: StaffMember) {
     setStaff((prev) => [member, ...prev]);

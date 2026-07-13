@@ -14,7 +14,7 @@ export default function SubmittedOrdersReport() {
   }
 
   return (
-    <div className="flex flex-col" style={{ gap: '0.1in' }}>
+    <div className="flex flex-col gap-2 md:gap-[0.1in]">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-800">Submitted Orders</h1>
         <span className="text-sm text-gray-400">{submittedRecords.length} submission{submittedRecords.length !== 1 ? 's' : ''}</span>
@@ -27,6 +27,7 @@ export default function SubmittedOrdersReport() {
         </div>
       ) : (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr className="text-left text-xs text-gray-500">
@@ -93,6 +94,7 @@ export default function SubmittedOrdersReport() {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

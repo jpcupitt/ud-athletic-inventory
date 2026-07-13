@@ -62,7 +62,7 @@ export default function AthleteProfile() {
 
       {/* Header card */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-start gap-5">
+        <div className="flex flex-col items-start gap-4 md:flex-row md:items-start md:gap-5">
           {athlete.photoUrl ? (
             <img src={athlete.photoUrl} alt="" className="w-16 h-16 rounded-full object-cover shrink-0" />
           ) : (
@@ -79,7 +79,7 @@ export default function AthleteProfile() {
               ))}
             </div>
           </div>
-          <div className="text-right shrink-0">
+          <div className="text-left md:text-right shrink-0">
             <p className="text-2xl font-bold text-gray-800">${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             <p className="text-xs text-gray-400">gear value out</p>
           </div>
@@ -126,7 +126,8 @@ export default function AthleteProfile() {
         {activeItems.length === 0 ? (
           <p className="text-sm text-gray-400">No items currently issued.</p>
         ) : (
-          <table className="w-full text-sm">
+          <>
+          <table className="w-full text-sm hidden md:table">
             <thead>
               <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
                 <th className="pb-2 font-medium">Description</th>
@@ -154,9 +155,9 @@ export default function AthleteProfile() {
                   </td>
                   <td className="py-2.5">
                     {item.isNonExpendable ? (
-                      <span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-xs">Non-Exp</span>
+                      <span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-xs">Must Return</span>
                     ) : (
-                      <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-xs">Expendable</span>
+                      <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-xs">Keep</span>
                     )}
                   </td>
                   {isManager && (
@@ -180,6 +181,44 @@ export default function AthleteProfile() {
               </tr>
             </tfoot>
           </table>
+
+          {/* Mobile card list */}
+          <div className="md:hidden divide-y divide-gray-100">
+            {activeItems.map((item, i) => (
+              <div key={i} className="py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="font-bold text-sm text-gray-800">{item.description}</span>
+                  {item.isNonExpendable ? (
+                    <span className="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-xs shrink-0">Must Return</span>
+                  ) : (
+                    <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-xs shrink-0">Keep</span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Qty {item.qty} · ${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Issued {item.issuedDate}
+                </p>
+                {item.returnByDate && (
+                  <p className={`text-xs mt-0.5 ${new Date(item.returnByDate) < new Date() ? 'text-red-600 font-medium' : 'text-gray-500'}`}>
+                    Return by {item.returnByDate}
+                  </p>
+                )}
+                {isManager && (
+                  <button
+                    onClick={() => handleReturn(item.itemId, item.qty)}
+                    className="mt-2 flex items-center justify-center gap-1.5 w-full min-h-[44px] text-sm text-[#00539F] font-medium border border-gray-200 rounded active:bg-[#EFF6FF]"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    Return
+                  </button>
+                )}
+              </div>
+            ))}
+            <div className="flex items-center justify-between pt-3">
+              <span className="text-sm font-semibold text-gray-700">Total Value</span>
+              <span className="text-sm font-semibold text-gray-800">${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </div>
+          </div>
+          </>
         )}
       </div>
 

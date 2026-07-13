@@ -6,30 +6,7 @@ import { ChevronLeft } from 'lucide-react';
 import { useInventory } from '../../context/InventoryContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
 
-const BUDGET_DATA = [
-  { sport: "Basketball, Men's",    budgeted: 120000, spent: 87000 },
-  { sport: "Basketball, Women's",  budgeted: 110000, spent: 72000 },
-  { sport: 'Baseball',             budgeted: 85000,  spent: 61000 },
-  { sport: 'Football',             budgeted: 200000, spent: 155000 },
-  { sport: 'Field Hockey',         budgeted: 70000,  spent: 48000 },
-  { sport: 'Softball',             budgeted: 65000,  spent: 39000 },
-  { sport: "Soccer, Men's",        budgeted: 75000,  spent: 52000 },
-  { sport: "Soccer, Women's",      budgeted: 75000,  spent: 47000 },
-  { sport: "Lacrosse, Men's",      budgeted: 60000,  spent: 41000 },
-  { sport: "Lacrosse, Women's",    budgeted: 60000,  spent: 38000 },
-  { sport: 'Volleyball',           budgeted: 55000,  spent: 32000 },
-  { sport: 'Cross Country',        budgeted: 30000,  spent: 18000 },
-  { sport: 'Track & Field, Indoor', budgeted: 40000, spent: 27000 },
-  { sport: 'Track & Field, Outdoor', budgeted: 40000, spent: 29000 },
-  { sport: "Swimming & Diving, Men's", budgeted: 35000, spent: 22000 },
-  { sport: "Swimming & Diving, Women's", budgeted: 35000, spent: 24000 },
-  { sport: "Tennis, Men's",        budgeted: 28000,  spent: 19000 },
-  { sport: "Tennis, Women's",      budgeted: 28000,  spent: 21000 },
-  { sport: 'Ice Hockey',           budgeted: 90000,  spent: 68000 },
-  { sport: 'Rowing',               budgeted: 45000,  spent: 31000 },
-  { sport: "Golf, Men's",          budgeted: 22000,  spent: 15000 },
-  { sport: "Golf, Women's",        budgeted: 22000,  spent: 14000 },
-];
+import { BUDGET_DATA } from '../../data/mock/budgets';
 
 const abbrev = (s: string) =>
   s.replace(", Men's", " (M)").replace(", Women's", " (W)")
@@ -86,8 +63,8 @@ export default function BudgetVsSpendReport() {
     ];
 
     return (
-      <div className="flex flex-col" style={{ gap: '0.1in' }}>
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 md:gap-[0.1in]">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSelectedSport(null)}
@@ -112,7 +89,7 @@ export default function BudgetVsSpendReport() {
         </div>
 
         {/* Sport budget summary cards */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Budgeted', value: `$${sportBudget.budgeted.toLocaleString()}`, color: 'text-[#002855]' },
             { label: 'Spent', value: `$${sportBudget.spent.toLocaleString()}`, color: 'text-[#002855]' },
@@ -129,7 +106,7 @@ export default function BudgetVsSpendReport() {
         {view === 'chart' ? (
           <>
             {/* Budget vs Spend chart */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in' }}>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 md:p-[0.15in]">
               <p className="text-sm font-semibold text-gray-700 mb-3">Budget vs. Spend</p>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={budgetChartData} margin={{ top: 10, right: 16, left: 60, bottom: 10 }}>
@@ -144,7 +121,7 @@ export default function BudgetVsSpendReport() {
             </div>
 
             {/* Inventory bar chart */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in' }}>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 md:p-[0.15in]">
               <p className="text-sm font-semibold text-gray-700 mb-3">
                 Inventory ({sportInventory.length} item{sportInventory.length !== 1 ? 's' : ''})
               </p>
@@ -157,8 +134,8 @@ export default function BudgetVsSpendReport() {
                     <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={155} />
                     <Tooltip />
                     <Legend verticalAlign="top" />
-                    <Bar dataKey="On Hand" fill="#00539F" radius={[0, 2, 2, 0]} />
-                    <Bar dataKey="On Order" fill="#DAEAF5" stroke="#00539F" strokeWidth={1} radius={[0, 2, 2, 0]} />
+                    <Bar dataKey="On Hand" fill="#002855" radius={[0, 2, 2, 0]} />
+                    <Bar dataKey="On Order" fill="#FFD200" radius={[0, 2, 2, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -168,6 +145,7 @@ export default function BudgetVsSpendReport() {
           <>
             {/* Budget table */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr className="text-left text-xs text-gray-500">
@@ -196,10 +174,12 @@ export default function BudgetVsSpendReport() {
                   </tr>
                 </tbody>
               </table>
+              </div>
             </div>
 
             {/* Inventory table */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr className="text-left text-xs text-gray-500">
@@ -220,6 +200,7 @@ export default function BudgetVsSpendReport() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </>
         )}
@@ -229,8 +210,8 @@ export default function BudgetVsSpendReport() {
 
   /* ── Overview ──────────────────────────────────────── */
   return (
-    <div className="flex flex-col" style={{ gap: '0.1in' }}>
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-2 md:gap-[0.1in]">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <h1 className="text-xl font-semibold text-gray-800">Budget vs. Spend</h1>
         <div className="flex items-center gap-2">
           {(['chart', 'table'] as View[]).map((v) => (
@@ -247,7 +228,7 @@ export default function BudgetVsSpendReport() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'Total Budgeted', value: `$${(totalBudgeted / 1000).toFixed(0)}K`, color: 'text-[#002855]' },
           { label: 'Total Spent', value: `$${(totalSpent / 1000).toFixed(0)}K`, color: 'text-[#002855]' },
@@ -262,9 +243,10 @@ export default function BudgetVsSpendReport() {
       </div>
 
       {view === 'chart' ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in' }}>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 md:p-[0.15in]">
           <p className="text-xs text-gray-400 mb-2">Click a sport to drill down</p>
-          <ResponsiveContainer width="100%" height={380}>
+          <div className="h-56 md:h-[380px]">
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 16, left: 60, bottom: 80 }}>
               <XAxis dataKey="name" angle={-45} textAnchor="end" tick={{ fontSize: 10 }} interval={0} />
               <YAxis tickFormatter={(v) => `$${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 11 }} />
@@ -274,9 +256,11 @@ export default function BudgetVsSpendReport() {
               <Bar dataKey="Spent" fill="#00539F" radius={[2, 2, 0, 0]} cursor="pointer" onClick={(d: any) => drillInto(d.sport)} />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr className="text-left text-xs text-gray-500">
@@ -328,6 +312,7 @@ export default function BudgetVsSpendReport() {
               </tr>
             </tfoot>
           </table>
+          </div>
         </div>
       )}
     </div>

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Upload, ChevronRight } from 'lucide-react';
+import { Upload, ChevronRight, RotateCcw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
+import { clearPersistedState } from '../hooks/usePersistentState';
 
 type Tab = 'general' | 'notifications' | 'security' | 'appearance' | 'members';
 
@@ -124,14 +125,14 @@ export default function Settings() {
         Settings
       </span>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex overflow-hidden" style={{ minHeight: '500px' }}>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row overflow-hidden" style={{ minHeight: '500px' }}>
         {/* Sidebar */}
-        <div className="w-48 shrink-0 border-r border-gray-100 flex flex-col">
+        <div className="w-full md:w-48 shrink-0 border-b md:border-b-0 md:border-r border-gray-100 flex flex-row overflow-x-auto md:flex-col">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`w-full text-left text-sm pr-4 transition-colors flex items-center justify-between ${
+              className={`w-auto shrink-0 whitespace-nowrap md:w-full text-left text-sm pr-4 transition-colors flex items-center justify-between gap-1 ${
                 tab === t.id
                   ? 'text-[#00539F] font-semibold bg-[#EEF4FB]'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -170,11 +171,11 @@ export default function Settings() {
               {editingName ? (
                 <div className="border-b border-gray-100" style={{ padding: '0.05in 0' }}>
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Name</p>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                      className="flex-1 min-w-[160px] px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
                     />
                     <button onClick={() => setEditingName(false)} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
                     <button onClick={() => setEditingName(false)} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
@@ -188,12 +189,12 @@ export default function Settings() {
               {editingEmail ? (
                 <div className="border-b border-gray-100" style={{ padding: '0.05in 0' }}>
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Email</p>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="flex-1 px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                      className="flex-1 min-w-[160px] px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
                     />
                     <button onClick={() => setEditingEmail(false)} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
                     <button onClick={() => setEditingEmail(false)} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
@@ -254,6 +255,25 @@ export default function Settings() {
                     )}
                   </div>
                 )}
+              </div>
+
+              {/* Reset demo data */}
+              <div className="border-b border-gray-100" style={{ padding: '0.05in 0' }}>
+                <p className="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Demo Data</p>
+                <p className="text-xs text-gray-500 mb-2">
+                  Inventory, orders, athletes, and staff changes are saved on this device. Reset to restore the original sample data.
+                </p>
+                <button
+                  onClick={() => {
+                    if (window.confirm('Reset all saved data back to the original demo data? This cannot be undone.')) {
+                      clearPersistedState();
+                      window.location.href = '/';
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-red-300 text-xs text-red-500 hover:bg-red-50 font-medium"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> Reset Demo Data
+                </button>
               </div>
 
               {/* Sign out */}

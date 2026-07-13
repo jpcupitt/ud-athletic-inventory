@@ -91,20 +91,20 @@ export default function IssuedBySportReport() {
   const nonExpCount = activeRows.filter((r) => r.isNonExpendable).length;
 
   return (
-    <div className="flex flex-col" style={{ gap: '0.1in' }}>
+    <div className="flex flex-col gap-2 md:gap-[0.1in]">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-800">Issued Items by Sport</h1>
         <span className="text-sm text-gray-400">{activeRows.length} active issue{activeRows.length !== 1 ? 's' : ''}</span>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Active Issues</p>
           <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>{activeRows.length}</p>
         </div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
-          <p className="text-xs text-gray-400 uppercase tracking-wide">Non-Expendable Out</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wide">Must-Return Items Out</p>
           <p className="text-2xl font-bold mt-1 text-orange-600">{nonExpCount}</p>
         </div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
@@ -134,12 +134,13 @@ export default function IssuedBySportReport() {
         </select>
         <label className="flex items-center gap-2 text-sm text-gray-600">
           <span className="w-3 h-3 rounded-full bg-orange-200 inline-block border border-orange-400" />
-          Non-Expendable
+          Must be returned
         </label>
       </div>
 
       {/* Table */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr className="text-left text-xs text-gray-500">
@@ -205,6 +206,7 @@ export default function IssuedBySportReport() {
             </tfoot>
           )}
         </table>
+        </div>
       </div>
     </div>
   );

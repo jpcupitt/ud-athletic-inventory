@@ -18,9 +18,9 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative" style={{ backgroundImage: 'url(/delaware-stadium.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div className="min-h-dvh flex items-center justify-center relative px-6 py-8" style={{ backgroundImage: 'url(/delaware-stadium.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.45)' }} />
-      <div className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl" style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)', padding: '2.5rem' }}>
+      <div className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-10" style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)' }}>
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
           <img src="/Delaware-Blue-Hens-logo.png" alt="Delaware Blue Hens" className="h-28 w-auto" />
@@ -58,10 +58,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-lg font-semibold text-sm transition-colors mt-1 mb-1"
-            style={{ backgroundColor: '#00539F', color: '#fff' }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#003D75')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#00539F')}
+            className="w-full py-2.5 rounded-lg font-semibold text-sm transition-colors mt-1 mb-1 bg-[#00539F] hover:bg-[#003D75] text-white"
           >
             Sign In
           </button>
@@ -75,13 +72,17 @@ export default function Login() {
           </button>
         </p>
 
-        {/* Demo fallback */}
+        {/* Demo helpers */}
+        <button
+          type="button"
+          onClick={() => { setUsername('gohens'); setPassword('delaware'); setError(''); }}
+          className="w-full text-center text-xs transition-colors text-white/60 hover:text-white/90"
+        >
+          Demo account: <span className="font-mono font-medium">gohens / delaware</span> — tap to fill
+        </button>
         <button
           onClick={() => login('viewer')}
-          className="w-full text-center text-xs mt-4 transition-colors"
-          style={{ color: 'rgba(255,255,255,0.4)' }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}
+          className="w-full text-center text-xs mt-3 transition-colors text-white/40 hover:text-white/70"
         >
           Sign in as viewer (read-only demo)
         </button>

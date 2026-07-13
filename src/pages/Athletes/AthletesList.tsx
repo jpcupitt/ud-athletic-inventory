@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { Fragment, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useAthletes } from '../../context/AthletesContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
+import { useActiveSport } from '../../context/SportContext';
 import type { Athlete, Sport } from '../../data/types';
 
 const ALL_SPORTS: Sport[] = [
@@ -32,8 +33,7 @@ export default function AthletesList() {
 
   const { isLead, filterBySports, accessibleSports } = useSportsAccess();
   const isManager = user?.role === 'manager';
-  const defaultSport = isLead ? 'All Sports' : (user?.assignedSports[0] ?? 'All Sports');
-  const [sportFilter, setSportFilter] = useState<Sport | 'All Sports'>(defaultSport);
+  const { activeSport: sportFilter, setActiveSport: setSportFilter } = useActiveSport();
   const [yearFilter, setYearFilter] = useState('All Years');
   const [search, setSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -137,14 +137,14 @@ export default function AthletesList() {
       <span className="font-semibold text-[28px] underline decoration-[#FFD200] decoration-2 underline-offset-4" style={{ color: '#00539F' }}>Athletes</span>
 
       {/* Filter bar */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-1.5 text-sm flex-wrap">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-3">
+        <div className="flex items-center gap-1.5 text-sm flex-wrap gap-y-1">
           <select
             value={sportFilter}
             onChange={(e) => setSportFilter(e.target.value as Sport | 'All Sports')}
             className="text-gray-500 bg-transparent border-none focus:outline-none cursor-pointer text-sm hover:text-gray-700 pr-5"
           >
-            {isLead && <option value="All Sports">All Sports</option>}
+            <option value="All Sports">{isLead ? 'All Sports' : 'All My Sports'}</option>
             {(isLead ? ALL_SPORTS : accessibleSports).map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <span className="text-gray-300">|</span>
@@ -171,28 +171,27 @@ export default function AthletesList() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-sm">
+          <div className="flex items-center gap-1.5 text-sm shrink-0">
             {(['active', 'archived'] as ViewMode[]).map((mode, i) => (
-              <>
-                {i > 0 && <span key={`sep-${mode}`} className="text-gray-300">|</span>}
+              <Fragment key={mode}>
+                {i > 0 && <span className="text-gray-300">|</span>}
                 <button
-                  key={mode}
                   onClick={() => { setViewMode(mode); setSelectedIds(new Set()); }}
                   className={`capitalize bg-transparent border-none focus:outline-none cursor-pointer text-sm hover:text-gray-700 ${viewMode === mode ? 'font-semibold text-gray-700' : 'text-gray-500'}`}
                 >
                   {mode}
                 </button>
-              </>
+              </Fragment>
             ))}
           </div>
-          <div className="relative">
+          <div className="relative flex-1 md:flex-none">
             <Search className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
             <input
               type="text"
               placeholder="Search name or athlete ID"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-3 pr-9 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[#00539F] w-52 bg-white"
+              className="pl-3 pr-9 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[#00539F] w-full md:w-52 bg-white"
             />
           </div>
         </div>
@@ -200,7 +199,7 @@ export default function AthletesList() {
 
       {/* Table */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" style={{ marginTop: '0.1in' }}>
-        <table className="w-full text-xs">
+        <table className="w-full text-xs hidden md:table">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr className="text-center text-gray-500">
               {isManager && (
@@ -274,13 +273,58 @@ export default function AthletesList() {
             )}
           </tbody>
         </table>
+
+        {/* Mobile card list */}
+        <div className="md:hidden divide-y divide-gray-100">
+          {displayList.length === 0 ? (
+            <p className="px-4 py-8 text-center text-gray-400 text-sm">No athletes found.</p>
+          ) : (
+            displayList.map((a) => {
+              const activeItems = a.issuedItems.filter((i) => !i.returned);
+              return (
+                <div
+                  key={a.id}
+                  className={`flex items-start gap-3 px-4 py-3 min-h-12 ${viewMode !== 'archived' ? 'active:bg-[#EFF6FF] cursor-pointer' : ''} text-left w-full ${selectedIds.has(a.id) ? 'bg-blue-50' : ''}`}
+                  onClick={() => viewMode !== 'archived' && navigate(`/athletes/${a.id}`)}
+                >
+                  {isManager && (
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300 mt-1 shrink-0"
+                      checked={selectedIds.has(a.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={() => toggleSelect(a.id)}
+                    />
+                  )}
+                  {a.photoUrl ? (
+                    <img src={a.photoUrl} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-[#00539F] flex items-center justify-center text-white font-bold shrink-0 text-xs">
+                      {a.firstName[0]}{a.lastName[0]}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-sm text-gray-800 truncate">{a.lastName}, {a.firstName}</span>
+                      <span className="font-mono text-xs text-[#00539F] shrink-0">{a.athleteId}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 truncate">{a.year} · {a.sports.join(', ')}</p>
+                    {viewMode !== 'archived' && (
+                      <p className="text-xs text-gray-500">{activeItems.length || 0} item{activeItems.length !== 1 ? 's' : ''} issued</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
       <p className="text-xs text-gray-400 mt-2">{displayList.length} athlete{displayList.length !== 1 ? 's' : ''}</p>
 
       {/* Floating delete bar */}
       {isManager && selectedIds.size > 0 && viewMode !== 'archived' && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 bg-white border border-gray-200 rounded-xl shadow-xl" style={{ padding: '0.1in 0.2in' }}>
+        <div className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 bg-white border border-gray-200 rounded-xl shadow-xl" style={{ padding: '0.1in 0.2in' }}>
           <span className="text-sm text-gray-600 font-medium">
             {selectedIds.size} athlete{selectedIds.size !== 1 ? 's' : ''} selected
           </span>
@@ -303,9 +347,9 @@ export default function AthletesList() {
       {/* New Athlete modal */}
       {showNewAthlete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col" style={{ maxHeight: '90vh' }}>
+          <div className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-md md:h-auto md:max-h-[90vh] md:rounded-xl" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#002855' }}>
+            <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl" style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
               <span className="text-white font-semibold text-sm">New Athlete</span>
               <button onClick={() => setShowNewAthlete(false)} className="text-white hover:opacity-70">
                 <X className="w-4 h-4" />

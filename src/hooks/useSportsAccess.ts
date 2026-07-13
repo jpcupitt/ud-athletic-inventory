@@ -5,7 +5,7 @@ export function useSportsAccess() {
   const { user } = useAuth();
 
   const isLead = user?.isLead ?? false;
-  const assignedSet = useMemo(() => new Set(user?.assignedSports ?? []), [user?.assignedSports]);
+  const assignedSet = useMemo(() => new Set<string>(user?.assignedSports ?? []), [user?.assignedSports]);
 
   function canAccess(sport: string): boolean {
     return isLead || assignedSet.has(sport);

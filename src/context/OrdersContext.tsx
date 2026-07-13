@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { orders as mockOrders } from '../data/mock/orders';
 import type { Order } from '../data/types';
+import { usePersistentState } from '../hooks/usePersistentState';
 
 interface OrdersContextValue {
   localOrders: Order[];
@@ -11,7 +12,7 @@ interface OrdersContextValue {
 const OrdersContext = createContext<OrdersContextValue | null>(null);
 
 export function OrdersProvider({ children }: { children: ReactNode }) {
-  const [localOrders, setLocalOrders] = useState<Order[]>([...mockOrders]);
+  const [localOrders, setLocalOrders] = usePersistentState<Order[]>('orders', () => [...mockOrders]);
 
   function addOrder(order: Order) {
     setLocalOrders((prev) => [order, ...prev]);

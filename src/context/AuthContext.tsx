@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { AppUser } from '../data/types';
+import { usePersistentState } from '../hooks/usePersistentState';
 
 interface AuthContextValue {
   user: AppUser | null;
@@ -11,14 +12,6 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-const ALL_SPORTS: AppUser['assignedSports'] = [
-  'Baseball', "Basketball, Men's", "Basketball, Women's", 'Cross Country', 'Field Hockey',
-  'Football', "Golf, Men's", "Golf, Women's", 'Ice Hockey', "Lacrosse, Men's", "Lacrosse, Women's",
-  'Rowing', "Soccer, Men's", "Soccer, Women's", 'Softball', "Swimming & Diving, Men's",
-  "Swimming & Diving, Women's", "Tennis, Men's", "Tennis, Women's", 'Track & Field, Indoor',
-  'Track & Field, Outdoor', 'Volleyball',
-];
 
 const MANAGER_USER: AppUser = {
   id: 'st2',
@@ -39,7 +32,7 @@ const VIEWER_USER: AppUser = {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AppUser | null>(null);
+  const [user, setUser] = usePersistentState<AppUser | null>('session', () => null);
   const [isLoading] = useState(false);
   const [page, setPage] = useState<'login' | 'signup'>('login');
 

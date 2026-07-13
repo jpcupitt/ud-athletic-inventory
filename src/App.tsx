@@ -15,7 +15,11 @@ import StaffList from './pages/Staff/StaffList';
 import StaffProfile from './pages/Staff/StaffProfile';
 import Reports from './pages/Reports/Reports';
 import Settings from './pages/Settings';
+import ReturnDay from './pages/ReturnDay';
+import FittingDay from './pages/FittingDay';
+import SmartReorder from './pages/SmartReorder';
 import { SubmittedOrdersProvider } from './context/SubmittedOrdersContext';
+import { SportProvider } from './context/SportContext';
 import { InventoryProvider } from './context/InventoryContext';
 import { OrdersProvider } from './context/OrdersContext';
 import { AthletesProvider } from './context/AthletesContext';
@@ -41,6 +45,7 @@ function AppRoutes() {
     <StaffProvider>
     <SubmittedOrdersProvider>
     <UserPrefsProvider>
+    <SportProvider>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
@@ -53,10 +58,14 @@ function AppRoutes() {
           <Route path="/staff" element={<StaffList />} />
           <Route path="/staff/:staffId" element={<StaffProfile />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/returns" element={<ReturnDay />} />
+          <Route path="/fitting" element={<FittingDay />} />
+          <Route path="/reorder" element={<SmartReorder />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+    </SportProvider>
     </UserPrefsProvider>
     </SubmittedOrdersProvider>
     </StaffProvider>
@@ -69,6 +78,12 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
+      {/* Navy strip behind the iPhone status bar (clock) — zero height everywhere
+          except installed/standalone mode on a device with a notch. */}
+      <div
+        className="fixed top-0 inset-x-0 z-[100] pointer-events-none"
+        style={{ height: 'env(safe-area-inset-top)', backgroundColor: '#002855' }}
+      />
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>

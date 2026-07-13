@@ -18,6 +18,8 @@ export interface LowInventoryItem {
   key: string;
   id: string;
   description: string;
+  category: string;
+  sports: string[];
   qtyOnHand: number;
 }
 
@@ -72,7 +74,7 @@ export function useNotifications() {
   const lowInventory = useMemo<LowInventoryItem[]>(
     () => inventoryItems
       .filter((i) => i.qtyOnHand < 3)
-      .map((i) => ({ key: `low-${i.id}`, id: i.id, description: i.description, qtyOnHand: i.qtyOnHand })),
+      .map((i) => ({ key: `low-${i.id}`, id: i.id, description: i.description, category: i.category, sports: i.sports, qtyOnHand: i.qtyOnHand })),
     []
   );
 

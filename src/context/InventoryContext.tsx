@@ -1,12 +1,14 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import type { InventoryItem } from '../data/types';
 import { inventoryItems as mockItems } from '../data/mock/inventory';
+import { usePersistentState } from '../hooks/usePersistentState';
 
 interface InventoryContextValue {
   items: InventoryItem[];
   archivedIds: Set<string>;
   addItem: (item: InventoryItem) => void;
   archiveItems: (ids: Set<string>) => void;
+  unarchiveItems: (ids: string[]) => void;
   issueItem: (itemId: string, qty: number) => void;
   returnItem: (itemId: string, qty: number) => void;
 }
@@ -14,15 +16,20 @@ interface InventoryContextValue {
 const InventoryContext = createContext<InventoryContextValue | null>(null);
 
 export function InventoryProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<InventoryItem[]>([...mockItems]);
-  const [archivedIds, setArchivedIds] = useState<Set<string>>(new Set());
+  const [items, setItems] = usePersistentState<InventoryItem[]>('inventory', () => [...mockItems]);
+  const [archivedArr, setArchivedArr] = usePersistentState<string[]>('archived', () => []);
+  const archivedIds = useMemo(() => new Set(archivedArr), [archivedArr]);
 
   function addItem(item: InventoryItem) {
     setItems((prev) => [item, ...prev]);
   }
 
   function archiveItems(ids: Set<string>) {
-    setArchivedIds((prev) => new Set([...prev, ...ids]));
+    setArchivedArr((prev) => [...new Set([...prev, ...ids])]);
+  }
+
+  function unarchiveItems(ids: string[]) {
+    setArchivedArr((prev) => prev.filter((id) => !ids.includes(id)));
   }
 
   function issueItem(itemId: string, qty: number) {
@@ -42,7 +49,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, issueItem, returnItem }}>
+    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem }}>
       {children}
     </InventoryContext.Provider>
   );

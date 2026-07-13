@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 import { useAuth } from '../../context/AuthContext';
 import { useOrders } from '../../context/OrdersContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
+import { useActiveSport } from '../../context/SportContext';
 import type { Order, OrderLine, OrderStatus, Sport } from '../../data/types';
 
 const ALL_SPORTS: Sport[] = [
@@ -19,6 +20,12 @@ const STATUS_STYLES: Record<OrderStatus, string> = {
   submitted: 'text-[#00539F]',
   incomplete: 'text-amber-600',
   complete: 'text-green-600',
+};
+
+const STATUS_BADGE_STYLES: Record<OrderStatus, string> = {
+  submitted: 'bg-[#DAEAF5] text-[#00539F]',
+  incomplete: 'bg-amber-100 text-amber-700',
+  complete: 'bg-green-100 text-green-700',
 };
 
 type ViewMode = 'All' | 'submitted' | 'incomplete' | 'complete' | 'archived';
@@ -37,8 +44,7 @@ export default function OrdersList() {
 
   const { isLead, filterBySports, accessibleSports } = useSportsAccess();
   const isManager = user?.role === 'manager';
-  const defaultSport = isLead ? 'All Sports' : (user?.assignedSports[0] ?? 'All Sports');
-  const [sportFilter, setSportFilter] = useState<Sport | 'All Sports'>(defaultSport);
+  const { activeSport: sportFilter, setActiveSport: setSportFilter } = useActiveSport();
   const [search, setSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [archivedIds, setArchivedIds] = useState<Set<string>>(new Set());
@@ -200,14 +206,14 @@ export default function OrdersList() {
       <span className="font-semibold text-[28px] underline decoration-[#FFD200] decoration-2 underline-offset-4" style={{ color: '#00539F' }}>Orders</span>
 
       {/* Filter bar */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-1.5 text-sm flex-wrap">
+      <div className="flex flex-col gap-2 mb-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-1.5 text-sm flex-wrap gap-y-1">
           <select
             value={sportFilter}
             onChange={(e) => setSportFilter(e.target.value as Sport | 'All Sports')}
             className="text-gray-500 bg-transparent border-none focus:outline-none cursor-pointer text-sm hover:text-gray-700 pr-5"
           >
-            {isLead && <option value="All Sports">All Sports</option>}
+            <option value="All Sports">{isLead ? 'All Sports' : 'All My Sports'}</option>
             {(isLead ? ALL_SPORTS : accessibleSports).map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           {isManager && (
@@ -215,8 +221,8 @@ export default function OrdersList() {
               <span className="text-gray-300">|</span>
               <button
                 onClick={() => { resetNewOrder(); setShowNewOrder(true); }}
-                className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md"
-                style={{ backgroundColor: '#FFD200', padding: '0.025in 0.1in' }}
+                className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md py-[0.025in] px-[0.1in]"
+                style={{ backgroundColor: '#FFD200' }}
               >
                 + New Order
               </button>
@@ -236,26 +242,27 @@ export default function OrdersList() {
             <option value="complete">Complete</option>
             <option value="archived">Archived</option>
           </select>
-          <div className="relative">
+          <div className="relative flex-1 md:flex-none">
             <Search className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
             <input
               type="text"
               placeholder="Search Order ID or Reference No."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-3 pr-9 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[#00539F] w-60 bg-white"
+              className="pl-3 pr-9 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[#00539F] w-full sm:w-60 bg-white"
             />
           </div>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden" style={{ marginTop: '0.1in' }}>
-        <table className="w-full text-xs">
+      {/* Table / Cards container */}
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mt-[0.1in]">
+        {/* Desktop table */}
+        <table className="hidden md:table w-full text-xs">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr className="text-center text-gray-500">
               {isManager && (
-                <th style={{ padding: '0.05in' }} className="font-bold w-8">
+                <th className="p-[0.05in] font-bold w-8">
                   <input
                     type="checkbox"
                     className="rounded border-gray-300"
@@ -264,20 +271,20 @@ export default function OrdersList() {
                   />
                 </th>
               )}
-              <th style={{ padding: '0.05in' }} className="font-bold">Order ID</th>
-              <th style={{ padding: '0.05in' }} className="font-bold">Ref Number</th>
-              <th style={{ padding: '0.05in' }} className="font-bold">Order Date</th>
-              <th style={{ padding: '0.05in' }} className="font-bold">Vendor</th>
-              <th style={{ padding: '0.05in' }} className="font-bold">Items Ordered</th>
-              <th style={{ padding: '0.05in' }} className="font-bold">Qty Ordered</th>
+              <th className="p-[0.05in] font-bold">Order ID</th>
+              <th className="p-[0.05in] font-bold">Ref Number</th>
+              <th className="p-[0.05in] font-bold">Order Date</th>
+              <th className="p-[0.05in] font-bold">Vendor</th>
+              <th className="p-[0.05in] font-bold">Items Ordered</th>
+              <th className="p-[0.05in] font-bold">Qty Ordered</th>
               {viewMode !== 'archived' && (
                 <>
-                  <th style={{ padding: '0.05in' }} className="font-bold">Qty Received</th>
-                  <th style={{ padding: '0.05in' }} className="font-bold">% Received</th>
+                  <th className="p-[0.05in] font-bold">Qty Received</th>
+                  <th className="p-[0.05in] font-bold">% Received</th>
                 </>
               )}
-              <th style={{ padding: '0.05in' }} className="font-bold">Order Status</th>
-              <th style={{ padding: '0.05in' }} className="font-bold">Created By</th>
+              <th className="p-[0.05in] font-bold">Order Status</th>
+              <th className="p-[0.05in] font-bold">Created By</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -299,7 +306,7 @@ export default function OrdersList() {
                     className={`${viewMode !== 'archived' ? 'hover:bg-[#EFF6FF] cursor-pointer' : ''} transition-colors ${selectedIds.has(order.id) ? 'bg-blue-50' : ''}`}
                   >
                     {isManager && (
-                      <td style={{ padding: '0.05in' }} className="text-center" onClick={(e) => e.stopPropagation()}>
+                      <td className="p-[0.05in] text-center" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
                           className="rounded border-gray-300"
@@ -308,44 +315,93 @@ export default function OrdersList() {
                         />
                       </td>
                     )}
-                    <td style={{ padding: '0.05in' }} className="text-center font-mono text-[#00539F] hover:underline">{order.id}</td>
-                    <td style={{ padding: '0.05in' }} className="text-center font-medium text-gray-800">{order.refNumber}</td>
-                    <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{order.orderDate}</td>
-                    <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{order.vendor}</td>
-                    <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{order.lines.length}</td>
-                    <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{totalOrdered}</td>
+                    <td className="p-[0.05in] text-center font-mono text-[#00539F] hover:underline">{order.id}</td>
+                    <td className="p-[0.05in] text-center font-medium text-gray-800">{order.refNumber}</td>
+                    <td className="p-[0.05in] text-center text-gray-600">{order.orderDate}</td>
+                    <td className="p-[0.05in] text-center text-gray-600">{order.vendor}</td>
+                    <td className="p-[0.05in] text-center text-gray-600">{order.lines.length}</td>
+                    <td className="p-[0.05in] text-center text-gray-600">{totalOrdered}</td>
                     {viewMode !== 'archived' && (
                       <>
-                        <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{totalReceived}</td>
-                        <td style={{ padding: '0.05in' }} className="text-center font-medium text-gray-700">{pct}%</td>
+                        <td className="p-[0.05in] text-center text-gray-600">{totalReceived}</td>
+                        <td className="p-[0.05in] text-center font-medium text-gray-700">{pct}%</td>
                       </>
                     )}
-                    <td style={{ padding: '0.05in' }} className="text-center">
+                    <td className="p-[0.05in] text-center">
                       <span className={`font-medium capitalize ${STATUS_STYLES[order.status]}`}>
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </span>
                     </td>
-                    <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{order.createdBy}</td>
+                    <td className="p-[0.05in] text-center text-gray-600">{order.createdBy}</td>
                   </tr>
                 );
               })
             )}
           </tbody>
         </table>
+
+        {/* Mobile card list */}
+        <div className="md:hidden divide-y divide-gray-100">
+          {displayList.length === 0 ? (
+            <p className="px-4 py-8 text-center text-gray-400 text-sm">No orders found.</p>
+          ) : (
+            displayList.map((order) => {
+              const totalOrdered = order.lines.reduce((s, l) => s + l.qtyOrdered, 0);
+              const totalReceived = order.lines.reduce((s, l) => s + l.qtyReceived, 0);
+              const pct = totalOrdered > 0 ? Math.round((totalReceived / totalOrdered) * 100) : 0;
+              return (
+                <button
+                  key={order.id}
+                  onClick={() => viewMode !== 'archived' && navigate(`/orders/${order.id}`)}
+                  className={`flex items-start gap-3 px-4 py-3 min-h-12 active:bg-[#EFF6FF] text-left w-full ${viewMode !== 'archived' ? 'cursor-pointer' : 'cursor-default'}`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-bold text-gray-800 truncate">{order.refNumber}</span>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 capitalize ${STATUS_BADGE_STYLES[order.status]}`}>
+                        {order.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-gray-500 font-mono">{order.id}</span>
+                      <span className="text-xs text-gray-300">·</span>
+                      <span className="text-xs text-gray-500 truncate">{order.vendor}</span>
+                      {sportFilter === 'All Sports' && (
+                        <>
+                          <span className="text-xs text-gray-300">·</span>
+                          <span className="text-xs text-gray-500 truncate">{order.sport}</span>
+                        </>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-gray-400">{order.orderDate}</span>
+                      {viewMode !== 'archived' && totalOrdered > 0 && (
+                        <>
+                          <span className="text-xs text-gray-300">·</span>
+                          <span className="text-xs text-gray-400">{pct}% received</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })
+          )}
+        </div>
       </div>
 
       <p className="text-xs text-gray-400 mt-2">{displayList.length} order{displayList.length !== 1 ? 's' : ''}</p>
 
       {/* Floating delete bar */}
       {isManager && selectedIds.size > 0 && viewMode !== 'archived' && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 bg-white border border-gray-200 rounded-xl shadow-xl" style={{ padding: '0.1in 0.2in' }}>
+        <div className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 bg-white border border-gray-200 rounded-xl shadow-xl px-[0.2in] py-[0.1in]">
           <span className="text-sm text-gray-600 font-medium">
             {selectedIds.size} order{selectedIds.size !== 1 ? 's' : ''} selected
           </span>
           <button
             onClick={archiveSelected}
-            className="text-white text-sm font-medium rounded"
-            style={{ backgroundColor: '#dc2626', padding: '0.05in 0.15in' }}
+            className="text-white text-sm font-medium rounded py-[0.05in] px-[0.15in]"
+            style={{ backgroundColor: '#dc2626' }}
           >
             Delete
           </button>
@@ -361,9 +417,9 @@ export default function OrdersList() {
       {/* New Order modal */}
       {showNewOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col" style={{ maxHeight: '90vh' }}>
+          <div className="bg-white w-full h-full rounded-none md:w-full md:max-w-2xl md:h-auto md:max-h-[90vh] md:rounded-xl shadow-2xl flex flex-col" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 rounded-t-xl" style={{ backgroundColor: '#002855' }}>
+            <div className="flex items-center justify-between px-5 py-3 shrink-0 md:rounded-t-xl" style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
               <span className="text-white font-semibold text-sm">New Order</span>
               <button onClick={() => setShowNewOrder(false)} className="text-white hover:opacity-70">
                 <X className="w-4 h-4" />
@@ -371,11 +427,11 @@ export default function OrdersList() {
             </div>
 
             {/* Body */}
-            <div className="overflow-y-scroll flex-1 px-5" style={{ padding: '0.15in 0.2in' }}>
+            <div className="overflow-y-scroll flex-1 p-[0.15in] px-[0.2in]">
 
               {/* Upload confirmation / spreadsheet */}
-              <div style={{ padding: '0.05in 0', marginBottom: '0.1in' }}>
-                <label className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded cursor-pointer hover:border-[#00539F] hover:bg-[#f0f7ff] transition-colors text-xs text-gray-500 hover:text-[#00539F]" style={{ padding: '0.12in' }}>
+              <div className="py-[0.05in] mb-[0.1in]">
+                <label className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded cursor-pointer hover:border-[#00539F] hover:bg-[#f0f7ff] transition-colors text-xs text-gray-500 hover:text-[#00539F] p-[0.12in]">
                   <Upload className="w-4 h-4" />
                   Upload order confirmation or spreadsheet (.xlsx, .xls, .csv)
                   <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleFileUpload} />
@@ -384,25 +440,23 @@ export default function OrdersList() {
               </div>
 
               {/* Order ID (read-only) */}
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Order ID</label>
+              <div className="py-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Order ID</label>
                 <input
                   type="text"
                   readOnly
                   value={nextOrderId(allOrders)}
-                  className="w-full border border-gray-200 rounded text-xs text-gray-400 bg-gray-50 focus:outline-none"
-                  style={{ padding: '0.05in' }}
+                  className="w-full border border-gray-200 rounded text-xs text-gray-400 bg-gray-50 focus:outline-none p-[0.05in]"
                 />
               </div>
 
               {/* Sport */}
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Sport</label>
+              <div className="py-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Sport</label>
                 <select
                   value={newSport}
                   onChange={(e) => setNewSport(e.target.value as Sport)}
-                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                  style={{ padding: '0.05in' }}
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.05in]"
                 >
                   <option value="">Select Sport</option>
                   {ALL_SPORTS.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -410,112 +464,107 @@ export default function OrdersList() {
               </div>
 
               {/* Ref Number */}
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Ref Number</label>
+              <div className="py-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Ref Number</label>
                 <input
                   type="text"
                   value={newRefNumber}
                   onChange={(e) => setNewRefNumber(e.target.value)}
                   placeholder="e.g. MBB Workout Sneaker"
-                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                  style={{ padding: '0.05in' }}
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.05in]"
                 />
               </div>
 
               {/* Order Date */}
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Order Date</label>
+              <div className="py-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Order Date</label>
                 <input
                   type="date"
                   value={newOrderDate}
                   onChange={(e) => setNewOrderDate(e.target.value)}
-                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                  style={{ padding: '0.05in' }}
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.05in]"
                 />
               </div>
 
               {/* Vendor */}
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Vendor</label>
+              <div className="py-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Vendor</label>
                 <input
                   type="text"
                   value={newVendor}
                   onChange={(e) => setNewVendor(e.target.value)}
                   placeholder="e.g. BSN Sports - Adidas"
-                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                  style={{ padding: '0.05in' }}
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.05in]"
                 />
               </div>
 
               {/* Items Ordered */}
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Items Ordered</label>
-                <table className="w-full text-xs border border-gray-200 rounded overflow-hidden">
-                  <thead className="bg-gray-50 border-b border-gray-200">
-                    <tr className="text-center text-gray-500">
-                      <th style={{ padding: '0.05in' }} className="font-bold text-left">Description</th>
-                      <th style={{ padding: '0.05in' }} className="font-bold w-20">Qty Ordered</th>
-                      <th style={{ padding: '0.05in' }} className="font-bold w-20">Qty Received</th>
-                      <th style={{ padding: '0.05in' }} className="w-6"></th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {newLines.map((line, i) => (
-                      <tr key={i}>
-                        <td style={{ padding: '0.05in' }}>
-                          <input
-                            type="text"
-                            value={line.description}
-                            onChange={(e) => updateLine(i, 'description', e.target.value)}
-                            placeholder="Item description"
-                            className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                            style={{ padding: '0.03in 0.05in' }}
-                          />
-                        </td>
-                        <td style={{ padding: '0.05in' }}>
-                          <input
-                            type="number"
-                            min={0}
-                            value={line.qtyOrdered}
-                            onChange={(e) => updateLine(i, 'qtyOrdered', parseInt(e.target.value) || 0)}
-                            className="w-full border border-gray-200 rounded text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                            style={{ padding: '0.03in 0.05in' }}
-                          />
-                        </td>
-                        <td style={{ padding: '0.05in' }}>
-                          <input
-                            type="number"
-                            min={0}
-                            value={line.qtyReceived}
-                            onChange={(e) => updateLine(i, 'qtyReceived', parseInt(e.target.value) || 0)}
-                            className="w-full border border-gray-200 rounded text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                            style={{ padding: '0.03in 0.05in' }}
-                          />
-                        </td>
-                        <td style={{ padding: '0.05in' }} className="text-center">
-                          {newLines.length > 1 && (
-                            <button onClick={() => removeLine(i)} className="text-gray-400 hover:text-red-500">
-                              <X className="w-3 h-3" />
-                            </button>
-                          )}
-                        </td>
+              <div className="py-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Items Ordered</label>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs border border-gray-200 rounded overflow-hidden">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr className="text-center text-gray-500">
+                        <th className="p-[0.05in] font-bold text-left">Description</th>
+                        <th className="p-[0.05in] font-bold w-20">Qty Ordered</th>
+                        <th className="p-[0.05in] font-bold w-20">Qty Received</th>
+                        <th className="p-[0.05in] w-6"></th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {newLines.map((line, i) => (
+                        <tr key={i}>
+                          <td className="p-[0.05in]">
+                            <input
+                              type="text"
+                              value={line.description}
+                              onChange={(e) => updateLine(i, 'description', e.target.value)}
+                              placeholder="Item description"
+                              className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.03in] px-[0.05in]"
+                            />
+                          </td>
+                          <td className="p-[0.05in]">
+                            <input
+                              type="number"
+                              min={0}
+                              value={line.qtyOrdered}
+                              onChange={(e) => updateLine(i, 'qtyOrdered', parseInt(e.target.value) || 0)}
+                              className="w-full border border-gray-200 rounded text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.03in] px-[0.05in]"
+                            />
+                          </td>
+                          <td className="p-[0.05in]">
+                            <input
+                              type="number"
+                              min={0}
+                              value={line.qtyReceived}
+                              onChange={(e) => updateLine(i, 'qtyReceived', parseInt(e.target.value) || 0)}
+                              className="w-full border border-gray-200 rounded text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.03in] px-[0.05in]"
+                            />
+                          </td>
+                          <td className="p-[0.05in] text-center">
+                            {newLines.length > 1 && (
+                              <button onClick={() => removeLine(i)} className="text-gray-400 hover:text-red-500">
+                                <X className="w-3 h-3" />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
                 <button
                   onClick={addLine}
-                  className="mt-1 text-xs text-[#002855] hover:text-[#00539F] bg-transparent border-none cursor-pointer"
-                  style={{ padding: '0.05in 0' }}
+                  className="mt-1 text-xs text-[#002855] hover:text-[#00539F] bg-transparent border-none cursor-pointer py-[0.05in]"
                 >
                   + Add Line Item
                 </button>
               </div>
 
               {/* Status preview */}
-              <div style={{ padding: '0.05in 0', marginTop: '0.05in' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Order Status (auto)</label>
-                <div className="text-xs text-gray-500 border border-gray-200 rounded bg-gray-50" style={{ padding: '0.05in' }}>
+              <div className="py-[0.05in] mt-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Order Status (auto)</label>
+                <div className="text-xs text-gray-500 border border-gray-200 rounded bg-gray-50 p-[0.05in]">
                   {(() => {
                     const tot = newLines.reduce((s, l) => s + l.qtyOrdered, 0);
                     const rec = newLines.reduce((s, l) => s + l.qtyReceived, 0);
@@ -527,12 +576,12 @@ export default function OrdersList() {
               </div>
 
               {/* Submit */}
-              <div style={{ marginTop: '0.1in', padding: '0.05in 0' }}>
+              <div className="mt-[0.1in] py-[0.05in]">
                 <button
                   onClick={handleAddOrder}
                   disabled={!newSport || !newRefNumber || !newVendor}
-                  className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
-                  style={{ backgroundColor: '#002855', padding: '0.08in' }}
+                  className="w-full text-white text-xs font-semibold rounded disabled:opacity-40 py-[0.08in]"
+                  style={{ backgroundColor: '#002855' }}
                 >
                   Add Order
                 </button>

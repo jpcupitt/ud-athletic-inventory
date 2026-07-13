@@ -41,14 +41,14 @@ export default function OnHandReport() {
   const totalOnOrder = filtered.reduce((s, i) => s + i.qtyOnOrder, 0);
 
   return (
-    <div className="flex flex-col" style={{ gap: '0.1in' }}>
+    <div className="flex flex-col gap-2 md:gap-[0.1in]">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-800">On-Hand Report</h1>
         <span className="text-sm text-gray-400">{filtered.length} item{filtered.length !== 1 ? 's' : ''}</span>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { label: 'Total Units On Hand', value: totalOnHand.toLocaleString() },
           { label: 'Total Units On Order', value: totalOnOrder.toLocaleString() },
@@ -107,7 +107,7 @@ export default function OnHandReport() {
       {/* Item Detail modal */}
       {selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setSelectedItem(null)}>
-          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden" style={{ width: '480px', maxHeight: '80vh' }} onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] md:w-[480px] max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
             <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
               <h2 className="text-sm font-semibold text-white truncate px-8">{selectedItem.description}</h2>
               <button onClick={() => setSelectedItem(null)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}>
@@ -126,7 +126,7 @@ export default function OnHandReport() {
                   ['On Hand',      <span className={`font-semibold ${selectedItem.qtyOnHand < 3 ? 'text-red-600' : selectedItem.qtyOnHand < 10 ? 'text-amber-600' : 'text-gray-800'}`}>{selectedItem.qtyOnHand}</span>],
                   ['On Order',     selectedItem.qtyOnOrder > 0 ? selectedItem.qtyOnOrder : '—'],
                   ['Unit Price',   `$${selectedItem.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`],
-                  ['Type',         selectedItem.isNonExpendable ? 'Non-Expendable' : 'Expendable'],
+                  ['Type',         selectedItem.isNonExpendable ? 'Must be returned' : 'Theirs to keep'],
                 ] as [string, React.ReactNode][]).map(([label, value]) => (
                   <div key={label} className="flex items-center justify-between text-xs py-2">
                     <span className="text-gray-400">{label}</span>
@@ -157,6 +157,7 @@ export default function OnHandReport() {
 
       {/* Table */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr className="text-left text-xs text-gray-500">
@@ -217,6 +218,7 @@ export default function OnHandReport() {
             </tr>
           </tfoot>
         </table>
+        </div>
       </div>
 
       <p className="text-xs text-gray-400">

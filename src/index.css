@@ -1,14 +1,21 @@
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* NOTE: no manual `* { margin:0; padding:0 }` reset here — Tailwind v4 Preflight
+   already does it in @layer base. An unlayered universal reset overrides every
+   layered padding/margin utility in the app (unlayered CSS beats @layer utilities). */
+
+/* Every interactive control shows the hand cursor. React onClick leaves no DOM
+   attribute, so clickable divs/rows still need a cursor-pointer class — but all
+   native controls (incl. <label> wrappers around hidden file inputs) are covered here. */
+button, a, label, select, summary,
+input[type='checkbox'], input[type='radio'],
+input[type='file'], input[type='date'] {
+  cursor: pointer;
 }
 
-button, a {
-  cursor: pointer;
+button:disabled {
+  cursor: default;
 }
 
 body {
@@ -16,10 +23,42 @@ body {
   background-color: #f3f4f6;
   color: #111827;
   -webkit-font-smoothing: antialiased;
+  /* Stop iOS rubber-band/pull-to-refresh from dragging the whole document
+     (and the bottom tab bar with it) — inner containers handle scrolling. */
+  overscroll-behavior-y: none;
 }
 
-#root {
-  min-height: 100vh;
+html, body, #root {
+  height: 100%;
+}
+
+/* Printing an item's QR label: hide the app, show only the label block. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-label,
+  .print-label * {
+    visibility: visible;
+  }
+  .print-label {
+    position: fixed;
+    top: 0.5in;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .print-label img {
+    width: 2.5in !important;
+    height: 2.5in !important;
+  }
+}
+
+/* Mobile: inputs under 16px trigger iOS Safari auto-zoom on focus, so force 16px
+   on small screens regardless of the Tailwind text size a field declares. */
+@media (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
 }
 
 /* ── Dark mode overrides ── */

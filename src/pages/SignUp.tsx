@@ -37,14 +37,14 @@ export default function SignUp() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center relative"
+      className="min-h-dvh flex items-center justify-center relative px-6 py-8"
       style={{ backgroundImage: 'url(/delaware-stadium.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.45)' }} />
 
       <div
-        className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl"
-        style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)', padding: '2.5rem' }}
+        className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-10"
+        style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)' }}
       >
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
@@ -69,10 +69,7 @@ export default function SignUp() {
             {error && <p className="text-xs text-red-400 text-center -mt-1">{error}</p>}
             <button
               type="submit"
-              className="w-full py-2.5 rounded-lg font-semibold text-sm mt-2"
-              style={{ backgroundColor: '#00539F', color: '#fff' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#003D75')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#00539F')}
+              className="w-full py-2.5 rounded-lg font-semibold text-sm mt-2 transition-colors bg-[#00539F] hover:bg-[#003D75] text-white"
             >
               Continue
             </button>
@@ -94,10 +91,7 @@ export default function SignUp() {
             </div>
             <button
               onClick={() => login('manager')}
-              className="w-full py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ backgroundColor: '#00539F', color: '#fff' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#003D75')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#00539F')}
+              className="w-full py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors bg-[#00539F] hover:bg-[#003D75] text-white"
             >
               <svg className="w-4 h-4" viewBox="0 0 21 21" fill="none">
                 <rect x="1" y="1" width="9" height="9" fill="#F25022" />
@@ -164,10 +158,7 @@ export default function SignUp() {
             {error && <p className="text-xs text-red-400 text-center -mt-1">{error}</p>}
             <button
               type="submit"
-              className="w-full py-2.5 rounded-lg font-semibold text-sm mt-1"
-              style={{ backgroundColor: '#00539F', color: '#fff' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#003D75')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#00539F')}
+              className="w-full py-2.5 rounded-lg font-semibold text-sm mt-1 transition-colors bg-[#00539F] hover:bg-[#003D75] text-white"
             >
               Create Account
             </button>

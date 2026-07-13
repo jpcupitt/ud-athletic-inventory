@@ -1,8 +1,11 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Bell, Search, Settings, LogOut, ChevronDown, User, Trophy, AlertTriangle, Package, ShoppingCart, X } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
+import { useSportsAccess } from '../../hooks/useSportsAccess';
+import { useActiveSport, type ActiveSport } from '../../context/SportContext';
+import GlobalSearch from '../GlobalSearch';
 
 const NAV_LINKS = [
   { label: 'Dashboard', to: '/' },
@@ -13,24 +16,27 @@ const NAV_LINKS = [
   { label: 'Reports', to: '/reports' },
 ];
 
+const EQUIPMENT_ROOM_LINKS = [
+  { label: 'Fitting Day', to: '/fitting', hint: 'Bulk-issue a kit to the roster' },
+  { label: 'Return Day', to: '/returns', hint: 'Check gear back in, build the owes list' },
+  { label: 'Smart Reorder', to: '/reorder', hint: 'Draft orders for low-stock items' },
+];
+
 export default function NavBar() {
   const { user, logout } = useAuth();
   const { overdueReturns, lowInventory, ordersForApproval } = useNotifications();
-  const [search, setSearch] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
   const [showSports, setShowSports] = useState(false);
+  const [showEquipRoom, setShowEquipRoom] = useState(false);
+  const [equipPos, setEquipPos] = useState<DOMRect | null>(null);
+  const location = useLocation();
+  const { isLead, accessibleSports } = useSportsAccess();
+  const { activeSport, setActiveSport } = useActiveSport();
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const sportsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
-
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (search.trim()) {
-      navigate(`/inventory?q=${encodeURIComponent(search.trim())}`);
-      setSearch('');
-    }
-  }
 
   function dismiss(key: string) {
     setDismissed((prev) => new Set([...prev, key]));
@@ -61,7 +67,10 @@ export default function NavBar() {
     : 'EQ';
 
   return (
-    <nav className="bg-[#002855] text-white flex items-center h-14 shrink-0 relative z-50" style={{ minWidth: '900px' }}>
+    <nav
+      className="bg-[#002855] text-white flex items-center h-14 shrink-0 relative z-50 md:min-w-[900px]"
+      style={{ paddingTop: 'env(safe-area-inset-top)', height: 'calc(3.5rem + env(safe-area-inset-top))' }}
+    >
       {/* Scrollable left section: logo + links */}
       <div className="flex items-center self-stretch overflow-x-auto px-4 gap-4 flex-1 min-w-0">
         {/* Logo */}
@@ -69,8 +78,8 @@ export default function NavBar() {
           <img src="/Delaware-Blue-Hens-logo.png" alt="Delaware Blue Hens" className="h-8 w-auto" />
         </div>
 
-        {/* Nav links */}
-        <div className="flex self-stretch gap-3">
+        {/* Nav links (desktop only — mobile uses the bottom tab bar) */}
+        <div className="hidden md:flex self-stretch gap-3">
           {NAV_LINKS.map((link) => (
             <NavLink
               key={link.to}
@@ -87,22 +96,78 @@ export default function NavBar() {
               {link.label}
             </NavLink>
           ))}
+
+          {/* Equipment Room dropdown — panel is position:fixed so the scrollable
+              links container (overflow-x-auto) can't clip it */}
+          <div
+            className="flex"
+            onMouseEnter={(e) => {
+              setEquipPos(e.currentTarget.getBoundingClientRect());
+              setShowEquipRoom(true);
+            }}
+            onMouseLeave={() => setShowEquipRoom(false)}
+          >
+            <button
+              onClick={(e) => {
+                setEquipPos((e.currentTarget.parentElement as HTMLElement).getBoundingClientRect());
+                setShowEquipRoom(true);
+              }}
+              className={`flex items-center gap-1 px-3 text-sm font-medium transition-colors border-b-4 whitespace-nowrap ${
+                EQUIPMENT_ROOM_LINKS.some((l) => location.pathname.startsWith(l.to))
+                  ? 'border-[#FFD200] text-white'
+                  : 'border-transparent text-gray-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              Equipment Room <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+            {showEquipRoom && equipPos && (
+              <div
+                className="fixed w-64 bg-white rounded-b-lg shadow-xl border border-gray-100 py-1 z-50"
+                style={{ top: equipPos.bottom, left: equipPos.left }}
+              >
+                {EQUIPMENT_ROOM_LINKS.map((link) => (
+                  <button
+                    key={link.to}
+                    onClick={() => { setShowEquipRoom(false); navigate(link.to); }}
+                    className="w-full text-left px-4 py-2.5 hover:bg-gray-200 cursor-pointer transition-colors"
+                  >
+                    <span className="block text-sm font-medium text-gray-800">{link.label}</span>
+                    <span className="block text-xs text-gray-400 mt-0.5">{link.hint}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Right section: always visible, never scrolls */}
       <div className="flex items-center gap-3 px-4 shrink-0">
-        {/* Search */}
-        <form onSubmit={handleSearch} className="relative">
-          <Search className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/50" />
-          <input
-            type="text"
-            placeholder="Global Item Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-5 pr-9 py-1.5 border border-white/50 rounded text-xs focus:outline-none focus:ring-1 focus:ring-white/50 w-52 bg-[#002855] text-white/50 placeholder-white/50"
-          />
-        </form>
+        {/* Global sport picker — one selection shared by every page */}
+        <select
+          value={activeSport}
+          onChange={(e) => setActiveSport(e.target.value as ActiveSport)}
+          title="Active sport — filters every page"
+          className="hidden md:block max-w-44 text-xs rounded px-2 py-1.5 bg-[#003D75] text-white border border-white/30 focus:outline-none focus:ring-1 focus:ring-white/50 cursor-pointer"
+        >
+          <option value="All Sports">{isLead ? 'All Sports' : 'All My Sports'}</option>
+          {accessibleSports.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+
+        {/* Search — items, athletes, staff, orders */}
+        <GlobalSearch />
+
+        {/* Search (mobile) — full-screen global search */}
+        <button
+          onClick={() => setShowMobileSearch(true)}
+          className="p-2.5 -m-1 text-gray-300 hover:text-white md:hidden"
+          title="Search"
+        >
+          <Search className="w-5 h-5" />
+        </button>
+        {showMobileSearch && <GlobalSearch mobile onClose={() => setShowMobileSearch(false)} />}
 
         {/* Notification bell */}
         <div className="relative">
@@ -120,7 +185,7 @@ export default function NavBar() {
           </button>
 
           {showNotifMenu && (
-            <div className="absolute right-0 top-full mt-2 bg-white text-gray-800 rounded-xl shadow-xl z-50 w-96 border border-gray-100">
+            <div className="absolute right-0 top-full mt-2 bg-white text-gray-800 rounded-xl shadow-xl z-50 w-96 max-w-[calc(100vw-1rem)] border border-gray-100">
               {/* Header */}
               <div className="flex items-center justify-between border-b border-gray-100" style={{ padding: '0.15in 0.2in' }}>
                 <div className="flex items-center gap-2">
@@ -229,10 +294,10 @@ export default function NavBar() {
           )}
         </div>
 
-        {/* Settings */}
+        {/* Settings (desktop — mobile reaches Settings via the More tab) */}
         <button
           onClick={() => navigate('/settings')}
-          className="p-1.5 text-gray-300 hover:text-white"
+          className="hidden md:block p-1.5 text-gray-300 hover:text-white"
           title="Settings"
         >
           <Settings className="w-5 h-5" />
@@ -293,6 +358,7 @@ export default function NavBar() {
                   onMouseLeave={() => { if (sportsTimer.current) clearTimeout(sportsTimer.current); setShowSports(false); }}
                 >
                   <button
+                    onClick={() => setShowSports((v) => !v)}
                     className="flex items-center justify-between w-full hover:bg-gray-50 text-gray-700 transition-colors"
                     style={{ gap: '0.12in', padding: '0.08in 0.2in' }}
                   >

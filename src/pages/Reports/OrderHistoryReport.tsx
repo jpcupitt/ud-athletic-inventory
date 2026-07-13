@@ -51,14 +51,14 @@ export default function OrderHistoryReport() {
   const completeCount = filtered.filter((o) => o.status === 'complete').length;
 
   return (
-    <div className="flex flex-col" style={{ gap: '0.1in' }}>
+    <div className="flex flex-col gap-2 md:gap-[0.1in]">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-800">Order History</h1>
         <span className="text-sm text-gray-400">{filtered.length} order{filtered.length !== 1 ? 's' : ''}</span>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Total Orders</p>
           <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>{filtered.length}</p>
@@ -110,14 +110,14 @@ export default function OrderHistoryReport() {
           placeholder="Search order ID, ref, vendor..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F] bg-white w-56"
+          className="px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F] bg-white w-full md:w-56"
         />
       </div>
 
       {/* Order Detail modal */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setSelectedOrder(null)}>
-          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden" style={{ width: '480px', maxHeight: '80vh' }} onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] md:w-[480px] max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
             <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
               <h2 className="text-sm font-semibold text-white">{selectedOrder.refNumber}</h2>
               <button onClick={() => setSelectedOrder(null)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}>
@@ -161,6 +161,7 @@ export default function OrderHistoryReport() {
 
       {/* Table */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr className="text-center text-xs text-gray-500">
@@ -211,6 +212,7 @@ export default function OrderHistoryReport() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

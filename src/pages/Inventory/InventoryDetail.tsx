@@ -1,12 +1,23 @@
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Package, Tag, AlertTriangle } from 'lucide-react';
-import { inventoryItems } from '../../data/mock/inventory';
+import { ArrowLeft, Package, Tag, AlertTriangle, QrCode, Printer } from 'lucide-react';
+import QRCode from 'qrcode';
 import { athletes } from '../../data/mock/athletes';
 import { staffMembers } from '../../data/mock/staff';
+import { useInventory } from '../../context/InventoryContext';
 
 export default function InventoryDetail() {
   const { itemId } = useParams<{ itemId: string }>();
-  const item = inventoryItems.find((i) => i.id === itemId);
+  const { items } = useInventory();
+  const item = items.find((i) => i.id === itemId);
+
+  const [qrUrl, setQrUrl] = useState('');
+  useEffect(() => {
+    if (!item) return;
+    QRCode.toDataURL(`EQI:ITEM:${item.id}`, { width: 480, margin: 1, color: { dark: '#002855', light: '#ffffff' } })
+      .then(setQrUrl)
+      .catch(() => setQrUrl(''));
+  }, [item?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!item) {
     return (
@@ -42,8 +53,12 @@ export default function InventoryDetail() {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
-              <Package className="w-7 h-7 text-gray-400" />
+            <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
+              {item.photoUrl ? (
+                <img src={item.photoUrl} alt={item.description} className="w-14 h-14 object-cover rounded-lg" />
+              ) : (
+                <Package className="w-7 h-7 text-gray-400" />
+              )}
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-800">{item.description}</h1>
@@ -53,10 +68,10 @@ export default function InventoryDetail() {
                   <span key={s} className="px-2 py-0.5 bg-[#DAEAF5] text-[#00539F] rounded text-xs">{s}</span>
                 ))}
                 {item.isNonExpendable && (
-                  <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded text-xs">Non-Expendable</span>
+                  <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded text-xs">Must Return</span>
                 )}
                 {item.isSerialized && (
-                  <span className="px-2 py-0.5 bg-[#002855] text-white rounded text-xs">Serialized</span>
+                  <span className="px-2 py-0.5 bg-[#002855] text-white rounded text-xs">Tracked by Serial #</span>
                 )}
               </div>
             </div>
@@ -118,6 +133,31 @@ export default function InventoryDetail() {
           </div>
         )}
 
+        {/* QR label */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+          <h2 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+            <QrCode className="w-4 h-4 text-gray-400" /> QR Label
+          </h2>
+          <div className="flex items-center gap-4">
+            <div className="print-label flex flex-col items-center shrink-0">
+              {qrUrl && <img src={qrUrl} alt={`QR code for ${item.itemId}`} className="w-32 h-32" />}
+              <p className="hidden print:block text-sm font-semibold mt-2">{item.description}</p>
+              <p className="hidden print:block text-xs font-mono">{item.itemId}</p>
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Print this label and stick it on the shelf or bin. Scanning it with the app's scanner opens this item instantly.
+              </p>
+              <button
+                onClick={() => window.print()}
+                className="mt-3 flex items-center gap-1.5 px-3 py-1.5 rounded border border-gray-300 text-xs text-gray-600 hover:bg-gray-50 font-medium"
+              >
+                <Printer className="w-3.5 h-3.5" /> Print Label
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Low stock warning */}
         {item.qtyOnHand < 3 && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
@@ -138,35 +178,37 @@ export default function InventoryDetail() {
         {issuedTo.length === 0 ? (
           <p className="text-sm text-gray-400">Not currently issued to anyone.</p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
-                <th className="pb-2 font-medium">Name</th>
-                <th className="pb-2 font-medium">Type</th>
-                <th className="pb-2 font-medium text-right">Qty</th>
-                <th className="pb-2 font-medium">Issued</th>
-                <th className="pb-2 font-medium">Return By</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {issuedTo.map((entry, i) => (
-                <tr key={i}>
-                  <td className="py-2">
-                    <Link
-                      to={entry.type === 'Athlete' ? `/athletes/${entry.id}` : `/staff/${entry.id}`}
-                      className="font-medium text-[#00539F] hover:underline"
-                    >
-                      {entry.name}
-                    </Link>
-                  </td>
-                  <td className="py-2 text-gray-500">{entry.type}</td>
-                  <td className="py-2 text-right font-medium">{entry.qty}</td>
-                  <td className="py-2 text-gray-500">{entry.issuedDate}</td>
-                  <td className="py-2 text-gray-500">{entry.returnByDate ?? '—'}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
+                  <th className="pb-2 font-medium">Name</th>
+                  <th className="pb-2 font-medium">Type</th>
+                  <th className="pb-2 font-medium text-right">Qty</th>
+                  <th className="pb-2 font-medium">Issued</th>
+                  <th className="pb-2 font-medium">Return By</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {issuedTo.map((entry, i) => (
+                  <tr key={i}>
+                    <td className="py-2">
+                      <Link
+                        to={entry.type === 'Athlete' ? `/athletes/${entry.id}` : `/staff/${entry.id}`}
+                        className="font-medium text-[#00539F] hover:underline"
+                      >
+                        {entry.name}
+                      </Link>
+                    </td>
+                    <td className="py-2 text-gray-500">{entry.type}</td>
+                    <td className="py-2 text-right font-medium">{entry.qty}</td>
+                    <td className="py-2 text-gray-500">{entry.issuedDate}</td>
+                    <td className="py-2 text-gray-500">{entry.returnByDate ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

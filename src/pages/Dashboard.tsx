@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList,
   LineChart, Line, CartesianGrid,
 } from 'recharts';
-import { Package, ShoppingCart, X, ChevronLeft } from 'lucide-react';
+import { Package, ShoppingCart, X, ChevronLeft, ChevronRight, CalendarCheck, CheckCircle2, AlertTriangle, Truck } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
@@ -298,16 +298,16 @@ export default function Dashboard() {
       {/* Page sub-header + Quick Links on same row */}
       <div className="flex flex-wrap items-start justify-between gap-4" style={{ marginBottom: '0.5in' }}>
         <span className="font-semibold text-[28px] underline decoration-[#FFD200] decoration-2 underline-offset-4" style={{ color: '#00539F' }}>Dashboard</span>
-        <div className="flex flex-col items-end gap-1.5 min-w-0">
+        <div className="flex w-full flex-col items-end gap-1.5 min-w-0 md:w-auto">
           <span className="font-semibold text-[18px] self-start text-gray-500">Quick Links</span>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 md:flex md:w-auto md:flex-wrap">
             <NotifBadge label="Low Inventory" count={lowInventory.length} color="bg-[#002855]" onClick={() => setShowLowInventory(true)} />
             <NotifBadge label="New Open Status" count={ordersForApproval.length} color="bg-[#00539F]" onClick={() => setShowNewOpenStatus(true)} />
             <NotifBadge label="Overdue Returns" count={overdueReturns.length} color="bg-[#1A6FBA]" onClick={() => setShowOverdueReturns(true)} />
             <div className="relative">
               <button
                 onClick={() => { setShowQuickSubmit(true); setQuickSubmitOrder(null); }}
-                className="rounded-lg text-center transition-colors hover:opacity-90 cursor-pointer"
+                className="w-full h-full md:w-auto md:h-auto rounded-lg text-center transition-colors hover:opacity-90 cursor-pointer"
                 style={{ padding: '0.1in', backgroundColor: '#FFD200', color: '#002855' }}
               >
                 <p className="text-2xl font-bold leading-none">+</p>
@@ -323,16 +323,68 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Today — what needs attention right now */}
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6 overflow-hidden">
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100">
+          <CalendarCheck className="w-4 h-4 text-[#00539F]" />
+          <span className="text-sm font-semibold text-gray-700">Today</span>
+        </div>
+        {overdueReturns.length === 0 && lowInventory.length === 0 && ordersForApproval.length === 0 && arrivingOrders.length === 0 ? (
+          <div className="px-4 py-4 flex items-center gap-2 text-sm text-green-700">
+            <CheckCircle2 className="w-4 h-4 text-green-500" /> All caught up — nothing needs your attention.
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-50">
+            {overdueReturns.length > 0 && (
+              <button onClick={() => navigate('/returns')} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 active:bg-gray-50">
+                <AlertTriangle className="w-4 h-4 text-red-500 shrink-0" />
+                <span className="flex-1 text-sm text-gray-700">
+                  <span className="font-semibold">{overdueReturns.length} return{overdueReturns.length !== 1 ? 's' : ''} overdue</span> — check gear back in
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+              </button>
+            )}
+            {lowInventory.length > 0 && (
+              <button onClick={() => navigate('/reorder')} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 active:bg-gray-50">
+                <Package className="w-4 h-4 text-amber-500 shrink-0" />
+                <span className="flex-1 text-sm text-gray-700">
+                  <span className="font-semibold">{lowInventory.length} item{lowInventory.length !== 1 ? 's' : ''} critically low</span> — review suggested reorder
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+              </button>
+            )}
+            {ordersForApproval.length > 0 && (
+              <button onClick={() => { setShowQuickSubmit(true); setQuickSubmitOrder(null); }} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 active:bg-gray-50">
+                <ShoppingCart className="w-4 h-4 text-[#00539F] shrink-0" />
+                <span className="flex-1 text-sm text-gray-700">
+                  <span className="font-semibold">{ordersForApproval.length} order{ordersForApproval.length !== 1 ? 's' : ''} awaiting action</span> — review and submit
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+              </button>
+            )}
+            {arrivingOrders.length > 0 && (
+              <button onClick={() => navigate('/orders')} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 active:bg-gray-50">
+                <Truck className="w-4 h-4 text-green-600 shrink-0" />
+                <span className="flex-1 text-sm text-gray-700">
+                  <span className="font-semibold">{arrivingOrders.length} order{arrivingOrders.length !== 1 ? 's' : ''} on the way</span> — mark items received as they arrive
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
       {(visibleCharts.has('real-time') || visibleCharts.has('transaction-history')) && (
-      <div className="flex flex-wrap gap-4 items-stretch">
+      <div className="flex flex-col gap-4 items-stretch lg:flex-row lg:flex-wrap">
         {/* Left column — charts */}
         {visibleCharts.has('real-time') && (
         <div className="flex-1 flex flex-row min-w-0 gap-4" style={{ minWidth: '280px' }}>
           {/* Real Time Inventory chart */}
           {visibleCharts.has('real-time') && (
-          <div className="relative flex-1 bg-white rounded-lg flex flex-col" style={removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }}>
+          <div className="relative flex-1 h-80 lg:h-auto bg-white rounded-lg flex flex-col" style={removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }}>
             {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('real-time'); return n; })} />}
-            <div className="flex items-center px-5 pb-4" style={{ paddingTop: '0.05in' }}>
+            <div className="flex items-center px-2 md:px-5 pb-4" style={{ paddingTop: '0.05in' }}>
               <span className="flex-1 text-sm font-semibold text-gray-700" style={{ padding: '0.08in 0.15in' }}>Real Time Inventory</span>
               <div className="flex rounded border border-gray-200 overflow-hidden">
                 <button
@@ -357,7 +409,7 @@ export default function Dashboard() {
                   style={{ padding: '0.03in', width: '3.5rem' }}
                 >Filters</button>
                 {showRTFilters && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 w-52">
+                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 w-52 max-w-[calc(100vw-2rem)]">
                     <div className="border-b border-gray-100" style={{ padding: '0.12in 0.15in 0.08in' }}>
                       <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Sport</p>
                       <select
@@ -439,7 +491,7 @@ export default function Dashboard() {
 
         {/* Right column — transactions */}
         {visibleCharts.has('transaction-history') && (
-        <div className="w-72 flex flex-col" style={{ minWidth: '240px' }}>
+        <div className="w-full lg:w-72 flex flex-col" style={{ minWidth: '240px' }}>
           <div className="relative bg-white rounded-lg flex flex-col flex-1 overflow-hidden" style={removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }}>
             {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('transaction-history'); return n; })} />}
             <div className="flex items-center justify-between border-b border-gray-100 shrink-0" style={{ padding: '0.05in' }}>
@@ -509,13 +561,13 @@ export default function Dashboard() {
       )}
 
       {(visibleCharts.has('budget') || visibleCharts.has('orders-arriving')) && (
-      <div className="flex flex-wrap gap-4" style={{ marginTop: '0.25in' }}>
+      <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap" style={{ marginTop: '0.25in' }}>
 
       {/* Budget panel */}
       {visibleCharts.has('budget') && (
-      <div className="relative flex-1 bg-white rounded-lg flex flex-col" style={{ height: '320px', minWidth: '280px', ...(removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }) }}>
+      <div className="relative lg:flex-1 h-80 bg-white rounded-lg flex flex-col" style={{ minWidth: '280px', ...(removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }) }}>
         {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('budget'); return n; })} />}
-        <div className="flex items-center px-5" style={{ paddingTop: '0.05in', paddingBottom: '0.1in' }}>
+        <div className="flex items-center px-2 md:px-5" style={{ paddingTop: '0.05in', paddingBottom: '0.1in' }}>
           <span className="flex-1 text-sm font-semibold text-gray-700" style={{ padding: '0.08in 0.15in' }}>
             {budgetView === 'overview'
               ? `Budget${budgetSport !== 'All Sports' ? ` — ${budgetSport}` : ''}`
@@ -547,7 +599,7 @@ export default function Dashboard() {
                   {budgetSport}
                 </button>
                 {showBudgetFilters && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 w-52 overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 w-52 max-w-[calc(100vw-2rem)] overflow-hidden">
                     <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest" style={{ padding: '0.12in 0.15in 0.06in' }}>Select Sport</p>
                     <div style={{ padding: '0 0 0.08in' }}>
                       {(isLead ? SPORTS : ['All Sports' as const, ...accessibleSports]).map((s) => (
@@ -631,7 +683,7 @@ export default function Dashboard() {
 
       {/* Orders Arriving This Week */}
       {visibleCharts.has('orders-arriving') && (
-      <div className="relative w-72 bg-white rounded-lg flex flex-col" style={{ height: '320px', minWidth: '240px', ...(removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }) }}>
+      <div className="relative w-full lg:w-72 h-80 bg-white rounded-lg flex flex-col" style={{ minWidth: '240px', ...(removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }) }}>
         {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('orders-arriving'); return n; })} />}
         <div className="flex items-center justify-between border-b border-gray-100 shrink-0" style={{ padding: '0.05in' }}>
           <span className="text-sm font-semibold text-gray-700">Orders Arriving</span>
@@ -680,10 +732,8 @@ export default function Dashboard() {
       <div className="flex items-center gap-3" style={{ marginTop: '0.5in' }}>
         <button
           onClick={() => { setShowAddChart(true); setRemoveMode(false); }}
-          className="flex items-center gap-2 rounded-lg text-sm font-medium text-white transition-colors"
-          style={{ backgroundColor: '#00539F', padding: '0.05in' }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#003D75')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#00539F')}
+          className="flex items-center gap-2 rounded-lg text-sm font-medium text-white transition-colors bg-[#00539F] hover:bg-[#003D75]"
+          style={{ padding: '0.05in' }}
         >
           Add Chart
         </button>
@@ -703,7 +753,7 @@ export default function Dashboard() {
           style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowAddChart(false); }}
         >
-          <div className="bg-white rounded-xl shadow-2xl p-6" style={{ width: '360px' }}>
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-[calc(100vw-2rem)] max-w-[360px]">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-gray-800">Add Chart</h2>
               <button onClick={() => setShowAddChart(false)} className="text-gray-400 hover:text-gray-600">
@@ -735,7 +785,7 @@ export default function Dashboard() {
       {/* Low Inventory modal */}
       {showLowInventory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowLowInventory(false)}>
-          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden" style={{ width: '360px', maxHeight: '520px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
             <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
               <h2 className="text-sm font-semibold text-white">Low Inventory</h2>
               <button onClick={() => setShowLowInventory(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
@@ -762,7 +812,7 @@ export default function Dashboard() {
       {/* New Open Status modal */}
       {showNewOpenStatus && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowNewOpenStatus(false)}>
-          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden" style={{ width: '360px', maxHeight: '520px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
             <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
               <h2 className="text-sm font-semibold text-white">New Open Status</h2>
               <button onClick={() => setShowNewOpenStatus(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
@@ -789,7 +839,7 @@ export default function Dashboard() {
       {/* Overdue Returns modal */}
       {showOverdueReturns && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowOverdueReturns(false)}>
-          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden" style={{ width: '360px', maxHeight: '520px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
             <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
               <h2 className="text-sm font-semibold text-white">Overdue Returns</h2>
               <button onClick={() => setShowOverdueReturns(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
@@ -820,11 +870,11 @@ export default function Dashboard() {
           style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
           onClick={(e) => { if (e.target === e.currentTarget) { setShowQuickSubmit(false); setQuickSubmitOrder(null); } }}
         >
-          <div className="bg-white rounded-xl shadow-2xl flex flex-col" style={{ width: '480px', maxHeight: '80vh' }}>
+          <div className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-[480px] md:h-auto md:max-h-[80vh] md:rounded-xl" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
             {quickSubmitOrder ? (
               <>
                 {/* Order detail header */}
-                <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100 shrink-0">
+                <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100 shrink-0" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}>
                   <button onClick={() => setQuickSubmitOrder(null)} className="text-gray-400 hover:text-gray-600 mr-1">
                     <ChevronLeft className="w-5 h-5" />
                   </button>
@@ -887,10 +937,8 @@ export default function Dashboard() {
                       setShowOrderSubmitted(true);
                       setTimeout(() => setShowOrderSubmitted(false), 3000);
                     }}
-                    className="text-sm font-medium text-white rounded-lg transition-colors"
-                    style={{ backgroundColor: '#228B22', padding: '0.05in' }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1a6b1a')}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#228B22')}
+                    className="text-sm font-medium text-white rounded-lg transition-colors bg-[#228B22] hover:bg-[#1a6b1a]"
+                    style={{ padding: '0.05in' }}
                   >
                     Submit
                   </button>
@@ -899,7 +947,7 @@ export default function Dashboard() {
             ) : (
               <>
                 {/* Order list header */}
-                <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
+                <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', paddingTop: 'calc(env(safe-area-inset-top) + 0.1in)', backgroundColor: '#002855' }}>
                   <h2 className="text-sm font-semibold text-white">Quick Submit Order</h2>
                   <button onClick={() => setShowQuickSubmit(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}>
                     <X className="w-4 h-4" />
@@ -934,7 +982,7 @@ export default function Dashboard() {
 
       {/* Order Submitted toast */}
       {showOrderSubmitted && (
-        <div className="fixed bottom-6 right-6 z-50 text-white px-5 py-3 rounded-lg shadow-xl flex items-center gap-2 text-sm font-medium" style={{ backgroundColor: '#002855' }}>
+        <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 text-white px-5 py-3 rounded-lg shadow-xl flex items-center gap-2 text-sm font-medium" style={{ backgroundColor: '#002855' }}>
           <svg width="16" height="16" fill="none" stroke="#FFD200" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
             <path d="M5 13l4 4L19 7" />
           </svg>

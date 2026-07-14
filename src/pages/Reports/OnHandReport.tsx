@@ -56,7 +56,7 @@ export default function OnHandReport() {
         ].map(({ label, value }) => (
           <div key={label} className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
             <p className="text-xs text-gray-400 uppercase tracking-wide">{label}</p>
-            <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>{value}</p>
+            <p className="text-2xl font-bold mt-1" style={{ color: '#003c71' }}>{value}</p>
           </div>
         ))}
       </div>
@@ -108,7 +108,7 @@ export default function OnHandReport() {
       {selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setSelectedItem(null)}>
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] md:w-[480px] max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
-            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
               <h2 className="text-sm font-semibold text-white truncate px-8">{selectedItem.description}</h2>
               <button onClick={() => setSelectedItem(null)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}>
                 <X className="w-4 h-4" />
@@ -117,13 +117,13 @@ export default function OnHandReport() {
             <div className="flex-1 overflow-y-auto" style={{ padding: '0.1in' }}>
               <div className="divide-y divide-gray-200 mb-4">
                 {([
-                  ['Item ID',      <span className="font-mono text-[#00539F]">{selectedItem.itemId}</span>],
+                  ['Item ID',      <span key="item-id" className="font-mono text-[#00539F]">{selectedItem.itemId}</span>],
                   ['Category',     selectedItem.category],
                   ['Manufacturer', selectedItem.manufacturer],
                   ['Model',        selectedItem.model],
                   ['Year',         selectedItem.year],
                   ['Unit',         selectedItem.unit],
-                  ['On Hand',      <span className={`font-semibold ${selectedItem.qtyOnHand < 3 ? 'text-red-600' : selectedItem.qtyOnHand < 10 ? 'text-amber-600' : 'text-gray-800'}`}>{selectedItem.qtyOnHand}</span>],
+                  ['On Hand',      <span key="on-hand" className={`font-semibold ${selectedItem.qtyOnHand < 3 ? 'text-red-600' : selectedItem.qtyOnHand < 10 ? 'text-amber-600' : 'text-gray-800'}`}>{selectedItem.qtyOnHand}</span>],
                   ['On Order',     selectedItem.qtyOnOrder > 0 ? selectedItem.qtyOnOrder : '—'],
                   ['Unit Price',   `$${selectedItem.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`],
                   ['Type',         selectedItem.isNonExpendable ? 'Must be returned' : 'Theirs to keep'],

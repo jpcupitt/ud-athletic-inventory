@@ -48,7 +48,7 @@ export default function MobileTabBar() {
 
             {/* User card */}
             <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-100">
-              <div className="w-10 h-10 rounded-full bg-[#FFD200] flex items-center justify-center text-[#002855] text-sm font-bold shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#FFD200] flex items-center justify-center text-[#003c71] text-sm font-bold shrink-0">
                 {initials}
               </div>
               <div className="min-w-0">
@@ -65,7 +65,7 @@ export default function MobileTabBar() {
                   <button
                     key={link.to}
                     onClick={() => { setShowMore(false); navigate(link.to); }}
-                    className={`flex items-center gap-3 w-full px-5 min-h-12 text-left transition-colors ${active ? 'bg-[#EFF6FF] text-[#00539F] font-semibold' : 'text-gray-700 active:bg-gray-50'}`}
+                    className={`flex items-center gap-3 w-full px-5 min-h-12 text-left transition-colors ${active ? 'bg-[#DAEAF5] text-[#00539F] font-semibold' : 'text-gray-700 active:bg-gray-50'}`}
                   >
                     <Icon className="w-5 h-5 shrink-0" />
                     <span className="text-sm">{link.label}</span>
@@ -84,7 +84,7 @@ export default function MobileTabBar() {
                   <button
                     key={link.to}
                     onClick={() => { setShowMore(false); navigate(link.to); }}
-                    className={`flex items-center gap-3 w-full px-5 min-h-12 text-left transition-colors ${active ? 'bg-[#EFF6FF] text-[#00539F] font-semibold' : 'text-gray-700 active:bg-gray-50'}`}
+                    className={`flex items-center gap-3 w-full px-5 min-h-12 text-left transition-colors ${active ? 'bg-[#DAEAF5] text-[#00539F] font-semibold' : 'text-gray-700 active:bg-gray-50'}`}
                   >
                     <Icon className="w-5 h-5 shrink-0" />
                     <span className="text-sm">{link.label}</span>
@@ -107,7 +107,7 @@ export default function MobileTabBar() {
       )}
 
       {/* Bottom tab bar */}
-      <nav className="bg-[#002855] border-t border-white/10 flex shrink-0">
+      <nav className="bg-[#003c71] border-t border-white/10 flex shrink-0">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           return (

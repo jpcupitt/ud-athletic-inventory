@@ -221,7 +221,7 @@ export default function OrdersList() {
               <span className="text-gray-300">|</span>
               <button
                 onClick={() => { resetNewOrder(); setShowNewOrder(true); }}
-                className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md py-[0.025in] px-[0.1in]"
+                className="text-[#003c71] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md py-[0.025in] px-[0.1in]"
                 style={{ backgroundColor: '#FFD200' }}
               >
                 + New Order
@@ -419,7 +419,7 @@ export default function OrdersList() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white w-full h-full rounded-none md:w-full md:max-w-2xl md:h-auto md:max-h-[90vh] md:rounded-xl shadow-2xl flex flex-col" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3 shrink-0 md:rounded-t-xl" style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+            <div className="flex items-center justify-between px-5 py-3 shrink-0 md:rounded-t-xl" style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
               <span className="text-white font-semibold text-sm">New Order</span>
               <button onClick={() => setShowNewOrder(false)} className="text-white hover:opacity-70">
                 <X className="w-4 h-4" />
@@ -555,7 +555,7 @@ export default function OrdersList() {
                 </div>
                 <button
                   onClick={addLine}
-                  className="mt-1 text-xs text-[#002855] hover:text-[#00539F] bg-transparent border-none cursor-pointer py-[0.05in]"
+                  className="mt-1 text-xs text-[#003c71] hover:text-[#00539F] bg-transparent border-none cursor-pointer py-[0.05in]"
                 >
                   + Add Line Item
                 </button>
@@ -581,7 +581,7 @@ export default function OrdersList() {
                   onClick={handleAddOrder}
                   disabled={!newSport || !newRefNumber || !newVendor}
                   className="w-full text-white text-xs font-semibold rounded disabled:opacity-40 py-[0.08in]"
-                  style={{ backgroundColor: '#002855' }}
+                  style={{ backgroundColor: '#003c71' }}
                 >
                   Add Order
                 </button>

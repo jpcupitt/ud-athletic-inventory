@@ -63,7 +63,7 @@ function NotifRow({ label, description, checked, onChange }: { label: string; de
 }
 
 export default function Settings() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const { isLead } = useSportsAccess();
   const [tab, setTab] = useState<Tab>('general');
 
@@ -154,7 +154,7 @@ export default function Settings() {
               {/* Avatar row */}
               <div className="flex items-center justify-between pb-4 border-b border-gray-100">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-[#FFD200] flex items-center justify-center text-[#002855] text-xl font-bold shrink-0">
+                  <div className="w-16 h-16 rounded-full bg-[#FFD200] flex items-center justify-center text-[#003c71] text-xl font-bold shrink-0">
                     {initials}
                   </div>
                   <div>
@@ -177,8 +177,8 @@ export default function Settings() {
                       onChange={(e) => setName(e.target.value)}
                       className="flex-1 min-w-[160px] px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
                     />
-                    <button onClick={() => setEditingName(false)} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
-                    <button onClick={() => setEditingName(false)} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
+                    <button onClick={() => { updateUser({ name }); setEditingName(false); }} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
+                    <button onClick={() => { setName(user?.name ?? ''); setEditingName(false); }} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
                   </div>
                 </div>
               ) : (
@@ -196,8 +196,8 @@ export default function Settings() {
                       onChange={(e) => setEmail(e.target.value)}
                       className="flex-1 min-w-[160px] px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#00539F]"
                     />
-                    <button onClick={() => setEditingEmail(false)} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
-                    <button onClick={() => setEditingEmail(false)} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
+                    <button onClick={() => { updateUser({ email }); setEditingEmail(false); }} className="px-3 py-1.5 bg-[#00539F] text-white text-xs rounded hover:bg-[#003D75]">Save</button>
+                    <button onClick={() => { setEmail(user?.email ?? ''); setEditingEmail(false); }} className="px-3 py-1.5 border border-gray-300 text-xs rounded text-gray-600 hover:bg-gray-50">Cancel</button>
                   </div>
                 </div>
               ) : (
@@ -261,11 +261,11 @@ export default function Settings() {
               <div className="border-b border-gray-100" style={{ padding: '0.05in 0' }}>
                 <p className="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Demo Data</p>
                 <p className="text-xs text-gray-500 mb-2">
-                  Inventory, orders, athletes, and staff changes are saved on this device. Reset to restore the original sample data.
+                  Inventory, orders, athletes, and staff changes are saved on this device. Reset to restore the original sample data. This also clears your session and signs you out.
                 </p>
                 <button
                   onClick={() => {
-                    if (window.confirm('Reset all saved data back to the original demo data? This cannot be undone.')) {
+                    if (window.confirm('Reset all saved data back to the original demo data? This will also sign you out. This cannot be undone.')) {
                       clearPersistedState();
                       window.location.href = '/';
                     }

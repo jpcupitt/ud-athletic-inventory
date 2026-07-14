@@ -301,14 +301,14 @@ export default function Dashboard() {
         <div className="flex w-full flex-col items-end gap-1.5 min-w-0 md:w-auto">
           <span className="font-semibold text-[18px] self-start text-gray-500">Quick Links</span>
           <div className="grid w-full grid-cols-2 gap-2 md:flex md:w-auto md:flex-wrap">
-            <NotifBadge label="Low Inventory" count={lowInventory.length} color="bg-[#002855]" onClick={() => setShowLowInventory(true)} />
+            <NotifBadge label="Low Inventory" count={lowInventory.length} color="bg-[#003c71]" onClick={() => setShowLowInventory(true)} />
             <NotifBadge label="New Open Status" count={ordersForApproval.length} color="bg-[#00539F]" onClick={() => setShowNewOpenStatus(true)} />
-            <NotifBadge label="Overdue Returns" count={overdueReturns.length} color="bg-[#1A6FBA]" onClick={() => setShowOverdueReturns(true)} />
+            <NotifBadge label="Overdue Returns" count={overdueReturns.length} color="bg-[#00a0df]" onClick={() => setShowOverdueReturns(true)} />
             <div className="relative">
               <button
                 onClick={() => { setShowQuickSubmit(true); setQuickSubmitOrder(null); }}
                 className="w-full h-full md:w-auto md:h-auto rounded-lg text-center transition-colors hover:opacity-90 cursor-pointer"
-                style={{ padding: '0.1in', backgroundColor: '#FFD200', color: '#002855' }}
+                style={{ padding: '0.1in', backgroundColor: '#FFD200', color: '#003c71' }}
               >
                 <p className="text-2xl font-bold leading-none">+</p>
                 <p className="text-xs mt-2 opacity-90 leading-tight">Quick Submit Order</p>
@@ -449,11 +449,11 @@ export default function Dashboard() {
                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'Item', position: 'insideBottom', offset: -10, fontSize: 14, fill: '#6b7280' }} />
                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} ticks={yTicks} domain={[0, yMax]} label={{ value: 'Amount', angle: -90, position: 'insideLeft', offset: 10, fontSize: 14, fill: '#6b7280' }} />
                     <Tooltip contentStyle={{ fontSize: 12 }} />
-                    <Bar dataKey="onHand" name="On-Hand" fill="#4169E1" radius={[2, 2, 0, 0]} maxBarSize={30}>
+                    <Bar dataKey="onHand" name="On-Hand" fill="#00539F" radius={[2, 2, 0, 0]} maxBarSize={30}>
                       <LabelList dataKey="onHand" content={(props) => <BarLabel {...(props as any)} />} />
                     </Bar>
-                    <Bar dataKey="onOrder" name="On-Order" fill="#FFD200" radius={[2, 2, 0, 0]} maxBarSize={30}>
-                      <LabelList dataKey="onOrder" content={(props) => <BarLabel {...(props as any)} insideColor="#002855" />} />
+                    <Bar dataKey="onOrder" name="On-Order" fill="#DAEAF5" stroke="#00539F" strokeWidth={1} radius={[2, 2, 0, 0]} maxBarSize={30}>
+                      <LabelList dataKey="onOrder" content={(props) => <BarLabel {...(props as any)} insideColor="#003c71" />} />
                     </Bar>
                   </BarChart>
                 ) : (
@@ -461,11 +461,11 @@ export default function Dashboard() {
                     <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'Item', position: 'insideBottom', offset: -10, fontSize: 14, fill: '#6b7280' }} />
                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} ticks={pTicks} domain={[0, pMax]} tickFormatter={(v) => `$${v.toLocaleString()}`} tickMargin={3} label={{ value: 'Price ($)', angle: -90, position: 'insideLeft', offset: 7, fontSize: 14, fill: '#6b7280' }} />
                     <Tooltip contentStyle={{ fontSize: 12 }} formatter={(v) => [`$${Number(v).toLocaleString()}`, '']} />
-                    <Bar dataKey="onHand" name="On-Hand" fill="#4169E1" radius={[2, 2, 0, 0]} maxBarSize={30}>
+                    <Bar dataKey="onHand" name="On-Hand" fill="#00539F" radius={[2, 2, 0, 0]} maxBarSize={30}>
                       <LabelList dataKey="onHand" content={(props) => <BarLabel {...(props as any)} formatter={(v) => `$${(v / 1000).toFixed(0)}k`} />} />
                     </Bar>
-                    <Bar dataKey="onOrder" name="On-Order" fill="#FFD200" radius={[2, 2, 0, 0]} maxBarSize={30}>
-                      <LabelList dataKey="onOrder" content={(props) => <BarLabel {...(props as any)} formatter={(v) => `$${(v / 1000).toFixed(0)}k`} insideColor="#002855" />} />
+                    <Bar dataKey="onOrder" name="On-Order" fill="#DAEAF5" stroke="#00539F" strokeWidth={1} radius={[2, 2, 0, 0]} maxBarSize={30}>
+                      <LabelList dataKey="onOrder" content={(props) => <BarLabel {...(props as any)} formatter={(v) => `$${(v / 1000).toFixed(0)}k`} insideColor="#003c71" />} />
                     </Bar>
                   </BarChart>
                 )}
@@ -474,11 +474,11 @@ export default function Dashboard() {
             <div className="flex items-center justify-between" style={{ paddingBottom: '0.1in', paddingRight: '1rem', paddingLeft: '0.5rem' }}>
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#4169E1' }} />
+                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#00539F' }} />
                   On-Hand
                 </span>
                 <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#FFD200' }} />
+                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#DAEAF5', border: '1px solid #00539F' }} />
                   On-Order
                 </span>
               </div>
@@ -498,7 +498,7 @@ export default function Dashboard() {
               <span className="text-sm font-semibold text-gray-700">Transaction History</span>
               <button
                 onClick={() => setShowTxFilters((v) => !v)}
-                className={`text-xs hover:underline ${showTxFilters ? 'text-[#002855] font-semibold' : 'text-[#00539F]'}`}
+                className={`text-xs hover:underline ${showTxFilters ? 'text-[#003c71] font-semibold' : 'text-[#00539F]'}`}
               >View Transactions</button>
             </div>
             {showTxFilters && (
@@ -547,7 +547,7 @@ export default function Dashboard() {
                       <p className="text-[11px] text-gray-400 truncate">
                         {tx.type === 'issue' ? 'Issued to' : 'Returned by'} {tx.personName}
                       </p>
-                      <p className="text-[11px] font-medium truncate" style={{ color: '#002855' }}>{tx.sport.split(',')[0]}</p>
+                      <p className="text-[11px] font-medium truncate" style={{ color: '#003c71' }}>{tx.sport.split(',')[0]}</p>
                       <p className="text-[11px] text-gray-400">{new Date(tx.timestamp).toLocaleDateString()}</p>
                     </div>
                   </div>
@@ -631,11 +631,11 @@ export default function Dashboard() {
                 <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: budgetSport === 'All Sports' ? 'Sport' : 'Item', position: 'insideBottom', offset: -10, fontSize: 14, fill: '#6b7280' }} />
                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} ticks={budgetTicks} domain={[0, budgetMax]} interval={0} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} label={{ value: 'Amount ($)', angle: -90, position: 'insideLeft', offset: 10, fontSize: 14, fill: '#6b7280' }} />
                 <Tooltip contentStyle={{ fontSize: 12 }} formatter={(v) => [`$${Number(v).toLocaleString()}`, '']} />
-                <Bar dataKey="budgeted" name="Budgeted" fill="#002855" radius={[2, 2, 0, 0]} maxBarSize={30}>
+                <Bar dataKey="budgeted" name="Budgeted" fill="#003c71" radius={[2, 2, 0, 0]} maxBarSize={30}>
                   <LabelList dataKey="budgeted" content={(props) => <BarLabel {...(props as any)} formatter={(v) => `$${(v / 1000).toFixed(0)}k`} />} />
                 </Bar>
-                <Bar dataKey="spent" name="Spent" fill="#FFD200" radius={[2, 2, 0, 0]} maxBarSize={30}>
-                  <LabelList dataKey="spent" content={(props) => <BarLabel {...(props as any)} formatter={(v) => `$${(v / 1000).toFixed(0)}k`} insideColor="#002855" />} />
+                <Bar dataKey="spent" name="Spent" fill="#DAEAF5" stroke="#00539F" strokeWidth={1} radius={[2, 2, 0, 0]} maxBarSize={30}>
+                  <LabelList dataKey="spent" content={(props) => <BarLabel {...(props as any)} formatter={(v) => `$${(v / 1000).toFixed(0)}k`} insideColor="#003c71" />} />
                 </Bar>
               </BarChart>
             ) : (
@@ -645,7 +645,7 @@ export default function Dashboard() {
                 <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} ticks={monthlyTicks} domain={[0, monthlyMax]} interval={0} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} label={{ value: 'Amount ($)', angle: -90, position: 'insideLeft', offset: 10, fontSize: 14, fill: '#6b7280' }} />
                 <Tooltip contentStyle={{ fontSize: 12 }} formatter={(v) => [`$${Number(v).toLocaleString()}`, '']} />
                 <Line type="monotone" dataKey="expected" name="Expected" stroke="#00539F" strokeWidth={2} dot={{ r: 3, fill: '#00539F' }} strokeDasharray="5 3" connectNulls={false} />
-                <Line type="monotone" dataKey="actual" name="Actual" stroke="#CC8800" strokeWidth={2} dot={{ r: 3, fill: '#CC8800' }} connectNulls={false} />
+                <Line type="monotone" dataKey="actual" name="Actual" stroke="#00a0df" strokeWidth={2} dot={{ r: 3, fill: '#00a0df' }} connectNulls={false} />
               </LineChart>
             )}
           </ResponsiveContainer>
@@ -656,11 +656,11 @@ export default function Dashboard() {
             {budgetView === 'overview' ? (
               <>
                 <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#002855' }} />
+                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#003c71' }} />
                   Budgeted
                 </span>
                 <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#FFD200' }} />
+                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#DAEAF5', border: '1px solid #00539F' }} />
                   Spent
                 </span>
               </>
@@ -671,7 +671,7 @@ export default function Dashboard() {
                   Expected
                 </span>
                 <span className="flex items-center gap-1 text-xs text-gray-600">
-                  <span className="inline-block w-6 border-t-2" style={{ borderColor: '#CC8800' }} />
+                  <span className="inline-block w-6 border-t-2" style={{ borderColor: '#00a0df' }} />
                   Actual
                 </span>
               </>
@@ -713,7 +713,7 @@ export default function Dashboard() {
                   <p className="text-[11px] text-gray-400">{new Date(order.orderDate).toLocaleDateString()}</p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${order.status === 'submitted' ? 'bg-[#FFF5CC] text-[#B38600]' : 'bg-[#DAEAF5] text-[#00539F]'}`}>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium bg-[#DAEAF5] text-[#00539F]`}>
                     {order.status}
                   </span>
                   <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{remaining} left</p>
@@ -786,7 +786,7 @@ export default function Dashboard() {
       {showLowInventory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowLowInventory(false)}>
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
-            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
               <h2 className="text-sm font-semibold text-white">Low Inventory</h2>
               <button onClick={() => setShowLowInventory(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
             </div>
@@ -813,7 +813,7 @@ export default function Dashboard() {
       {showNewOpenStatus && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowNewOpenStatus(false)}>
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
-            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
               <h2 className="text-sm font-semibold text-white">New Open Status</h2>
               <button onClick={() => setShowNewOpenStatus(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
             </div>
@@ -840,7 +840,7 @@ export default function Dashboard() {
       {showOverdueReturns && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowOverdueReturns(false)}>
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
-            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
               <h2 className="text-sm font-semibold text-white">Overdue Returns</h2>
               <button onClick={() => setShowOverdueReturns(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
             </div>
@@ -918,7 +918,7 @@ export default function Dashboard() {
                           <td className="py-2 text-gray-800">{line.description}</td>
                           <td className="py-2 text-right text-gray-600">{line.qtyOrdered}</td>
                           <td className="py-2 text-right text-gray-600">{line.qtyReceived}</td>
-                          <td className="py-2 text-right font-medium" style={{ color: line.qtyOrdered - line.qtyReceived > 0 ? '#B38600' : '#15803d' }}>
+                          <td className="py-2 text-right font-medium" style={{ color: line.qtyOrdered - line.qtyReceived > 0 ? '#b45309' : '#15803d' }}>
                             {line.qtyOrdered - line.qtyReceived}
                           </td>
                         </tr>
@@ -937,7 +937,7 @@ export default function Dashboard() {
                       setShowOrderSubmitted(true);
                       setTimeout(() => setShowOrderSubmitted(false), 3000);
                     }}
-                    className="text-sm font-medium text-white rounded-lg transition-colors bg-[#228B22] hover:bg-[#1a6b1a]"
+                    className="text-sm font-medium text-white rounded-lg transition-colors bg-[#00539F] hover:bg-[#003D75]"
                     style={{ padding: '0.05in' }}
                   >
                     Submit
@@ -947,7 +947,7 @@ export default function Dashboard() {
             ) : (
               <>
                 {/* Order list header */}
-                <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', paddingTop: 'calc(env(safe-area-inset-top) + 0.1in)', backgroundColor: '#002855' }}>
+                <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', paddingTop: 'calc(env(safe-area-inset-top) + 0.1in)', backgroundColor: '#003c71' }}>
                   <h2 className="text-sm font-semibold text-white">Quick Submit Order</h2>
                   <button onClick={() => setShowQuickSubmit(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}>
                     <X className="w-4 h-4" />
@@ -964,7 +964,7 @@ export default function Dashboard() {
                       <button
                         onClick={() => setQuickSubmitOrder(order)}
                         className="text-[10px] font-semibold rounded shrink-0"
-                        style={{ backgroundColor: '#FFD200', color: '#002855', padding: '0.05in' }}
+                        style={{ backgroundColor: '#FFD200', color: '#003c71', padding: '0.05in' }}
                       >
                         Review & Submit
                       </button>
@@ -982,7 +982,7 @@ export default function Dashboard() {
 
       {/* Order Submitted toast */}
       {showOrderSubmitted && (
-        <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 text-white px-5 py-3 rounded-lg shadow-xl flex items-center gap-2 text-sm font-medium" style={{ backgroundColor: '#002855' }}>
+        <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50 text-white px-5 py-3 rounded-lg shadow-xl flex items-center gap-2 text-sm font-medium" style={{ backgroundColor: '#003c71' }}>
           <svg width="16" height="16" fill="none" stroke="#FFD200" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
             <path d="M5 13l4 4L19 7" />
           </svg>

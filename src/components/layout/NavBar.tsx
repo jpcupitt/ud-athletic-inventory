@@ -68,14 +68,14 @@ export default function NavBar() {
 
   return (
     <nav
-      className="bg-[#002855] text-white flex items-center h-14 shrink-0 relative z-50 md:min-w-[900px]"
+      className="bg-[#003c71] text-white flex items-center h-14 shrink-0 relative z-50 md:min-w-[900px]"
       style={{ paddingTop: 'env(safe-area-inset-top)', height: 'calc(3.5rem + env(safe-area-inset-top))' }}
     >
       {/* Scrollable left section: logo + links */}
       <div className="flex items-center self-stretch overflow-x-auto px-4 gap-4 flex-1 min-w-0">
         {/* Logo */}
         <div className="flex items-center mr-2 shrink-0">
-          <img src="/Delaware-Blue-Hens-logo.png" alt="Delaware Blue Hens" className="h-8 w-auto" />
+          <img src="/ud-athletics-logo-white.png" alt="UD Athletics" className="h-6 w-auto" />
         </div>
 
         {/* Nav links (desktop only — mobile uses the bottom tab bar) */}
@@ -309,7 +309,7 @@ export default function NavBar() {
             onClick={() => { setShowUserMenu((v) => !v); setShowNotifMenu(false); setShowSports(false); }}
             className="flex items-center gap-1 hover:opacity-80"
           >
-            <div className="w-8 h-8 rounded-full bg-[#FFD200] flex items-center justify-center text-[#002855] text-xs font-bold">
+            <div className="w-8 h-8 rounded-full bg-[#FFD200] flex items-center justify-center text-[#003c71] text-xs font-bold">
               {initials}
             </div>
             <ChevronDown className="w-3 h-3 text-gray-400" />
@@ -319,7 +319,7 @@ export default function NavBar() {
             <div className="absolute right-0 top-full mt-2 bg-white text-gray-800 rounded-xl shadow-xl z-50 w-64 border border-gray-100">
               {/* User info header */}
               <div className="flex items-center border-b border-gray-100" style={{ gap: '0.12in', padding: '0.15in 0.2in' }}>
-                <div className="w-9 h-9 rounded-full bg-[#FFD200] flex items-center justify-center text-[#002855] text-sm font-bold shrink-0">
+                <div className="w-9 h-9 rounded-full bg-[#FFD200] flex items-center justify-center text-[#003c71] text-sm font-bold shrink-0">
                   {initials}
                 </div>
                 <div className="min-w-0">

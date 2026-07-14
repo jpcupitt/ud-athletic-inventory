@@ -147,7 +147,7 @@ export default function OrderDetail() {
                 <button
                   onClick={handleSave}
                   className="flex items-center gap-1.5 text-xs text-white font-medium rounded px-3 py-1.5"
-                  style={{ backgroundColor: '#002855' }}
+                  style={{ backgroundColor: '#003c71' }}
                 >
                   <Save className="w-3.5 h-3.5" />
                   Save Changes

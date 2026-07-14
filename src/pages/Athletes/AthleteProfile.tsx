@@ -51,7 +51,7 @@ export default function AthleteProfile() {
         {isManager && (
           <button
             onClick={() => setShowIssueModal(true)}
-            className="flex items-center gap-1.5 text-[#002855] font-semibold text-sm rounded-md"
+            className="flex items-center gap-1.5 text-[#003c71] font-semibold text-sm rounded-md"
             style={{ backgroundColor: '#FFD200', padding: '0.04in 0.12in' }}
           >
             <Plus className="w-3.5 h-3.5" />

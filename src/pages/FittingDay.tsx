@@ -5,6 +5,7 @@ import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
 import { useActiveSport } from '../context/SportContext';
+import { newIssueId } from '../utils/ids';
 import type { Athlete, Sport } from '../data/types';
 
 export default function FittingDay() {
@@ -58,6 +59,7 @@ export default function FittingDay() {
   function issueKit(athlete: Athlete) {
     const today = new Date().toISOString().slice(0, 10);
     const skipped: string[] = [];
+    let issued = 0;
     for (const item of kit) {
       if (item.qtyOnHand < 1) {
         skipped.push(item.description);
@@ -65,6 +67,7 @@ export default function FittingDay() {
       }
       issueItem(item.id, 1);
       issueToAthlete(athlete.id, {
+        issueId: newIssueId(),
         itemId: item.id,
         description: item.description,
         qty: 1,
@@ -74,10 +77,16 @@ export default function FittingDay() {
         returnByDate: item.returnByDate,
         returned: false,
       });
+      issued++;
     }
-    setOutfittedIds((prev) => new Set([...prev, athlete.id]));
+    // Only mark the athlete outfitted if something was actually handed out.
+    if (issued > 0) {
+      setOutfittedIds((prev) => new Set([...prev, athlete.id]));
+    }
     setConfirmAthlete(null);
-    if (skipped.length) {
+    if (issued === 0) {
+      window.alert('Nothing issued — every item in the kit is out of stock.');
+    } else if (skipped.length) {
       window.alert(`Out of stock, not issued: ${skipped.join(', ')}`);
     }
   }
@@ -200,7 +209,7 @@ export default function FittingDay() {
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-5 py-3" style={{ backgroundColor: '#002855' }}>
+            <div className="flex items-center justify-between px-5 py-3" style={{ backgroundColor: '#003c71' }}>
               <span className="text-white font-semibold text-sm">
                 Issue kit to {confirmAthlete.firstName} {confirmAthlete.lastName}
               </span>
@@ -222,7 +231,7 @@ export default function FittingDay() {
               </ul>
               <button
                 onClick={() => issueKit(confirmAthlete)}
-                className="w-full py-2.5 rounded-lg text-white text-sm font-semibold bg-[#228B22] hover:bg-[#1a6b1a]"
+                className="w-full py-2.5 rounded-lg text-white text-sm font-semibold bg-[#00539F] hover:bg-[#003D75]"
               >
                 Issue {kit.filter((i) => i.qtyOnHand > 0).length} item{kit.filter((i) => i.qtyOnHand > 0).length !== 1 ? 's' : ''}
               </button>

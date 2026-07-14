@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useSubmittedOrders } from '../../context/SubmittedOrdersContext';
 
 export default function SubmittedOrdersReport() {
@@ -46,7 +46,7 @@ export default function SubmittedOrdersReport() {
                 const totalQty = record.order.lines.reduce((s, l) => s + l.qtyOrdered, 0);
                 const isExpanded = expanded.has(record.recordId);
                 return (
-                  <>
+                  <Fragment key={record.recordId}>
                     <tr
                       key={record.recordId}
                       className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
@@ -79,7 +79,7 @@ export default function SubmittedOrdersReport() {
                                   <td className="py-1.5 text-gray-700">{line.description}</td>
                                   <td className="py-1.5 text-right text-gray-600">{line.qtyOrdered}</td>
                                   <td className="py-1.5 text-right text-gray-600">{line.qtyReceived}</td>
-                                  <td className="py-1.5 text-right font-medium" style={{ color: line.qtyOrdered - line.qtyReceived > 0 ? '#B38600' : '#15803d' }}>
+                                  <td className="py-1.5 text-right font-medium" style={{ color: line.qtyOrdered - line.qtyReceived > 0 ? '#b45309' : '#15803d' }}>
                                     {line.qtyOrdered - line.qtyReceived}
                                   </td>
                                 </tr>
@@ -89,7 +89,7 @@ export default function SubmittedOrdersReport() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </tbody>

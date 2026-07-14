@@ -8,8 +8,8 @@ interface AthletesContextValue {
   addAthlete: (athlete: Athlete) => void;
   issueToAthlete: (athleteId: string, item: IssuedItem) => void;
   returnFromAthlete: (athleteId: string, itemId: string) => void;
-  resolveIssuedItem: (athleteId: string, itemId: string, resolution: 'returned' | 'missing' | 'damaged') => void;
-  unresolveIssuedItem: (athleteId: string, itemId: string) => void;
+  resolveIssuedItem: (athleteId: string, ref: string, resolution: 'returned' | 'missing' | 'damaged') => void;
+  unresolveIssuedItem: (athleteId: string, ref: string) => void;
 }
 
 const AthletesContext = createContext<AthletesContextValue | null>(null);
@@ -46,33 +46,41 @@ export function AthletesProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  function resolveIssuedItem(athleteId: string, itemId: string, resolution: 'returned' | 'missing' | 'damaged') {
+  function resolveIssuedItem(athleteId: string, ref: string, resolution: 'returned' | 'missing' | 'damaged') {
     setAthletes((prev) =>
-      prev.map((a) =>
-        a.id === athleteId
-          ? {
-              ...a,
-              issuedItems: a.issuedItems.map((i) =>
-                i.itemId === itemId && !i.returned ? { ...i, returned: true, resolution } : i
-              ),
-            }
-          : a
-      )
+      prev.map((a) => {
+        if (a.id !== athleteId) return a;
+        // Resolve exactly one row: prefer a matching issueId, else the first
+        // unresolved row with this itemId (legacy/seed rows have no issueId).
+        const idx = a.issuedItems.findIndex(
+          (i) => !i.returned && (i.issueId === ref || (!i.issueId && i.itemId === ref))
+        );
+        if (idx === -1) return a;
+        return {
+          ...a,
+          issuedItems: a.issuedItems.map((i, n) =>
+            n === idx ? { ...i, returned: true, resolution } : i
+          ),
+        };
+      })
     );
   }
 
-  function unresolveIssuedItem(athleteId: string, itemId: string) {
+  function unresolveIssuedItem(athleteId: string, ref: string) {
     setAthletes((prev) =>
-      prev.map((a) =>
-        a.id === athleteId
-          ? {
-              ...a,
-              issuedItems: a.issuedItems.map((i) =>
-                i.itemId === itemId && i.resolution ? { ...i, returned: false, resolution: undefined } : i
-              ),
-            }
-          : a
-      )
+      prev.map((a) => {
+        if (a.id !== athleteId) return a;
+        const idx = a.issuedItems.findIndex(
+          (i) => i.resolution && (i.issueId === ref || (!i.issueId && i.itemId === ref))
+        );
+        if (idx === -1) return a;
+        return {
+          ...a,
+          issuedItems: a.issuedItems.map((i, n) =>
+            n === idx ? { ...i, returned: false, resolution: undefined } : i
+          ),
+        };
+      })
     );
   }
 

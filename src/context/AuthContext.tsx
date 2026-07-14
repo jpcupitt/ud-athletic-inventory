@@ -9,6 +9,7 @@ interface AuthContextValue {
   setPage: (p: 'login' | 'signup') => void;
   login: (role?: 'manager' | 'viewer') => void;
   logout: () => void;
+  updateUser: (changes: Partial<AppUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -46,8 +47,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPage('login');
   }
 
+  function updateUser(changes: Partial<AppUser>) {
+    setUser((prev) => (prev ? { ...prev, ...changes } : prev));
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, page, setPage, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, page, setPage, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

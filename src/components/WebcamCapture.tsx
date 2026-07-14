@@ -64,7 +64,7 @@ export default function WebcamCapture({ onCapture, onClose }: Props) {
       >
         <div
           className="flex items-center justify-between px-5 py-3 shrink-0"
-          style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}
+          style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}
         >
           <span className="text-white font-semibold text-sm">Take Photo</span>
           <button onClick={onClose} className="text-white hover:opacity-70">
@@ -84,7 +84,7 @@ export default function WebcamCapture({ onCapture, onClose }: Props) {
           <button
             onClick={capture}
             disabled={!ready}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-[#002855] disabled:opacity-40"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-[#003c71] disabled:opacity-40"
             style={{ backgroundColor: '#FFD200' }}
           >
             <Camera className="w-4 h-4" /> Capture

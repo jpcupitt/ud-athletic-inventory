@@ -26,7 +26,7 @@ export default function SmartReorder() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { filterBySports } = useSportsAccess();
-  const { items, archivedIds } = useInventory();
+  const { items, archivedIds, addOnOrder } = useInventory();
   const { addOrder } = useOrders();
   const isManager = user?.role === 'manager';
 
@@ -82,7 +82,7 @@ export default function SmartReorder() {
     });
   }
 
-  function createDrafts() {
+  function createOrders() {
     const stamp = Date.now().toString().slice(-5);
     let n = 0;
     for (const [sport, lines] of bySport) {
@@ -104,6 +104,9 @@ export default function SmartReorder() {
         createdBy: user?.name ?? 'Unknown',
       };
       addOrder(order);
+      // Reflect the ordered quantities on inventory so these items drop off the
+      // suggestion list and a second tap doesn't duplicate the same order.
+      selected.forEach((l) => addOnOrder(l.id, qtyFor(l)));
     }
     if (n > 0) navigate('/orders');
   }
@@ -115,7 +118,7 @@ export default function SmartReorder() {
           Smart Reorder
         </span>
         <p className="text-sm text-gray-500 mt-2">
-          Items running low across your sports, with a suggested restock quantity. Adjust, untick what you don't need, and turn the rest into draft orders in one tap.
+          Items running low across your sports, with a suggested restock quantity. Adjust, untick what you don't need, and submit the rest as orders in one tap.
         </p>
       </div>
 
@@ -202,16 +205,16 @@ export default function SmartReorder() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col md:flex-row md:items-center gap-3">
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-800">{included.length} line{included.length !== 1 ? 's' : ''} · {money(grandTotal)} estimated</p>
-              <p className="text-xs text-gray-400 mt-0.5">One draft order is created per sport, ready to review under Orders.</p>
+              <p className="text-xs text-gray-400 mt-0.5">One submitted order is created per sport, viewable under Orders.</p>
             </div>
             {isManager && (
               <button
-                onClick={createDrafts}
+                onClick={createOrders}
                 disabled={included.length === 0}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-[#002855] disabled:opacity-40"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-[#003c71] disabled:opacity-40"
                 style={{ backgroundColor: '#FFD200' }}
               >
-                <ShoppingCart className="w-4 h-4" /> Create Draft Order{bySport.filter(([, l]) => l.some((x) => !excluded.has(x.id))).length !== 1 ? 's' : ''}
+                <ShoppingCart className="w-4 h-4" /> Submit Order{bySport.filter(([, l]) => l.some((x) => !excluded.has(x.id))).length !== 1 ? 's' : ''}
               </button>
             )}
           </div>

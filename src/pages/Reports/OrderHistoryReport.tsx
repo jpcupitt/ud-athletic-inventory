@@ -61,7 +61,7 @@ export default function OrderHistoryReport() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Total Orders</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>{filtered.length}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#003c71' }}>{filtered.length}</p>
         </div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Complete</p>
@@ -69,11 +69,11 @@ export default function OrderHistoryReport() {
         </div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Units Ordered</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>{totalOrdered.toLocaleString()}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#003c71' }}>{totalOrdered.toLocaleString()}</p>
         </div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Units Received</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>{totalReceived.toLocaleString()}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#003c71' }}>{totalReceived.toLocaleString()}</p>
         </div>
       </div>
 
@@ -118,7 +118,7 @@ export default function OrderHistoryReport() {
       {selectedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setSelectedOrder(null)}>
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] md:w-[480px] max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
-            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#002855' }}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
               <h2 className="text-sm font-semibold text-white">{selectedOrder.refNumber}</h2>
               <button onClick={() => setSelectedOrder(null)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}>
                 <X className="w-4 h-4" />
@@ -127,12 +127,12 @@ export default function OrderHistoryReport() {
             <div className="flex-1 overflow-y-auto" style={{ padding: '0.1in' }}>
               <div className="divide-y divide-gray-200 mb-4">
                 {([
-                  ['Order ID',   <span className="font-mono text-[#00539F]">{selectedOrder.id}</span>],
+                  ['Order ID',   <span key="order-id" className="font-mono text-[#00539F]">{selectedOrder.id}</span>],
                   ['Date',       selectedOrder.orderDate],
                   ['Vendor',     selectedOrder.vendor],
                   ['Sport',      selectedOrder.sport],
                   ['Created By', selectedOrder.createdBy],
-                  ['Status',     <span className={`px-1.5 py-0.5 rounded text-xs font-medium capitalize ${STATUS_COLORS[selectedOrder.status]}`}>{selectedOrder.status}</span>],
+                  ['Status',     <span key="status" className={`px-1.5 py-0.5 rounded text-xs font-medium capitalize ${STATUS_COLORS[selectedOrder.status]}`}>{selectedOrder.status}</span>],
                 ] as [string, React.ReactNode][]).map(([label, value]) => (
                   <div key={label} className="flex items-center justify-between text-xs py-2">
                     <span className="text-gray-400">{label}</span>

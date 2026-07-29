@@ -91,12 +91,20 @@ export interface Person {
   issuedItems: IssuedItem[];
 }
 
+export interface CustomSizeEntry {
+  id: string;
+  label: string;
+  value: string;
+}
+
 export interface Athlete extends Person {
   athleteId: string;
   year: 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | 'Graduate';
   shirtSize?: string;
   shortsSize?: string;
   shoeSize?: string;
+  /** Manager-defined size chart — any item name paired with a size, e.g. "Helmet" -> "L". */
+  customSizes?: CustomSizeEntry[];
 }
 
 export interface StaffMember extends Person {

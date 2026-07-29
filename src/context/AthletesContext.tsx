@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { Athlete, IssuedItem } from '../data/types';
+import type { Athlete, CustomSizeEntry, IssuedItem } from '../data/types';
 import { athletes as mockAthletes } from '../data/mock/athletes';
 import { usePersistentState } from '../hooks/usePersistentState';
 
@@ -10,6 +10,7 @@ interface AthletesContextValue {
   returnFromAthlete: (athleteId: string, itemId: string) => void;
   resolveIssuedItem: (athleteId: string, itemId: string, resolution: 'returned' | 'missing' | 'damaged') => void;
   unresolveIssuedItem: (athleteId: string, itemId: string) => void;
+  setCustomSizes: (athleteId: string, sizes: CustomSizeEntry[]) => void;
 }
 
 const AthletesContext = createContext<AthletesContextValue | null>(null);
@@ -76,8 +77,12 @@ export function AthletesProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  function setCustomSizes(athleteId: string, sizes: CustomSizeEntry[]) {
+    setAthletes((prev) => prev.map((a) => (a.id === athleteId ? { ...a, customSizes: sizes } : a)));
+  }
+
   return (
-    <AthletesContext.Provider value={{ athletes, addAthlete, issueToAthlete, returnFromAthlete, resolveIssuedItem, unresolveIssuedItem }}>
+    <AthletesContext.Provider value={{ athletes, addAthlete, issueToAthlete, returnFromAthlete, resolveIssuedItem, unresolveIssuedItem, setCustomSizes }}>
       {children}
     </AthletesContext.Provider>
   );

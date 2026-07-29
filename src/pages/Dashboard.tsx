@@ -382,7 +382,7 @@ export default function Dashboard() {
         <div className="flex-1 flex flex-row min-w-0 gap-4" style={{ minWidth: '280px' }}>
           {/* Real Time Inventory chart */}
           {visibleCharts.has('real-time') && (
-          <div className="relative flex-1 h-80 lg:h-auto bg-white rounded-lg flex flex-col" style={removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }}>
+          <div className="relative lg:flex-1 h-80 bg-white rounded-lg flex flex-col" style={removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }}>
             {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('real-time'); return n; })} />}
             <div className="flex items-center px-2 md:px-5 pb-4" style={{ paddingTop: '0.05in' }}>
               <span className="flex-1 text-sm font-semibold text-gray-700" style={{ padding: '0.08in 0.15in' }}>Real Time Inventory</span>

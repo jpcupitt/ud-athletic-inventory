@@ -68,6 +68,10 @@ export interface InventoryItem {
 // ── People ──────────────────────────────────────────────────
 
 export interface IssuedItem {
+  /** Unique per-issuance identity. Lets Return Day resolve exactly one row even
+   *  when the same item was issued to the same person more than once. Optional so
+   *  legacy/seed rows without it still work (resolvers fall back to first-match). */
+  issueId?: string;
   itemId: string;
   description: string;
   qty: number;

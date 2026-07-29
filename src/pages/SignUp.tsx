@@ -48,7 +48,7 @@ export default function SignUp() {
       >
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
-          <img src="/Delaware-Blue-Hens-logo.png" alt="Delaware Blue Hens" className="h-28 w-auto" />
+          <img src="/ud-athletics-logo-white.png" alt="UD Athletics" className="h-16 w-auto" />
         </div>
 
         {/* Step: email */}

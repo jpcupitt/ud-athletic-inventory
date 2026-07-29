@@ -1,13 +1,13 @@
 /* EQI service worker — app-shell caching for offline use.
    All app data is in-memory mock data, so caching the shell + assets
    makes the app fully functional offline after the first visit. */
-const CACHE = 'eqi-v2';
+const CACHE = 'eqi-v3';
 const CORE = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
   '/favicon.svg',
-  '/Delaware-Blue-Hens-logo.png',
+  '/ud-athletics-logo-white.png',
 ];
 
 self.addEventListener('install', (event) => {

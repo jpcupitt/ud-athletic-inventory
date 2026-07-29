@@ -52,27 +52,29 @@ export default function ReturnDay() {
     0
   );
 
-  const [lastAction, setLastAction] = useState<{ athleteId: string; itemId: string; description: string; resolution: string; qty: number } | null>(null);
+  const [lastAction, setLastAction] = useState<{ athleteId: string; ref: string; invItemId: string; description: string; resolution: string; qty: number } | null>(null);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function resolve(athleteId: string, itemId: string, resolution: 'returned' | 'missing' | 'damaged', qty: number, description: string) {
-    resolveIssuedItem(athleteId, itemId, resolution);
+  // `ref` identifies the specific issued row (issueId when present, else the item #).
+  // `invItemId` is the inventory reference used for restock.
+  function resolve(athleteId: string, ref: string, invItemId: string, resolution: 'returned' | 'missing' | 'damaged', qty: number, description: string) {
+    resolveIssuedItem(athleteId, ref, resolution);
     if (resolution === 'returned') {
       // Restock — issued records may reference either the row id or the human item #
-      const inv = inventoryItems.find((i) => i.id === itemId || i.itemId === itemId);
+      const inv = inventoryItems.find((i) => i.id === invItemId || i.itemId === invItemId);
       if (inv) returnItem(inv.id, qty);
     }
-    setLastAction({ athleteId, itemId, description, resolution, qty });
+    setLastAction({ athleteId, ref, invItemId, description, resolution, qty });
     if (undoTimer.current) clearTimeout(undoTimer.current);
     undoTimer.current = setTimeout(() => setLastAction(null), 6000);
   }
 
   function undo() {
     if (!lastAction) return;
-    unresolveIssuedItem(lastAction.athleteId, lastAction.itemId);
+    unresolveIssuedItem(lastAction.athleteId, lastAction.ref);
     if (lastAction.resolution === 'returned') {
       // Take the restocked quantity back out of inventory
-      const inv = inventoryItems.find((i) => i.id === lastAction.itemId || i.itemId === lastAction.itemId);
+      const inv = inventoryItems.find((i) => i.id === lastAction.invItemId || i.itemId === lastAction.invItemId);
       if (inv) issueItem(inv.id, lastAction.qty);
     }
     if (undoTimer.current) clearTimeout(undoTimer.current);
@@ -144,19 +146,19 @@ export default function ReturnDay() {
                     {isManager && (
                       <div className="flex gap-2 shrink-0">
                         <button
-                          onClick={() => resolve(athlete.id, item.itemId, 'returned', item.qty, item.description)}
+                          onClick={() => resolve(athlete.id, item.issueId ?? item.itemId, item.itemId, 'returned', item.qty, item.description)}
                           className="flex-1 md:flex-none flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-green-50 text-green-700 border border-green-200 active:bg-green-100"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" /> Returned
                         </button>
                         <button
-                          onClick={() => resolve(athlete.id, item.itemId, 'damaged', item.qty, item.description)}
+                          onClick={() => resolve(athlete.id, item.issueId ?? item.itemId, item.itemId, 'damaged', item.qty, item.description)}
                           className="flex-1 md:flex-none flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 active:bg-amber-100"
                         >
                           <AlertTriangle className="w-3.5 h-3.5" /> Damaged
                         </button>
                         <button
-                          onClick={() => resolve(athlete.id, item.itemId, 'missing', item.qty, item.description)}
+                          onClick={() => resolve(athlete.id, item.issueId ?? item.itemId, item.itemId, 'missing', item.qty, item.description)}
                           className="flex-1 md:flex-none flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-red-50 text-red-600 border border-red-200 active:bg-red-100"
                         >
                           <HelpCircle className="w-3.5 h-3.5" /> Missing
@@ -208,7 +210,7 @@ export default function ReturnDay() {
             </div>
             <div className="flex items-center justify-between border-t border-gray-200 pt-3 mt-1">
               <span className="text-sm font-semibold text-gray-700">Total owed</span>
-              <span className="text-lg font-bold text-[#002855]">{money(owesGrandTotal)}</span>
+              <span className="text-lg font-bold text-[#003c71]">{money(owesGrandTotal)}</span>
             </div>
           </>
         )}

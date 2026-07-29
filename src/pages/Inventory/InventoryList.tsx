@@ -197,7 +197,7 @@ export default function InventoryList() {
           {isManager && (
             <>
               <span className="text-gray-300">|</span>
-              <button onClick={() => { resetNewItem(); setShowNewItem(true); }} className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md py-[0.025in] px-[0.1in]" style={{ backgroundColor: '#FFD200' }}>
+              <button onClick={() => { resetNewItem(); setShowNewItem(true); }} className="text-[#003c71] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md py-[0.025in] px-[0.1in]" style={{ backgroundColor: '#FFD200' }}>
                 + New Item
               </button>
             </>
@@ -561,7 +561,7 @@ export default function InventoryList() {
           <div className="bg-white w-full h-full rounded-none md:w-[420px] md:h-auto md:max-h-[90vh] md:rounded-xl shadow-2xl flex flex-col overflow-hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }} onClick={(e) => e.stopPropagation()}>
 
             {/* Header */}
-            <div className="relative flex items-center justify-center shrink-0 p-[0.1in]" style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.1in)' }}>
+            <div className="relative flex items-center justify-center shrink-0 p-[0.1in]" style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.1in)' }}>
               <h2 className="text-sm font-semibold text-white">New Item</h2>
               <button onClick={() => setShowNewItem(false)} className="absolute text-white hover:opacity-70 right-[0.1in]">✕</button>
             </div>

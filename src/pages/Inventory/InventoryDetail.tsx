@@ -2,19 +2,21 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Package, Tag, AlertTriangle, QrCode, Printer } from 'lucide-react';
 import QRCode from 'qrcode';
-import { athletes } from '../../data/mock/athletes';
-import { staffMembers } from '../../data/mock/staff';
+import { useAthletes } from '../../context/AthletesContext';
+import { useStaff } from '../../context/StaffContext';
 import { useInventory } from '../../context/InventoryContext';
 
 export default function InventoryDetail() {
   const { itemId } = useParams<{ itemId: string }>();
   const { items } = useInventory();
+  const { athletes } = useAthletes();
+  const { staff: staffMembers } = useStaff();
   const item = items.find((i) => i.id === itemId);
 
   const [qrUrl, setQrUrl] = useState('');
   useEffect(() => {
     if (!item) return;
-    QRCode.toDataURL(`EQI:ITEM:${item.id}`, { width: 480, margin: 1, color: { dark: '#002855', light: '#ffffff' } })
+    QRCode.toDataURL(`EQI:ITEM:${item.id}`, { width: 480, margin: 1, color: { dark: '#003c71', light: '#ffffff' } })
       .then(setQrUrl)
       .catch(() => setQrUrl(''));
   }, [item?.id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -30,15 +32,16 @@ export default function InventoryDetail() {
     );
   }
 
+  // Issued records store the inventory row id in `itemId`, so match against item.id.
   const issuedTo = [
     ...athletes.flatMap((a) =>
       a.issuedItems
-        .filter((i) => i.itemId === item.itemId && !i.returned)
+        .filter((i) => i.itemId === item.id && !i.returned)
         .map((i) => ({ name: `${a.lastName}, ${a.firstName}`, type: 'Athlete' as const, id: a.id, ...i }))
     ),
     ...staffMembers.flatMap((s) =>
       s.issuedItems
-        .filter((i) => i.itemId === item.itemId && !i.returned)
+        .filter((i) => i.itemId === item.id && !i.returned)
         .map((i) => ({ name: `${s.lastName}, ${s.firstName}`, type: 'Staff' as const, id: s.id, ...i }))
     ),
   ];
@@ -71,7 +74,7 @@ export default function InventoryDetail() {
                   <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded text-xs">Must Return</span>
                 )}
                 {item.isSerialized && (
-                  <span className="px-2 py-0.5 bg-[#002855] text-white rounded text-xs">Tracked by Serial #</span>
+                  <span className="px-2 py-0.5 bg-[#003c71] text-white rounded text-xs">Tracked by Serial #</span>
                 )}
               </div>
             </div>

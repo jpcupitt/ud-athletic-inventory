@@ -11,6 +11,7 @@ interface InventoryContextValue {
   unarchiveItems: (ids: string[]) => void;
   issueItem: (itemId: string, qty: number) => void;
   returnItem: (itemId: string, qty: number) => void;
+  addOnOrder: (itemId: string, qty: number) => void;
 }
 
 const InventoryContext = createContext<InventoryContextValue | null>(null);
@@ -48,8 +49,16 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  function addOnOrder(itemId: string, qty: number) {
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === itemId ? { ...it, qtyOnOrder: it.qtyOnOrder + qty } : it
+      )
+    );
+  }
+
   return (
-    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem }}>
+    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem, addOnOrder }}>
       {children}
     </InventoryContext.Provider>
   );

@@ -65,7 +65,7 @@ export default function QrScanner({ onScan, onClose }: Props) {
     <div className="fixed inset-0 z-[90] bg-black flex flex-col">
       <div
         className="flex items-center justify-between px-5 py-3 shrink-0"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)', backgroundColor: '#002855' }}
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)', backgroundColor: '#003c71' }}
       >
         <span className="text-white font-semibold text-sm">Scan QR Label</span>
         <button onClick={onClose} className="text-white hover:opacity-70 p-1 -m-1">

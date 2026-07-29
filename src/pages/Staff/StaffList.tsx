@@ -154,7 +154,7 @@ export default function StaffList() {
               <span className="text-gray-300">|</span>
               <button
                 onClick={() => { resetNewStaff(); setShowNewStaff(true); }}
-                className="text-[#002855] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md"
+                className="text-[#003c71] font-semibold text-sm border-none focus:outline-none cursor-pointer rounded-md"
                 style={{ backgroundColor: '#FFD200', padding: '0.025in 0.1in' }}
               >
                 + New Staff
@@ -357,7 +357,7 @@ export default function StaffList() {
       {showNewStaff && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-md md:h-auto md:max-h-[90vh] md:rounded-xl" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-            <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl" style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+            <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl" style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
               <span className="text-white font-semibold text-sm">New Staff Member</span>
               <button onClick={() => setShowNewStaff(false)} className="text-white hover:opacity-70">
                 <X className="w-4 h-4" />
@@ -375,7 +375,7 @@ export default function StaffList() {
                   ) : (
                     <div className="w-14 h-14 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 text-xs">Photo</div>
                   )}
-                  <label className="cursor-pointer text-xs text-[#002855] hover:text-[#00539F] border border-gray-200 rounded" style={{ padding: '0.05in 0.1in' }}>
+                  <label className="cursor-pointer text-xs text-[#003c71] hover:text-[#00539F] border border-gray-200 rounded" style={{ padding: '0.05in 0.1in' }}>
                     Upload
                     <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
                   </label>
@@ -515,7 +515,7 @@ export default function StaffList() {
                   onClick={handleAddStaff}
                   disabled={!newFirstName || !newLastName || !newTitle}
                   className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
-                  style={{ backgroundColor: '#002855', padding: '0.08in' }}
+                  style={{ backgroundColor: '#003c71', padding: '0.08in' }}
                 >
                   Add Staff Member
                 </button>

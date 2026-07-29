@@ -30,7 +30,7 @@ function AppRoutes() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#002855] flex items-center justify-center">
+      <div className="min-h-screen bg-[#003c71] flex items-center justify-center">
         <div className="text-white text-lg">Loading...</div>
       </div>
     );
@@ -82,7 +82,7 @@ export default function App() {
           except installed/standalone mode on a device with a notch. */}
       <div
         className="fixed top-0 inset-x-0 z-[100] pointer-events-none"
-        style={{ height: 'env(safe-area-inset-top)', backgroundColor: '#002855' }}
+        style={{ height: 'env(safe-area-inset-top)', backgroundColor: '#003c71' }}
       />
       <AuthProvider>
         <AppRoutes />

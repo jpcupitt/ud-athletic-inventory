@@ -101,7 +101,7 @@ export default function IssuedBySportReport() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Active Issues</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>{activeRows.length}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#003c71' }}>{activeRows.length}</p>
         </div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Must-Return Items Out</p>
@@ -109,7 +109,7 @@ export default function IssuedBySportReport() {
         </div>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200" style={{ padding: '0.15in 0.2in' }}>
           <p className="text-xs text-gray-400 uppercase tracking-wide">Estimated Value Out</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#002855' }}>${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#003c71' }}>${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
         </div>
       </div>
 

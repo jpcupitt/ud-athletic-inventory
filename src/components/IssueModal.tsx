@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { X, Search } from 'lucide-react';
 import { useInventory } from '../context/InventoryContext';
+import { newIssueId } from '../utils/ids';
 import type { IssuedItem, Sport } from '../data/types';
 
 interface Props {
@@ -34,6 +35,7 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
     if (!selectedItem || qty < 1) return;
     const today = new Date().toISOString().slice(0, 10);
     const issued: IssuedItem = {
+      issueId: newIssueId(),
       itemId: selectedItem.id,
       description: selectedItem.description,
       qty,
@@ -52,7 +54,7 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-lg md:h-auto md:max-h-[85vh] md:rounded-xl" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl shrink-0" style={{ backgroundColor: '#002855', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+        <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl shrink-0" style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
           <span className="text-white font-semibold text-sm">Issue Items to {personName}</span>
           <button onClick={onClose} className="text-white hover:opacity-70">
             <X className="w-4 h-4" />
@@ -157,7 +159,7 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
             onClick={handleIssue}
             disabled={!selectedItem || qty < 1 || qty > (selectedItem?.qtyOnHand ?? 0)}
             className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
-            style={{ backgroundColor: '#002855', padding: '0.08in', marginTop: '0.05in' }}
+            style={{ backgroundColor: '#003c71', padding: '0.08in', marginTop: '0.05in' }}
           >
             Issue {qty > 0 && selectedItem ? `${qty}× ${selectedItem.description}` : 'Item'}
           </button>

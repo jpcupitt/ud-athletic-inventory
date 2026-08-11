@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, type ReactNode } from 'react';
 import { usePersistentState } from '../hooks/usePersistentState';
-import { useSportsAccess } from '../hooks/useSportsAccess';
+import { useAuth } from './AuthContext';
 import type { Sport } from '../data/types';
 
 export type ActiveSport = Sport | 'All Sports';
@@ -17,15 +17,18 @@ const SportContext = createContext<SportContextValue | null>(null);
  * that filters by sport and remembered across sessions.
  */
 export function SportProvider({ children }: { children: ReactNode }) {
-  const { canAccess } = useSportsAccess();
+  const { user } = useAuth();
   const [activeSport, setActiveSport] = usePersistentState<ActiveSport>('activeSport', () => 'All Sports');
 
   // If the persisted sport is no longer accessible (role change), fall back.
+  // (Reads straight off the user record — useSportsAccess itself depends on the
+  // active sport, so this provider can't consume that hook without a cycle.)
   useEffect(() => {
-    if (activeSport !== 'All Sports' && !canAccess(activeSport)) {
+    const canAccess = user?.isLead || (user?.assignedSports ?? []).includes(activeSport as Sport);
+    if (activeSport !== 'All Sports' && !canAccess) {
       setActiveSport('All Sports');
     }
-  }, [activeSport]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeSport, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <SportContext.Provider value={{ activeSport, setActiveSport }}>

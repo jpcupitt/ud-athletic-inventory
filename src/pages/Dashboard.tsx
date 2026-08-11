@@ -8,6 +8,7 @@ import { Package, ShoppingCart, X, ChevronLeft, ChevronRight, CalendarCheck, Che
 import { useNotifications } from '../hooks/useNotifications';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
+import { useActiveSport } from '../context/SportContext';
 import { useSubmittedOrders } from '../context/SubmittedOrdersContext';
 import { useInventory } from '../context/InventoryContext';
 import { useAthletes } from '../context/AthletesContext';
@@ -88,11 +89,14 @@ export default function Dashboard() {
   const inventoryItems = filterBySports(allInventoryItems, (i) => i.sports as string[]);
   const { athletes } = useAthletes();
   useStaff();
-  const [chartSport, setChartSport] = useState<Sport | 'All Sports'>('All Sports');
+  // Shared with the sport picker next to the search bar — pick a sport there
+  // (or in either panel below, they're the same selection) and every
+  // sport-scoped panel on this page narrows to just that team.
+  const { activeSport: chartSport, setActiveSport: setChartSport } = useActiveSport();
+  const { activeSport: budgetSport, setActiveSport: setBudgetSport } = useActiveSport();
   const [chartView, setChartView] = useState<'qty' | 'price'>('qty');
   const [showRTFilters, setShowRTFilters] = useState(false);
   const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set(['Top', 'Bottom', 'Outerwear', 'Footwear', 'Headwear', 'Equipment', 'Bag', 'Accessory']));
-  const [budgetSport, setBudgetSport] = useState<Sport | 'All Sports'>('All Sports');
   const [showBudgetFilters, setShowBudgetFilters] = useState(false);
   const [showTxFilters, setShowTxFilters] = useState(false);
   const [txTimeRange, setTxTimeRange] = useState<'week' | '2weeks' | 'month' | '3months' | '6months' | 'year'>('month');

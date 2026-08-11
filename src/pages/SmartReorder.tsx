@@ -1,25 +1,41 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, TrendingDown, Wallet } from 'lucide-react';
+import { ShoppingCart, TrendingDown, Wallet, Ruler } from 'lucide-react';
 import { useInventory } from '../context/InventoryContext';
 import { useOrders } from '../context/OrdersContext';
+import { useAthletes } from '../context/AthletesContext';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
 import { BUDGET_DATA } from '../data/mock/budgets';
-import type { Order, Sport } from '../data/types';
+import { getAthleteSizes, defaultSizeFieldFor, sizeSortIndex } from '../utils/sizeChart';
+import type { ItemCategory, Order, Sport } from '../data/types';
 
 const money = (n: number) =>
   '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+// Only these categories have a matching Size Chart field to pull from — an
+// Equipment/Headwear/Bag/Accessory item stays a plain flat-quantity suggestion.
+const SIZEABLE_CATEGORIES = new Set<ItemCategory>(['Top', 'Bottom', 'Outerwear', 'Footwear']);
+
 interface Suggestion {
   id: string;
+  itemId: string;
   sport: Sport;
+  baseDescription: string;
   description: string;
   manufacturer: string;
   qtyOnHand: number;
   qtyOnOrder: number;
   suggestedQty: number;
   pricePerUnit: number;
+  size?: string;
+}
+
+interface SizeMeta {
+  field: string;
+  availableFields: string[];
+  unmatched: number;
+  summary: string; // "2 XL, 1 M, 2 L" — exactly what the roster needs, for a quick glance
 }
 
 export default function SmartReorder() {
@@ -28,33 +44,86 @@ export default function SmartReorder() {
   const { filterBySports } = useSportsAccess();
   const { items, archivedIds, addOnOrder } = useInventory();
   const { addOrder } = useOrders();
+  const { athletes } = useAthletes();
   const isManager = user?.role === 'manager';
 
   const [threshold, setThreshold] = useState(10);
   const [excluded, setExcluded] = useState<Set<string>>(new Set());
   const [qtyOverrides, setQtyOverrides] = useState<Record<string, number>>({});
+  const [sizeFieldOverride, setSizeFieldOverride] = useState<Record<string, string>>({});
 
   // Low stock = on hand + already on order still below the threshold.
-  // Suggest restocking to 2× the threshold so one order lasts a while.
-  const suggestions: Suggestion[] = useMemo(() => {
+  // For clothing/footwear, pull the exact sizes needed from each athlete's Size
+  // Chart on that sport's roster instead of guessing a flat quantity.
+  const { suggestions, sizeMetaByItem } = useMemo(() => {
     const scoped = filterBySports(
       items.filter((i) => !archivedIds.has(i.id)),
       (i) => i.sports
     );
-    return scoped
-      .filter((i) => i.qtyOnHand + i.qtyOnOrder < threshold)
-      .map((i) => ({
-        id: i.id,
-        sport: i.sports[0],
-        description: i.description,
+    const lowStock = scoped.filter((i) => i.qtyOnHand + i.qtyOnOrder < threshold);
+
+    const rows: Suggestion[] = [];
+    const metaByItem: Record<string, SizeMeta> = {};
+
+    for (const i of lowStock) {
+      const sport = i.sports[0];
+      const base = {
+        itemId: i.id,
+        sport,
+        baseDescription: i.description,
         manufacturer: i.manufacturer,
         qtyOnHand: i.qtyOnHand,
         qtyOnOrder: i.qtyOnOrder,
-        suggestedQty: Math.max(1, threshold * 2 - i.qtyOnHand - i.qtyOnOrder),
         pricePerUnit: i.pricePerUnit,
-      }))
-      .sort((a, b) => a.qtyOnHand + a.qtyOnOrder - (b.qtyOnHand + b.qtyOnOrder));
-  }, [items, archivedIds, threshold, filterBySports]);
+      };
+
+      let meta: SizeMeta | null = null;
+      if (SIZEABLE_CATEGORIES.has(i.category)) {
+        const roster = athletes.filter((a) => a.sports.includes(sport));
+        if (roster.length > 0) {
+          const fieldSet = new Set<string>();
+          roster.forEach((a) => getAthleteSizes(a).forEach((f) => { if (f.label.trim()) fieldSet.add(f.label); }));
+          const availableFields = [...fieldSet].sort();
+          const guess = defaultSizeFieldFor(i.category);
+          const chosenField = sizeFieldOverride[i.id]
+            ?? (guess && availableFields.includes(guess) ? guess : availableFields[0]);
+
+          if (chosenField) {
+            const counts = new Map<string, number>();
+            let unmatched = 0;
+            for (const a of roster) {
+              const val = getAthleteSizes(a).find((f) => f.label === chosenField)?.value?.trim();
+              if (val) counts.set(val, (counts.get(val) ?? 0) + 1);
+              else unmatched++;
+            }
+            if (counts.size > 0) {
+              const sortedCounts = [...counts.entries()]
+                .map(([size, count]) => ({ size, count }))
+                .sort((a, b) => sizeSortIndex(a.size) - sizeSortIndex(b.size));
+              meta = {
+                field: chosenField,
+                availableFields,
+                unmatched,
+                summary: sortedCounts.map((c) => `${c.count} ${c.size}`).join(', '),
+              };
+              for (const { size, count } of sortedCounts) {
+                rows.push({ ...base, id: `${i.id}::${size}`, description: `${i.description} — ${size}`, size, suggestedQty: count });
+              }
+            }
+          }
+        }
+      }
+
+      if (meta) {
+        metaByItem[i.id] = meta;
+      } else {
+        rows.push({ ...base, id: i.id, description: i.description, suggestedQty: Math.max(1, threshold * 2 - i.qtyOnHand - i.qtyOnOrder) });
+      }
+    }
+
+    rows.sort((a, b) => a.qtyOnHand + a.qtyOnOrder - (b.qtyOnHand + b.qtyOnOrder));
+    return { suggestions: rows, sizeMetaByItem: metaByItem };
+  }, [items, archivedIds, threshold, filterBySports, athletes, sizeFieldOverride]);
 
   const included = suggestions.filter((s) => !excluded.has(s.id));
   const qtyFor = (s: Suggestion) => qtyOverrides[s.id] ?? s.suggestedQty;
@@ -106,7 +175,7 @@ export default function SmartReorder() {
       addOrder(order);
       // Reflect the ordered quantities on inventory so these items drop off the
       // suggestion list and a second tap doesn't duplicate the same order.
-      selected.forEach((l) => addOnOrder(l.id, qtyFor(l)));
+      selected.forEach((l) => addOnOrder(l.itemId, qtyFor(l)));
     }
     if (n > 0) navigate('/orders');
   }
@@ -118,7 +187,7 @@ export default function SmartReorder() {
           Smart Reorder
         </span>
         <p className="text-sm text-gray-500 mt-2">
-          Items running low across your sports, with a suggested restock quantity. Adjust, untick what you don't need, and submit the rest as orders in one tap.
+          Items running low across your sports, with a suggested restock quantity. Clothing and footwear break down by the exact sizes your roster needs, pulled from each athlete's Size Chart. Adjust, untick what you don't need, and submit the rest as orders in one tap.
         </p>
       </div>
 
@@ -150,6 +219,20 @@ export default function SmartReorder() {
             const budget = BUDGET_DATA.find((b) => b.sport === sport);
             const remaining = budget ? budget.budgeted - budget.spent : null;
             const sportTotal = lines.filter((l) => !excluded.has(l.id)).reduce((s, l) => s + lineCost(l), 0);
+
+            // Rows that share an itemId (a sized item split into XL/M/L/...) render
+            // together as one card; everything else renders as today's single row.
+            const groups: Suggestion[][] = [];
+            const groupIndex = new Map<string, number>();
+            for (const l of lines) {
+              if (groupIndex.has(l.itemId)) {
+                groups[groupIndex.get(l.itemId)!].push(l);
+              } else {
+                groupIndex.set(l.itemId, groups.length);
+                groups.push([l]);
+              }
+            }
+
             return (
               <div key={sport} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="flex items-center justify-between gap-2 px-4 py-3 bg-gray-50 border-b border-gray-100">
@@ -162,36 +245,98 @@ export default function SmartReorder() {
                   )}
                 </div>
                 <div className="divide-y divide-gray-50">
-                  {lines.map((s) => {
-                    const on = !excluded.has(s.id);
-                    return (
-                      <div key={s.id} className={`px-4 py-3 flex items-center gap-3 ${on ? '' : 'opacity-45'}`}>
-                        <input
-                          type="checkbox"
-                          checked={on}
-                          onChange={() => toggle(s.id)}
-                          disabled={!isManager}
-                          className="w-4 h-4 accent-[#00539F] shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-800 truncate">{s.description}</p>
-                          <p className="text-xs text-gray-400 mt-0.5">
-                            <span className={s.qtyOnHand < 3 ? 'text-red-500 font-medium' : ''}>{s.qtyOnHand} on hand</span>
-                            {s.qtyOnOrder > 0 ? ` + ${s.qtyOnOrder} on order` : ''} · {s.manufacturer} · {money(s.pricePerUnit)} each
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
+                  {groups.map((group) => {
+                    if (group.length === 1) {
+                      const s = group[0];
+                      const on = !excluded.has(s.id);
+                      return (
+                        <div key={s.id} className={`px-4 py-3 flex items-center gap-3 ${on ? '' : 'opacity-45'}`}>
                           <input
-                            type="number"
-                            min={1}
-                            value={qtyFor(s)}
-                            disabled={!isManager || !on}
-                            onChange={(e) =>
-                              setQtyOverrides((prev) => ({ ...prev, [s.id]: Math.max(1, parseInt(e.target.value) || 1) }))
-                            }
-                            className="w-16 border border-gray-200 rounded px-2 py-1.5 text-sm text-right text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                            type="checkbox"
+                            checked={on}
+                            onChange={() => toggle(s.id)}
+                            disabled={!isManager}
+                            className="w-4 h-4 accent-[#00539F] shrink-0"
                           />
-                          <span className="text-xs text-gray-500 w-20 text-right hidden md:block">{money(lineCost(s))}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-800 truncate">{s.description}</p>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                              <span className={s.qtyOnHand < 3 ? 'text-red-500 font-medium' : ''}>{s.qtyOnHand} on hand</span>
+                              {s.qtyOnOrder > 0 ? ` + ${s.qtyOnOrder} on order` : ''} · {s.manufacturer} · {money(s.pricePerUnit)} each
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <input
+                              type="number"
+                              min={1}
+                              value={qtyFor(s)}
+                              disabled={!isManager || !on}
+                              onChange={(e) =>
+                                setQtyOverrides((prev) => ({ ...prev, [s.id]: Math.max(1, parseInt(e.target.value) || 1) }))
+                              }
+                              className="w-16 border border-gray-200 rounded px-2 py-1.5 text-sm text-right text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                            />
+                            <span className="text-xs text-gray-500 w-20 text-right hidden md:block">{money(lineCost(s))}</span>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    const first = group[0];
+                    const meta = sizeMetaByItem[first.itemId];
+                    return (
+                      <div key={first.itemId} className="px-4 py-3">
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <p className="text-sm font-medium text-gray-800">{first.baseDescription}</p>
+                          {isManager && meta && meta.availableFields.length > 1 && (
+                            <select
+                              value={meta.field}
+                              onChange={(e) => setSizeFieldOverride((prev) => ({ ...prev, [first.itemId]: e.target.value }))}
+                              className="text-xs border border-gray-200 rounded px-1.5 py-1 text-gray-600 bg-white shrink-0 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                            >
+                              {meta.availableFields.map((f) => <option key={f} value={f}>{f}</option>)}
+                            </select>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-400 mb-2">
+                          <span className={first.qtyOnHand < 3 ? 'text-red-500 font-medium' : ''}>{first.qtyOnHand} on hand</span>
+                          {first.qtyOnOrder > 0 ? ` + ${first.qtyOnOrder} on order` : ''} · {first.manufacturer} · {money(first.pricePerUnit)} each
+                        </p>
+                        {meta && (
+                          <p className="flex items-center gap-1.5 text-xs text-gray-600 mb-2 bg-gray-50 rounded px-2 py-1.5">
+                            <Ruler className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                            <span className="font-medium text-gray-800">{meta.summary}</span>
+                            <span className="text-gray-400">— from {meta.field}{meta.unmatched > 0 ? `, ${meta.unmatched} on roster with no size on file` : ''}</span>
+                          </p>
+                        )}
+                        <div className="space-y-1.5">
+                          {group.map((s) => {
+                            const on = !excluded.has(s.id);
+                            return (
+                              <div key={s.id} className={`flex items-center gap-3 pl-1 ${on ? '' : 'opacity-45'}`}>
+                                <input
+                                  type="checkbox"
+                                  checked={on}
+                                  onChange={() => toggle(s.id)}
+                                  disabled={!isManager}
+                                  className="w-4 h-4 accent-[#00539F] shrink-0"
+                                />
+                                <span className="w-14 shrink-0 text-sm font-medium text-gray-700">{s.size}</span>
+                                <span className="flex-1 text-xs text-gray-400">{s.suggestedQty} needed</span>
+                                <input
+                                  type="number"
+                                  min={1}
+                                  value={qtyFor(s)}
+                                  disabled={!isManager || !on}
+                                  onChange={(e) =>
+                                    setQtyOverrides((prev) => ({ ...prev, [s.id]: Math.max(1, parseInt(e.target.value) || 1) }))
+                                  }
+                                  className="w-16 border border-gray-200 rounded px-2 py-1.5 text-sm text-right text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                                />
+                                <span className="text-xs text-gray-500 w-20 text-right hidden md:block shrink-0">{money(lineCost(s))}</span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     );

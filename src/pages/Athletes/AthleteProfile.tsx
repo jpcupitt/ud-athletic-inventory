@@ -5,13 +5,8 @@ import { useAthletes } from '../../context/AthletesContext';
 import { useInventory } from '../../context/InventoryContext';
 import { useAuth } from '../../context/AuthContext';
 import IssueModal from '../../components/IssueModal';
+import { getAthleteSizes, sizeOptionsFor } from '../../utils/sizeChart';
 import type { CustomSizeEntry, IssuedItem } from '../../data/types';
-
-const CLOTHING_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'];
-const SHOE_SIZES = Array.from({ length: 25 }, (_, i) => { // '5'..'17' in half-size steps
-  const whole = 5 + Math.floor(i / 2);
-  return i % 2 === 0 ? String(whole) : `${whole}.5`;
-});
 
 export default function AthleteProfile() {
   const { athleteId } = useParams<{ athleteId: string }>();
@@ -48,21 +43,7 @@ export default function AthleteProfile() {
     returnItem(itemId, qty);
   }
 
-  // Every athlete starts with these standard fields, pre-filled from their profile
-  // sizes where available. Once a manager edits/adds/removes anything here, that
-  // saved list takes over permanently — this default only fills the initial gap.
-  // Whichever field is a "shoe" gets the shoe-size range; every other field
-  // (shirts, shorts, sweatshirts, pants, and any custom item a manager adds)
-  // gets the standard clothing range.
-  const sizeOptionsFor = (label: string) => (label.toLowerCase().includes('shoe') ? SHOE_SIZES : CLOTHING_SIZES);
-
-  const customSizes: CustomSizeEntry[] = athlete.customSizes ?? [
-    { id: 'default-shirt', label: 'Shirt Size', value: athlete.shirtSize ?? '' },
-    { id: 'default-shorts', label: 'Shorts Size', value: athlete.shortsSize ?? '' },
-    { id: 'default-sweatshirt', label: 'Sweatshirt Size', value: '' },
-    { id: 'default-pants', label: 'Pant Size', value: '' },
-    { id: 'default-shoe', label: 'Shoe Size', value: athlete.shoeSize ?? '' },
-  ];
+  const customSizes: CustomSizeEntry[] = getAthleteSizes(athlete);
 
   function addSizeField() {
     setCustomSizes(athlete!.id, [...customSizes, { id: `size-${Date.now()}`, label: '', value: '' }]);

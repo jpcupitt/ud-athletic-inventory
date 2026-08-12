@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, TrendingDown, Wallet, Ruler } from 'lucide-react';
+import { ShoppingCart, TrendingDown, Wallet, Ruler, Zap, Users, X, ChevronLeft } from 'lucide-react';
 import { useInventory } from '../context/InventoryContext';
 import { useOrders } from '../context/OrdersContext';
 import { useAthletes } from '../context/AthletesContext';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
+import { useActiveSport } from '../context/SportContext';
 import { BUDGET_DATA } from '../data/mock/budgets';
 import { getAthleteSizes, defaultSizeFieldFor, sizeSortIndex } from '../utils/sizeChart';
 import type { ItemCategory, Order, Sport } from '../data/types';
@@ -16,6 +17,15 @@ const money = (n: number) =>
 // Only these categories have a matching Size Chart field to pull from — an
 // Equipment/Headwear/Bag/Accessory item stays a plain flat-quantity suggestion.
 const SIZEABLE_CATEGORIES = new Set<ItemCategory>(['Top', 'Bottom', 'Outerwear', 'Footwear']);
+
+// Friendlier labels for the Quick Order category picker — same underlying
+// categories as everywhere else, described the way an equipment room talks.
+const QUICK_ORDER_LABELS: Partial<Record<ItemCategory, string>> = {
+  Top: 'Tops & Tees',
+  Bottom: 'Shorts & Tights',
+  Outerwear: 'Sweatshirts & Jackets',
+  Footwear: 'Footwear',
+};
 
 interface Suggestion {
   id: string;
@@ -45,12 +55,86 @@ export default function SmartReorder() {
   const { items, archivedIds, addOnOrder } = useInventory();
   const { addOrder } = useOrders();
   const { athletes } = useAthletes();
+  const { activeSport } = useActiveSport();
   const isManager = user?.role === 'manager';
 
   const [threshold, setThreshold] = useState(10);
   const [excluded, setExcluded] = useState<Set<string>>(new Set());
   const [qtyOverrides, setQtyOverrides] = useState<Record<string, number>>({});
   const [sizeFieldOverride, setSizeFieldOverride] = useState<Record<string, string>>({});
+
+  // Quick Order — order a whole category (tees, tights, sweatshirts...) for the
+  // entire active roster at once, independent of what's currently low on stock.
+  const [showQuickOrder, setShowQuickOrder] = useState(false);
+  const [wholeTeam, setWholeTeam] = useState(true);
+  const [quickCategory, setQuickCategory] = useState<ItemCategory | null>(null);
+  const [quickQtyOverrides, setQuickQtyOverrides] = useState<Record<string, number>>({});
+
+  const quickOrderSport: Sport | null = activeSport !== 'All Sports' ? activeSport : null;
+
+  const quickOrderCategories = useMemo(() => {
+    if (!quickOrderSport) return [];
+    const counts = new Map<ItemCategory, number>();
+    for (const i of items) {
+      if (archivedIds.has(i.id) || !i.sports.includes(quickOrderSport) || !SIZEABLE_CATEGORIES.has(i.category)) continue;
+      counts.set(i.category, (counts.get(i.category) ?? 0) + 1);
+    }
+    return [...counts.entries()];
+  }, [items, archivedIds, quickOrderSport]);
+
+  const quickOrderSizes = useMemo(() => {
+    if (!quickOrderSport || !quickCategory) return null;
+    const field = defaultSizeFieldFor(quickCategory);
+    if (!field) return null;
+    const roster = athletes.filter((a) => a.sports.includes(quickOrderSport));
+    const counts = new Map<string, number>();
+    let unmatched = 0;
+    for (const a of roster) {
+      const val = getAthleteSizes(a).find((f) => f.label === field)?.value?.trim();
+      if (val) counts.set(val, (counts.get(val) ?? 0) + 1);
+      else unmatched++;
+    }
+    const rows = [...counts.entries()]
+      .map(([size, count]) => ({ size, count }))
+      .sort((a, b) => sizeSortIndex(a.size) - sizeSortIndex(b.size));
+    return { field, rows, unmatched, rosterSize: roster.length };
+  }, [quickOrderSport, quickCategory, athletes]);
+
+  function openQuickOrder() {
+    setWholeTeam(true);
+    setQuickCategory(null);
+    setQuickQtyOverrides({});
+    setShowQuickOrder(true);
+  }
+
+  function submitQuickOrder() {
+    if (!quickOrderSport || !quickCategory || !quickOrderSizes || quickOrderSizes.rows.length === 0) return;
+    const catItems = items.filter(
+      (i) => !archivedIds.has(i.id) && i.category === quickCategory && i.sports.includes(quickOrderSport)
+    );
+    const mfrCounts = new Map<string, number>();
+    catItems.forEach((i) => mfrCounts.set(i.manufacturer, (mfrCounts.get(i.manufacturer) ?? 0) + 1));
+    const vendor = mfrCounts.size > 0 ? [...mfrCounts.entries()].sort((a, b) => b[1] - a[1])[0][0] : 'TBD';
+
+    const stamp = Date.now().toString().slice(-5);
+    const order: Order = {
+      id: `quickorder-${stamp}`,
+      refNumber: `QO-${stamp}`,
+      orderDate: new Date().toISOString().slice(0, 10),
+      vendor,
+      sport: quickOrderSport,
+      lines: quickOrderSizes.rows.map((r) => ({
+        description: `${QUICK_ORDER_LABELS[quickCategory]} — ${r.size}`,
+        qtyOrdered: quickQtyOverrides[r.size] ?? r.count,
+        qtyReceived: 0,
+      })),
+      status: 'submitted',
+      createdBy: user?.name ?? 'Unknown',
+    };
+    addOrder(order);
+    setShowQuickOrder(false);
+    navigate('/orders');
+  }
 
   // Low stock = on hand + already on order still below the threshold.
   // For clothing/footwear, pull the exact sizes needed from each athlete's Size
@@ -191,7 +275,7 @@ export default function SmartReorder() {
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <label className="text-sm text-gray-500 flex items-center gap-2">
           <TrendingDown className="w-4 h-4 text-[#00539F]" />
           Low-stock threshold
@@ -205,7 +289,125 @@ export default function SmartReorder() {
             <option key={t} value={t}>Under {t} units</option>
           ))}
         </select>
+        {isManager && (
+          <button
+            onClick={openQuickOrder}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-[#003c71] border border-[#FFD200] hover:bg-[#FFF9E0]"
+            style={{ backgroundColor: '#FFF5CC' }}
+          >
+            <Zap className="w-4 h-4" /> Quick Order
+          </button>
+        )}
       </div>
+
+      {/* Quick Order modal */}
+      {showQuickOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowQuickOrder(false)}>
+          <div
+            className="bg-white w-full h-full rounded-none md:w-[440px] md:h-auto md:max-h-[85vh] md:rounded-xl shadow-2xl flex flex-col overflow-hidden"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="flex items-center gap-2 px-5 py-3 shrink-0"
+              style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}
+            >
+              {quickCategory && (
+                <button onClick={() => setQuickCategory(null)} className="text-white hover:opacity-70 -ml-1 p-1">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+              )}
+              <span className="flex-1 text-white font-semibold text-sm">
+                {quickCategory ? QUICK_ORDER_LABELS[quickCategory] : 'Quick Order'}
+              </span>
+              <button onClick={() => setShowQuickOrder(false)} className="text-white hover:opacity-70">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {!quickOrderSport ? (
+              <div className="p-6 text-center">
+                <p className="text-sm text-gray-500">Pick a specific team in the sport dropdown next to the search bar first — Quick Order builds one order for one team's roster.</p>
+              </div>
+            ) : !quickCategory ? (
+              <div className="flex-1 overflow-y-auto p-5">
+                <label className="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-lg bg-gray-50 border border-gray-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={wholeTeam}
+                    onChange={(e) => setWholeTeam(e.target.checked)}
+                    className="w-4 h-4 accent-[#00539F]"
+                  />
+                  <Users className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm font-medium text-gray-700">Order for entire team</span>
+                </label>
+
+                {quickOrderCategories.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-6">No clothing or footwear items on file for {quickOrderSport}.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {quickOrderCategories.map(([cat, count]) => (
+                      <button
+                        key={cat}
+                        onClick={() => wholeTeam && setQuickCategory(cat)}
+                        disabled={!wholeTeam}
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 text-left hover:border-[#00539F] hover:bg-[#EFF6FF] disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:bg-transparent transition-colors"
+                      >
+                        <span className="text-sm font-medium text-gray-800">{QUICK_ORDER_LABELS[cat]}</span>
+                        <span className="text-xs text-gray-400">{count} item{count !== 1 ? 's' : ''} on file</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {!wholeTeam && (
+                  <p className="text-xs text-gray-400 mt-3 text-center">Check "Order for entire team" to see the sizes {quickOrderSport} needs.</p>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="flex-1 overflow-y-auto p-5">
+                  {!quickOrderSizes || quickOrderSizes.rows.length === 0 ? (
+                    <p className="text-sm text-gray-400 text-center py-6">No one on the {quickOrderSport} roster has a {defaultSizeFieldFor(quickCategory)} on file yet.</p>
+                  ) : (
+                    <>
+                      <p className="text-xs text-gray-400 mb-3">
+                        From {quickOrderSizes.field} · {quickOrderSizes.rosterSize} on roster
+                        {quickOrderSizes.unmatched > 0 ? `, ${quickOrderSizes.unmatched} with no size on file` : ''}
+                      </p>
+                      <div className="space-y-1.5">
+                        {quickOrderSizes.rows.map((r) => (
+                          <div key={r.size} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-50">
+                            <span className="flex-1 text-sm font-semibold text-gray-800">{r.size}</span>
+                            <input
+                              type="number"
+                              min={0}
+                              value={quickQtyOverrides[r.size] ?? r.count}
+                              onChange={(e) =>
+                                setQuickQtyOverrides((prev) => ({ ...prev, [r.size]: Math.max(0, parseInt(e.target.value) || 0) }))
+                              }
+                              className="w-20 border border-gray-200 rounded px-2 py-1.5 text-sm text-right text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div className="p-4 border-t border-gray-100 shrink-0">
+                  <button
+                    onClick={submitQuickOrder}
+                    disabled={!quickOrderSizes || quickOrderSizes.rows.length === 0}
+                    className="w-full py-2.5 rounded-lg text-sm font-semibold text-[#003c71] disabled:opacity-40"
+                    style={{ backgroundColor: '#FFD200' }}
+                  >
+                    Order
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {suggestions.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">

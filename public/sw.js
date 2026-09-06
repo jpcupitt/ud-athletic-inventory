@@ -2,12 +2,13 @@
    All app data is in-memory mock data, so caching the shell + assets
    makes the app fully functional offline after the first visit. */
 const CACHE = 'eqi-v3';
+const BASE = new URL('./', self.registration.scope).pathname;
 const CORE = [
-  '/',
-  '/index.html',
-  '/manifest.webmanifest',
-  '/favicon.svg',
-  '/ud-athletics-logo-white.png',
+  BASE,
+  `${BASE}index.html`,
+  `${BASE}manifest.webmanifest`,
+  `${BASE}favicon.svg`,
+  `${BASE}ud-athletics-logo-white.png`,
 ];
 
 self.addEventListener('install', (event) => {
@@ -34,10 +35,10 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((res) => {
           const copy = res.clone();
-          caches.open(CACHE).then((cache) => cache.put('/index.html', copy));
+          caches.open(CACHE).then((cache) => cache.put(`${BASE}index.html`, copy));
           return res;
         })
-        .catch(() => caches.match('/index.html'))
+        .catch(() => caches.match(`${BASE}index.html`))
     );
     return;
   }

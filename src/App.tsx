@@ -77,7 +77,7 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       {/* Navy strip behind the iPhone status bar (clock) — zero height everywhere
           except installed/standalone mode on a device with a notch. */}
       <div

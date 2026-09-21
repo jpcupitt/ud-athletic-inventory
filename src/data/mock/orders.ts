@@ -5,7 +5,7 @@ export const orders: Order[] = [
     id: 'ord-200637', refNumber: 'MBB Workout Sneaker', orderDate: '2026-05-15',
     vendor: 'BSN Sports - Adidas', sport: "Basketball, Men's",
     lines: [{ description: 'Workout Sneaker WHITE', qtyOrdered: 15, qtyReceived: 15 }],
-    status: 'complete', createdBy: 'Parry, Bryce',
+    status: 'complete', createdBy: 'Stevens, Peter',
   },
   {
     id: 'ord-193301', refNumber: 'MBB Coach Shorts', orderDate: '2026-03-10',
@@ -14,7 +14,7 @@ export const orders: Order[] = [
       { description: 'Coach Shorts NAVY M', qtyOrdered: 8, qtyReceived: 8 },
       { description: 'Coach Shorts NAVY L', qtyOrdered: 8, qtyReceived: 8 },
     ],
-    status: 'complete', createdBy: 'Parry, Bryce',
+    status: 'complete', createdBy: 'Stevens, Peter',
   },
   {
     id: 'ord-193280', refNumber: 'MBB Hooded Tees 2026', orderDate: '2026-03-10',
@@ -24,7 +24,7 @@ export const orders: Order[] = [
       { description: 'Hooded Tee NAVY M', qtyOrdered: 32, qtyReceived: 5 },
       { description: 'Hooded Tee NAVY L', qtyOrdered: 32, qtyReceived: 3 },
     ],
-    status: 'incomplete', createdBy: 'Parry, Bryce',
+    status: 'incomplete', createdBy: 'Stevens, Peter',
   },
   {
     id: 'ord-193248', refNumber: 'MBB ZNE Navy 2026', orderDate: '2026-03-10',
@@ -33,7 +33,7 @@ export const orders: Order[] = [
       { description: 'ZNE Hoodie NAVY M', qtyOrdered: 29, qtyReceived: 1 },
       { description: 'ZNE Hoodie NAVY L', qtyOrdered: 29, qtyReceived: 0 },
     ],
-    status: 'incomplete', createdBy: 'Parry, Bryce',
+    status: 'incomplete', createdBy: 'Stevens, Peter',
   },
   {
     id: 'ord-193245', refNumber: 'MBB ZNE Black 2026', orderDate: '2026-03-10',
@@ -42,7 +42,7 @@ export const orders: Order[] = [
       { description: 'ZNE Hoodie BLACK M', qtyOrdered: 29, qtyReceived: 0 },
       { description: 'ZNE Hoodie BLACK L', qtyOrdered: 29, qtyReceived: 0 },
     ],
-    status: 'submitted', createdBy: 'Parry, Bryce',
+    status: 'submitted', createdBy: 'Stevens, Peter',
   },
   {
     id: 'ord-193242', refNumber: 'MBB Compressions 2026', orderDate: '2026-03-10',
@@ -52,7 +52,7 @@ export const orders: Order[] = [
       { description: 'Compression Short S', qtyOrdered: 58, qtyReceived: 58 },
       { description: 'Compression Tight M', qtyOrdered: 59, qtyReceived: 59 },
     ],
-    status: 'complete', createdBy: 'Parry, Bryce',
+    status: 'complete', createdBy: 'Stevens, Peter',
   },
   {
     id: 'ord-192899', refNumber: 'MBB Court Shoes 2026', orderDate: '2026-03-04',
@@ -63,7 +63,7 @@ export const orders: Order[] = [
       { description: 'Court Shoes size 13', qtyOrdered: 22, qtyReceived: 0 },
       { description: 'Court Shoes size 14', qtyOrdered: 22, qtyReceived: 0 },
     ],
-    status: 'submitted', createdBy: 'Parry, Bryce',
+    status: 'submitted', createdBy: 'Stevens, Peter',
   },
   {
     id: 'ord-180001', refNumber: 'FB Helmet Reorder 2026', orderDate: '2026-07-01',
@@ -88,6 +88,6 @@ export const orders: Order[] = [
       { description: 'BP Jersey BLUE M', qtyOrdered: 10, qtyReceived: 10 },
       { description: 'BP Jersey BLUE L', qtyOrdered: 10, qtyReceived: 10 },
     ],
-    status: 'complete', createdBy: 'Parry, Bryce',
+    status: 'complete', createdBy: 'Stevens, Peter',
   },
 ];

@@ -50,6 +50,12 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   );
 }
 
+function roleLabel(role: string | undefined): string {
+  if (role === 'manager') return 'Equipment Manager';
+  if (role === 'student_manager') return 'Student Manager';
+  return 'Viewer';
+}
+
 function NotifRow({ label, description, checked, onChange }: { label: string; description: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <div className="flex items-center justify-between border-b border-gray-100" style={{ padding: '0.05in 0' }}>
@@ -159,7 +165,7 @@ export default function Settings() {
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800">{name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{user?.role === 'manager' ? 'Equipment Manager' : 'Viewer'}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{roleLabel(user?.role)}</p>
                   </div>
                 </div>
                 <button className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-gray-300 text-xs text-gray-600 hover:bg-gray-50">
@@ -207,7 +213,7 @@ export default function Settings() {
               {/* Role — read-only */}
               <FieldRow label="Role" value={
                 <span className={`text-sm font-medium ${user?.role === 'manager' ? 'text-[#00539F]' : 'text-gray-600'}`}>
-                  {user?.role === 'manager' ? 'Equipment Manager' : 'Viewer'}
+                  {roleLabel(user?.role)}
                 </span>
               } />
 
@@ -389,7 +395,8 @@ export default function Settings() {
             <div className="flex flex-col" style={{ gap: '0.1in' }}>
               <p className="text-sm font-semibold text-gray-700 mb-1">Members & Roles</p>
               {[
-                { name: 'Bryce Parry',   email: 'bparry@udel.edu',   role: 'Equipment Manager' },
+                { name: 'Peter Stevens', email: 'pstevens@udel.edu',  role: 'Equipment Manager' },
+                { name: 'Taylor Reed',   email: 'treed@udel.edu',     role: 'Student Manager' },
                 { name: 'Coach Demo',    email: 'demo@udel.edu',      role: 'Viewer' },
                 { name: 'Sarah Collins', email: 'scollins@udel.edu',  role: 'Viewer' },
                 { name: 'Marcus Reed',   email: 'mreed@udel.edu',     role: 'Viewer' },
@@ -404,7 +411,7 @@ export default function Settings() {
                       <p className="text-xs text-gray-400">{m.email}</p>
                     </div>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${m.role === 'Equipment Manager' ? 'bg-[#DAEAF5] text-[#00539F]' : 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${m.role === 'Equipment Manager' ? 'bg-[#DAEAF5] text-[#00539F]' : m.role === 'Student Manager' ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600'}`}>
                     {m.role}
                   </span>
                 </div>

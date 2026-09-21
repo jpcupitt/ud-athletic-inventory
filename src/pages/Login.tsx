@@ -81,8 +81,14 @@ export default function Login() {
           Demo account: <span className="font-mono font-medium">gohens / delaware</span> — tap to fill
         </button>
         <button
-          onClick={() => login('viewer')}
+          onClick={() => login('student_manager')}
           className="w-full text-center text-xs mt-3 transition-colors text-white/40 hover:text-white/70"
+        >
+          Sign in as student manager (demo)
+        </button>
+        <button
+          onClick={() => login('viewer')}
+          className="w-full text-center text-xs mt-1 transition-colors text-white/40 hover:text-white/70"
         >
           Sign in as viewer (read-only demo)
         </button>

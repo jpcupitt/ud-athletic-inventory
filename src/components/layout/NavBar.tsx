@@ -10,20 +10,20 @@ import GlobalSearch from '../GlobalSearch';
 const NAV_LINKS = [
   { label: 'Dashboard', to: '/' },
   { label: 'Inventory', to: '/inventory' },
-  { label: 'Orders', to: '/orders' },
+  { label: 'Orders', to: '/orders', hideFor: ['student_manager'] },
   { label: 'Athletes', to: '/athletes' },
   { label: 'Staff', to: '/staff' },
-  { label: 'Reports', to: '/reports' },
+  { label: 'Reports', to: '/reports', hideFor: ['student_manager'] },
 ];
 
 const EQUIPMENT_ROOM_LINKS = [
   { label: 'Fitting Day', to: '/fitting', hint: 'Bulk-issue a kit to the roster' },
   { label: 'Return Day', to: '/returns', hint: 'Check gear back in, build the owes list' },
-  { label: 'Smart Reorder', to: '/reorder', hint: 'Draft orders for low-stock items' },
+  { label: 'Smart Reorder', to: '/reorder', hint: 'Draft orders for low-stock items', hideFor: ['student_manager'] },
 ];
 
 export default function NavBar() {
-  const { user, logout } = useAuth();
+  const { user, logout, switchDemoRole } = useAuth();
   const { overdueReturns, lowInventory, ordersForApproval } = useNotifications();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
@@ -57,9 +57,10 @@ export default function NavBar() {
     navigate(url);
   }
 
+  const isStudentManager = user?.role === 'student_manager';
   const visibleOverdue = overdueReturns.filter((n) => !dismissed.has(n.key));
   const visibleLow = lowInventory.filter((n) => !dismissed.has(n.key));
-  const visibleOrders = ordersForApproval.filter((n) => !dismissed.has(n.key));
+  const visibleOrders = isStudentManager ? [] : ordersForApproval.filter((n) => !dismissed.has(n.key));
   const totalVisible = visibleOverdue.length + visibleLow.length + visibleOrders.length;
 
   const initials = user
@@ -80,7 +81,7 @@ export default function NavBar() {
 
         {/* Nav links (desktop only — mobile uses the bottom tab bar) */}
         <div className="hidden md:flex self-stretch gap-3">
-          {NAV_LINKS.map((link) => (
+          {NAV_LINKS.filter((link) => !link.hideFor?.includes(user?.role ?? '')).map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -125,7 +126,7 @@ export default function NavBar() {
                 className="fixed w-64 bg-white rounded-b-lg shadow-xl border border-gray-100 py-1 z-50"
                 style={{ top: equipPos.bottom, left: equipPos.left }}
               >
-                {EQUIPMENT_ROOM_LINKS.map((link) => (
+                {EQUIPMENT_ROOM_LINKS.filter((link) => !link.hideFor?.includes(user?.role ?? '')).map((link) => (
                   <button
                     key={link.to}
                     onClick={() => { setShowEquipRoom(false); navigate(link.to); }}
@@ -327,6 +328,32 @@ export default function NavBar() {
                   <p className="text-xs text-gray-400 truncate">{user?.email}</p>
                 </div>
               </div>
+
+              {/* Demo View switcher — presenter-only toggle between the head manager and
+                  student manager personas, no logout required. Not shown to viewer demo. */}
+              {(user?.role === 'manager' || user?.role === 'student_manager') && (
+                <div className="border-b border-gray-100" style={{ padding: '0.1in 0.2in' }}>
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-1.5">Demo View</p>
+                  <div className="flex rounded-lg bg-gray-100 p-0.5">
+                    <button
+                      onClick={() => switchDemoRole('manager')}
+                      className={`flex-1 text-xs font-medium rounded-md py-1.5 transition-colors ${
+                        user?.role === 'manager' ? 'bg-white text-[#003c71] shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      Head Manager
+                    </button>
+                    <button
+                      onClick={() => switchDemoRole('student_manager')}
+                      className={`flex-1 text-xs font-medium rounded-md py-1.5 transition-colors ${
+                        user?.role === 'student_manager' ? 'bg-white text-[#003c71] shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      Student Manager
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Menu items */}
               <div style={{ padding: '0.08in 0' }}>

@@ -12,7 +12,8 @@ export default function StaffProfile() {
   const { staff, issueToStaff, returnFromStaff } = useStaff();
   const { returnItem } = useInventory();
   const { user } = useAuth();
-  const isManager = user?.role === 'manager';
+  const canTransact = user?.role === 'manager' || user?.role === 'student_manager';
+  const canSeeCosts = user?.role !== 'student_manager';
 
   const [showIssueModal, setShowIssueModal] = useState(false);
 
@@ -48,7 +49,7 @@ export default function StaffProfile() {
         <Link to="/staff" className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700">
           <ArrowLeft className="w-4 h-4" /> Back to Staff
         </Link>
-        {isManager && (
+        {canTransact && (
           <button
             onClick={() => setShowIssueModal(true)}
             className="flex items-center gap-1.5 text-[#003c71] font-semibold text-sm rounded-md"
@@ -79,7 +80,7 @@ export default function StaffProfile() {
               ))}
             </div>
           </div>
-          {totalValue > 0 && (
+          {totalValue > 0 && canSeeCosts && (
             <div className="text-left md:text-right shrink-0">
               <p className="text-2xl font-bold text-gray-800">${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
               <p className="text-xs text-gray-400">gear value out</p>
@@ -137,11 +138,11 @@ export default function StaffProfile() {
               <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
                 <th className="pb-2 font-medium">Description</th>
                 <th className="pb-2 font-medium text-right">Qty</th>
-                <th className="pb-2 font-medium text-right">Unit Price</th>
+                {canSeeCosts && <th className="pb-2 font-medium text-right">Unit Price</th>}
                 <th className="pb-2 font-medium">Issued</th>
                 <th className="pb-2 font-medium">Return By</th>
                 <th className="pb-2 font-medium">Type</th>
-                {isManager && <th className="pb-2 font-medium"></th>}
+                {canTransact && <th className="pb-2 font-medium"></th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -149,7 +150,7 @@ export default function StaffProfile() {
                 <tr key={i}>
                   <td className="py-2.5 font-medium text-gray-800">{item.description}</td>
                   <td className="py-2.5 text-right text-gray-600">{item.qty}</td>
-                  <td className="py-2.5 text-right text-gray-600">${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                  {canSeeCosts && <td className="py-2.5 text-right text-gray-600">${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>}
                   <td className="py-2.5 text-gray-500">{item.issuedDate}</td>
                   <td className="py-2.5">
                     {item.returnByDate ? (
@@ -165,7 +166,7 @@ export default function StaffProfile() {
                       <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-xs">Keep</span>
                     )}
                   </td>
-                  {isManager && (
+                  {canTransact && (
                     <td className="py-2.5">
                       <button
                         onClick={() => handleReturn(item.itemId, item.qty)}
@@ -179,12 +180,14 @@ export default function StaffProfile() {
                 </tr>
               ))}
             </tbody>
-            <tfoot className="border-t border-gray-200">
-              <tr>
-                <td className="pt-3 text-sm font-semibold text-gray-700">Total Value</td>
-                <td colSpan={isManager ? 6 : 5} className="pt-3 text-right font-semibold text-gray-800">${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              </tr>
-            </tfoot>
+            {canSeeCosts && (
+              <tfoot className="border-t border-gray-200">
+                <tr>
+                  <td className="pt-3 text-sm font-semibold text-gray-700">Total Value</td>
+                  <td colSpan={canTransact ? 6 : 5} className="pt-3 text-right font-semibold text-gray-800">${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                </tr>
+              </tfoot>
+            )}
           </table>
 
           {/* Mobile card list */}
@@ -200,14 +203,14 @@ export default function StaffProfile() {
                   )}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Qty {item.qty} · ${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Issued {item.issuedDate}
+                  Qty {item.qty}{canSeeCosts && ` · $${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} · Issued {item.issuedDate}
                 </p>
                 {item.returnByDate && (
                   <p className={`text-xs mt-0.5 ${new Date(item.returnByDate) < new Date() ? 'text-red-600 font-medium' : 'text-gray-500'}`}>
                     Return by {item.returnByDate}
                   </p>
                 )}
-                {isManager && (
+                {canTransact && (
                   <button
                     onClick={() => handleReturn(item.itemId, item.qty)}
                     className="mt-2 flex items-center justify-center gap-1.5 w-full min-h-[44px] text-sm text-[#00539F] font-medium border border-gray-200 rounded active:bg-[#EFF6FF]"
@@ -218,10 +221,12 @@ export default function StaffProfile() {
                 )}
               </div>
             ))}
-            <div className="flex items-center justify-between pt-3">
-              <span className="text-sm font-semibold text-gray-700">Total Value</span>
-              <span className="text-sm font-semibold text-gray-800">${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            </div>
+            {canSeeCosts && (
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-sm font-semibold text-gray-700">Total Value</span>
+                <span className="text-sm font-semibold text-gray-800">${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
+            )}
           </div>
           </>
         )}

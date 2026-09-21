@@ -6,6 +6,7 @@ import { useAthletes } from '../context/AthletesContext';
 import { useStaff } from '../context/StaffContext';
 import { useOrders } from '../context/OrdersContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
+import { useAuth } from '../context/AuthContext';
 
 interface Props {
   /** Full-screen sheet for phones; inline dropdown otherwise. */
@@ -26,6 +27,8 @@ export default function GlobalSearch({ mobile, onClose }: Props) {
   const { staff } = useStaff();
   const { localOrders } = useOrders();
   const { filterBySports } = useSportsAccess();
+  const { user } = useAuth();
+  const isStudentManager = user?.role === 'student_manager';
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -40,14 +43,14 @@ export default function GlobalSearch({ mobile, onClose }: Props) {
     const foundStaff = filterBySports(staff, (s) => s.sports)
       .filter((s) => has(`${s.firstName} ${s.lastName}`) || has(s.staffId) || has(s.title))
       .slice(0, 5);
-    const foundOrders = filterBySports(localOrders, (o) => [o.sport])
+    const foundOrders = isStudentManager ? [] : filterBySports(localOrders, (o) => [o.sport])
       .filter((o) => has(o.refNumber) || has(o.vendor) || has(o.id))
       .slice(0, 5);
     return {
       foundItems, foundAthletes, foundStaff, foundOrders,
       total: foundItems.length + foundAthletes.length + foundStaff.length + foundOrders.length,
     };
-  }, [query, items, archivedIds, athletes, staff, localOrders, filterBySports]);
+  }, [query, items, archivedIds, athletes, staff, localOrders, filterBySports, isStudentManager]);
 
   // Ctrl+K / Cmd+K focuses the desktop search
   useEffect(() => {
@@ -99,7 +102,7 @@ export default function GlobalSearch({ mobile, onClose }: Props) {
               <Package className="w-4 h-4 text-gray-400 shrink-0" />
               <span className="flex-1 min-w-0">
                 <span className="block text-sm text-gray-800 truncate">{i.description}</span>
-                <span className="block text-xs text-gray-400">#{i.itemId} · {i.qtyOnHand} on hand · {money(i.pricePerUnit)}</span>
+                <span className="block text-xs text-gray-400">#{i.itemId} · {i.qtyOnHand} on hand{!isStudentManager && ` · ${money(i.pricePerUnit)}`}</span>
               </span>
             </button>
           ))}

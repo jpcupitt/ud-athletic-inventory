@@ -13,7 +13,7 @@ export default function FittingDay() {
   const { accessibleSports } = useSportsAccess();
   const { athletes, issueToAthlete } = useAthletes();
   const { items: inventoryItems, archivedIds, issueItem } = useInventory();
-  const isManager = user?.role === 'manager';
+  const canTransact = user?.role === 'manager' || user?.role === 'student_manager';
 
   const { activeSport, setActiveSport } = useActiveSport();
   // Fitting Day works one team at a time — 'All Sports' falls back to the first team
@@ -133,7 +133,7 @@ export default function FittingDay() {
               return (
                 <button
                   key={item.id}
-                  disabled={!isManager || out}
+                  disabled={!canTransact || out}
                   onClick={() => toggleKitItem(item.id)}
                   className={`px-3 py-2 rounded-lg text-xs font-medium border transition-colors disabled:opacity-40 ${
                     active
@@ -176,7 +176,7 @@ export default function FittingDay() {
               return (
                 <button
                   key={a.id}
-                  disabled={!isManager || done || kit.length === 0}
+                  disabled={!canTransact || done || kit.length === 0}
                   onClick={() => setConfirmAthlete(a)}
                   className={`flex items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors ${
                     done

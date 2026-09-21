@@ -673,6 +673,9 @@ export const athletes: Athlete[] = [
     issuedItems: [
       { itemId: 'inv-010', description: 'Riddell SpeedFlex Helmet', qty: 1, pricePerUnit: 350.0, issuedDate: '2026-08-01', isNonExpendable: true, returnByDate: '2027-01-15', returned: false },
       { itemId: 'inv-011', description: 'Game Jersey HOME', qty: 1, pricePerUnit: 120.0, issuedDate: '2026-08-01', isNonExpendable: false, returned: false },
+      { itemId: 'inv-014', description: 'Shoulder Pads', qty: 1, pricePerUnit: 275.0, issuedDate: '2026-08-01', isNonExpendable: true, returned: false },
+      { itemId: 'inv-015', description: 'Travel Jacket NAVY', qty: 1, pricePerUnit: 110.0, issuedDate: '2026-08-15', isNonExpendable: true, returned: false },
+      { itemId: 'inv-019b', description: 'Travel Bag NAVY', qty: 1, pricePerUnit: 85.0, issuedDate: '2026-08-15', isNonExpendable: true, returned: false },
     ],
     photoUrl: undefined,
   },
@@ -682,6 +685,9 @@ export const athletes: Athlete[] = [
     notes: "WR. Jersey #11. Helmet size M. Gloves: Cutters size L.",
     issuedItems: [
       { itemId: 'inv-010', description: 'Riddell SpeedFlex Helmet', qty: 1, pricePerUnit: 350.0, issuedDate: '2026-08-01', isNonExpendable: true, returnByDate: '2027-01-15', returned: false },
+      { itemId: 'inv-014', description: 'Shoulder Pads', qty: 1, pricePerUnit: 275.0, issuedDate: '2026-08-01', isNonExpendable: true, returned: false },
+      { itemId: 'inv-016', description: 'Travel Pants NAVY', qty: 1, pricePerUnit: 65.0, issuedDate: '2026-08-15', isNonExpendable: true, returned: false },
+      { itemId: 'inv-019', description: 'Travel Shoes WHITE', qty: 1, pricePerUnit: 100.0, issuedDate: '2026-08-15', isNonExpendable: true, returned: false },
     ],
     photoUrl: undefined,
   },

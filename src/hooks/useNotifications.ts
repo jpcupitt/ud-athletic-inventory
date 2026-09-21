@@ -5,6 +5,7 @@ import { useOrders } from '../context/OrdersContext';
 import { useAthletes } from '../context/AthletesContext';
 import { useStaff } from '../context/StaffContext';
 import { useSportsAccess } from './useSportsAccess';
+import { recertDueDate, recertStatus } from '../utils/recert';
 
 export interface OverdueReturn {
   key: string;
@@ -30,6 +31,16 @@ export interface PendingOrder {
   refNumber: string;
   sport: string;
   vendor: string;
+}
+
+export interface RecertDue {
+  key: string;
+  itemId: string;
+  serialNumber: string;
+  description: string;
+  sports: string[];
+  status: 'due-soon' | 'overdue';
+  dueDate: string;
 }
 
 export function useNotifications() {
@@ -93,6 +104,27 @@ export function useNotifications() {
     [inventoryItems, inScope]
   );
 
+  const recertsDue = useMemo<RecertDue[]>(() => {
+    const result: RecertDue[] = [];
+    for (const item of inventoryItems) {
+      if (!item.recertification || !inScope(item.sports)) continue;
+      for (const unit of item.recertification.units) {
+        const status = recertStatus(unit, item.recertification);
+        if (status === 'ok') continue;
+        result.push({
+          key: `recert-${item.id}-${unit.serialNumber}`,
+          itemId: item.id,
+          serialNumber: unit.serialNumber,
+          description: item.description,
+          sports: item.sports,
+          status,
+          dueDate: recertDueDate(unit, item.recertification).toISOString().slice(0, 10),
+        });
+      }
+    }
+    return result.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  }, [inventoryItems, inScope]);
+
   const ordersForApproval = useMemo<PendingOrder[]>(() => {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -109,7 +141,7 @@ export function useNotifications() {
     [inScope]
   );
 
-  const count = overdueReturns.length + lowInventory.length + ordersForApproval.length;
+  const count = overdueReturns.length + lowInventory.length + ordersForApproval.length + recertsDue.length;
 
-  return { overdueReturns, lowInventory, ordersForApproval, recentTransactions, count };
+  return { overdueReturns, lowInventory, ordersForApproval, recertsDue, recentTransactions, count };
 }

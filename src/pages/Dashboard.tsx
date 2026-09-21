@@ -28,6 +28,7 @@ const CHART_OPTIONS = [
   { id: 'transaction-history', label: 'Transaction History' },
   { id: 'budget',              label: 'Budget' },
   { id: 'orders-arriving',     label: 'Orders Arriving' },
+  { id: 'football-nonexp',     label: 'Football Non Negotiables' },
 ] as const;
 
 
@@ -65,6 +66,22 @@ function RemoveOverlay({ onRemove }: { onRemove: () => void }) {
   );
 }
 
+/** Tooltip for the football non-expendable charts — lists who currently has the gear out. */
+function FootballTooltip({ active, payload, label }: any) {
+  if (!active || !payload || payload.length === 0) return null;
+  const row = payload[0].payload;
+  return (
+    <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 6, padding: '8px 10px', fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+      <p style={{ fontWeight: 600, color: '#374151', marginBottom: 4 }}>{label}</p>
+      <p style={{ color: '#00539F' }}>Checked In: {row.checkedIn}</p>
+      <p style={{ color: '#800000' }}>Out: {row.out}</p>
+      {row.out > 0 && row.outNames?.length > 0 && (
+        <p style={{ color: '#6b7280', marginTop: 4, maxWidth: 220 }}>Out to: {row.outNames.join(', ')}</p>
+      )}
+    </div>
+  );
+}
+
 function NotifBadge({ label, count, color, onClick }: { label: string; count: number; color: string; onClick?: () => void }) {
   return (
     <button
@@ -81,14 +98,15 @@ function NotifBadge({ label, count, color, onClick }: { label: string; count: nu
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isStudentManager = user?.role === 'student_manager';
   const { isLead, filterBySports, accessibleSports } = useSportsAccess();
   const { recordSubmission } = useSubmittedOrders();
-  const { overdueReturns, lowInventory, ordersForApproval } = useNotifications();
+  const { overdueReturns, lowInventory, ordersForApproval, recertsDue } = useNotifications();
   const { localOrders: orders } = useOrders();
   const { items: allInventoryItems } = useInventory();
   const inventoryItems = filterBySports(allInventoryItems, (i) => i.sports as string[]);
   const { athletes } = useAthletes();
-  useStaff();
+  const { staff } = useStaff();
   // Shared with the sport picker next to the search bar — pick a sport there
   // (or in either panel below, they're the same selection) and every
   // sport-scoped panel on this page narrows to just that team.
@@ -106,11 +124,16 @@ export default function Dashboard() {
   const [showLowInventory, setShowLowInventory] = useState(false);
   const [showNewOpenStatus, setShowNewOpenStatus] = useState(false);
   const [showOverdueReturns, setShowOverdueReturns] = useState(false);
+  const [showFootballTracker, setShowFootballTracker] = useState(false);
+  const [showRecertsDue, setShowRecertsDue] = useState(false);
+  const [showHelmetBreakdown, setShowHelmetBreakdown] = useState(false);
   const [submittedOrderIds, setSubmittedOrderIds] = useState<Set<string>>(new Set());
   const [showOrderSubmitted, setShowOrderSubmitted] = useState(false);
   const [budgetView, setBudgetView] = useState<'overview' | 'monthly'>('overview');
   const [visibleCharts, setVisibleCharts] = useState<Set<string>>(
-    new Set(['real-time', 'transaction-history', 'budget', 'orders-arriving'])
+    new Set(isStudentManager
+      ? ['real-time', 'transaction-history', 'football-nonexp']
+      : ['real-time', 'transaction-history', 'budget', 'orders-arriving', 'football-nonexp'])
   );
   const [removeMode, setRemoveMode] = useState(false);
   const [showAddChart, setShowAddChart] = useState(false);
@@ -295,6 +318,57 @@ export default function Dashboard() {
 
   const arrivingOrders = filterBySports(orders, (o) => [o.sport]).filter((o) => o.status !== 'complete');
 
+  // Football-only live tracking for non-expendable gear (helmets, shoulder pads, travel
+  // gear) — lets the equipment room see at a glance what's still out each week.
+  const footballNonExpendables = accessibleSports.includes('Football') || isLead
+    ? allInventoryItems
+        .filter((i) => i.isNonExpendable && i.sports.includes('Football'))
+        .map((i) => {
+          const outIssues = [...athletes, ...staff].flatMap((p) =>
+            p.issuedItems
+              .filter((ii) => ii.itemId === i.id && !ii.returned)
+              .map((ii) => ({ name: p.lastName, qty: ii.qty }))
+          );
+          return {
+            ...i,
+            outCount: outIssues.reduce((s, x) => s + x.qty, 0),
+            outNames: outIssues.map((x) => (x.qty > 1 ? `${x.name} (×${x.qty})` : x.name)),
+          };
+        })
+    : [];
+
+  const shortItemName = (description: string) => {
+    const shortName = description.replace(/\s+(NAVY|WHITE|ROYAL|GOLD|BLUE|BLACK)$/i, '');
+    return shortName.length > 16 ? `${shortName.slice(0, 16)}…` : shortName;
+  };
+
+  // All helmet models roll up into one "Helmets" bar on the main chart; clicking it
+  // opens a breakdown modal showing each model (SpeedFlex, Axiom, F7, ...) individually.
+  const isHelmet = (description: string) => description.toLowerCase().includes('helmet');
+  const helmetItems = footballNonExpendables.filter((i) => isHelmet(i.description));
+  const nonHelmetItems = footballNonExpendables.filter((i) => !isHelmet(i.description));
+  const helmetTotals = helmetItems.reduce(
+    (acc, i) => ({ checkedIn: acc.checkedIn + i.qtyOnHand, out: acc.out + i.outCount }),
+    { checkedIn: 0, out: 0 }
+  );
+  const helmetOutNames = helmetItems.flatMap((i) => i.outNames);
+
+  const footballNonExpChartData = [
+    ...(helmetItems.length > 0 ? [{ name: 'Helmets', checkedIn: helmetTotals.checkedIn, out: helmetTotals.out, outNames: helmetOutNames }] : []),
+    ...nonHelmetItems.map((i) => ({ name: shortItemName(i.description), checkedIn: i.qtyOnHand, out: i.outCount, outNames: i.outNames })),
+  ];
+  const footballNonExpMax = Math.ceil(Math.max(...footballNonExpChartData.map((d) => Math.max(d.checkedIn, d.out)), 5) / 5) * 5;
+
+  const helmetBreakdownChartData = helmetItems.map((i) => ({
+    name: shortItemName(i.description.replace(/\s+Helmet$/i, '')),
+    checkedIn: i.qtyOnHand,
+    out: i.outCount,
+    outNames: i.outNames,
+  }));
+  const helmetBreakdownMax = Math.ceil(Math.max(...helmetBreakdownChartData.map((d) => Math.max(d.checkedIn, d.out)), 5) / 5) * 5;
+  const footballNonExpTicks = Array.from({ length: footballNonExpMax / 5 + 1 }, (_, i) => i * 5);
+  const helmetBreakdownTicks = Array.from({ length: helmetBreakdownMax / 5 + 1 }, (_, i) => i * 5);
+
   void (overdueReturns.length + lowInventory.length + ordersForApproval.length);
 
   return (
@@ -306,8 +380,20 @@ export default function Dashboard() {
           <span className="font-semibold text-[18px] self-start text-gray-500">Quick Links</span>
           <div className="grid w-full grid-cols-2 gap-2 md:flex md:w-auto md:flex-wrap">
             <NotifBadge label="Low Inventory" count={lowInventory.length} color="bg-[#003c71]" onClick={() => setShowLowInventory(true)} />
-            <NotifBadge label="New Open Status" count={ordersForApproval.length} color="bg-[#00539F]" onClick={() => setShowNewOpenStatus(true)} />
+            {!isStudentManager && <NotifBadge label="New Open Status" count={ordersForApproval.length} color="bg-[#00539F]" onClick={() => setShowNewOpenStatus(true)} />}
             <NotifBadge label="Overdue Returns" count={overdueReturns.length} color="bg-[#00a0df]" onClick={() => setShowOverdueReturns(true)} />
+            {recertsDue.length > 0 && (
+              <NotifBadge label="Recerts Due" count={recertsDue.length} color="bg-[#800000]" onClick={() => setShowRecertsDue(true)} />
+            )}
+            {footballNonExpendables.length > 0 && (
+              <NotifBadge
+                label="Football Gear Out"
+                count={footballNonExpendables.reduce((s, i) => s + i.outCount, 0)}
+                color="bg-[#00539F]"
+                onClick={() => setShowFootballTracker(true)}
+              />
+            )}
+            {!isStudentManager && (
             <div className="relative">
               <button
                 onClick={() => { setShowQuickSubmit(true); setQuickSubmitOrder(null); }}
@@ -323,6 +409,7 @@ export default function Dashboard() {
                 </span>
               )}
             </div>
+            )}
           </div>
         </div>
       </div>
@@ -333,7 +420,7 @@ export default function Dashboard() {
           <CalendarCheck className="w-4 h-4 text-[#00539F]" />
           <span className="text-sm font-semibold text-gray-700">Today</span>
         </div>
-        {overdueReturns.length === 0 && lowInventory.length === 0 && ordersForApproval.length === 0 && arrivingOrders.length === 0 ? (
+        {overdueReturns.length === 0 && lowInventory.length === 0 && (isStudentManager || (ordersForApproval.length === 0 && arrivingOrders.length === 0)) ? (
           <div className="px-4 py-4 flex items-center gap-2 text-sm text-green-700">
             <CheckCircle2 className="w-4 h-4 text-green-500" /> All caught up — nothing needs your attention.
           </div>
@@ -357,7 +444,7 @@ export default function Dashboard() {
                 <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
               </button>
             )}
-            {ordersForApproval.length > 0 && (
+            {!isStudentManager && ordersForApproval.length > 0 && (
               <button onClick={() => { setShowQuickSubmit(true); setQuickSubmitOrder(null); }} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 active:bg-gray-50">
                 <ShoppingCart className="w-4 h-4 text-[#00539F] shrink-0" />
                 <span className="flex-1 text-sm text-gray-700">
@@ -366,7 +453,7 @@ export default function Dashboard() {
                 <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
               </button>
             )}
-            {arrivingOrders.length > 0 && (
+            {!isStudentManager && arrivingOrders.length > 0 && (
               <button onClick={() => navigate('/orders')} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 active:bg-gray-50">
                 <Truck className="w-4 h-4 text-green-600 shrink-0" />
                 <span className="flex-1 text-sm text-gray-700">
@@ -390,6 +477,7 @@ export default function Dashboard() {
             {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('real-time'); return n; })} />}
             <div className="flex items-center px-2 md:px-5 pb-4" style={{ paddingTop: '0.05in' }}>
               <span className="flex-1 text-sm font-semibold text-gray-700" style={{ padding: '0.08in 0.15in' }}>Real Time Inventory</span>
+              {!isStudentManager && (
               <div className="flex rounded border border-gray-200 overflow-hidden">
                 <button
                   onClick={() => setChartView('qty')}
@@ -406,6 +494,7 @@ export default function Dashboard() {
                   Price
                 </button>
               </div>
+              )}
               <div className="flex-1 flex flex-col items-end gap-1 relative" style={{ paddingRight: '0.1in' }}>
                 <button
                   onClick={() => setShowRTFilters((v) => !v)}
@@ -732,6 +821,60 @@ export default function Dashboard() {
       </div>
       )}
 
+      {/* Football Non-Expendables chart — its own row below Budget/Orders Arriving */}
+      {visibleCharts.has('football-nonexp') && (
+      <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap" style={{ marginTop: '0.25in' }}>
+      <div className="relative lg:flex-1 h-80 bg-white rounded-lg flex flex-col" style={{ minWidth: '280px', ...(removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }) }}>
+        {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('football-nonexp'); return n; })} />}
+        <div className="flex items-center px-2 md:px-5" style={{ paddingTop: '0.05in', paddingBottom: '0.1in' }}>
+          <span className="flex-1 text-sm font-semibold text-gray-700" style={{ padding: '0.08in 0.15in' }}>Football Non Negotiables</span>
+        </div>
+        <div className="px-3 pb-2 flex-1" style={{ paddingTop: '0.2in' }}>
+          {footballNonExpChartData.length === 0 ? (
+            <p className="text-xs text-gray-400 text-center py-8">No non-expendable football items on file.</p>
+          ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={footballNonExpChartData} margin={{ top: 2, right: 4, left: 10, bottom: 20 }}>
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'Item', position: 'insideBottom', offset: -10, fontSize: 14, fill: '#6b7280' }} />
+              <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} ticks={footballNonExpTicks} domain={[0, footballNonExpMax]} label={{ value: 'Count', angle: -90, position: 'insideLeft', offset: 10, fontSize: 14, fill: '#6b7280' }} />
+              <Tooltip content={<FootballTooltip />} />
+              <Bar
+                dataKey="checkedIn" name="Checked In" fill="#00539F" radius={[2, 2, 0, 0]} maxBarSize={30}
+                onClick={(data: any) => { if (data?.name === 'Helmets') setShowHelmetBreakdown(true); }}
+                cursor="pointer"
+              >
+                <LabelList dataKey="checkedIn" content={(props) => <BarLabel {...(props as any)} />} />
+              </Bar>
+              <Bar
+                dataKey="out" name="Out" fill="#FEE2E2" stroke="#800000" strokeWidth={1} radius={[2, 2, 0, 0]} maxBarSize={30}
+                onClick={(data: any) => { if (data?.name === 'Helmets') setShowHelmetBreakdown(true); }}
+                cursor="pointer"
+              >
+                <LabelList dataKey="out" content={(props) => <BarLabel {...(props as any)} insideColor="#800000" />} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          )}
+        </div>
+        <div className="flex items-center justify-between" style={{ paddingBottom: '0.1in', paddingRight: '1rem', paddingLeft: '0.5rem' }}>
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1 text-xs text-gray-600">
+              <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#00539F' }} />
+              Checked In
+            </span>
+            <span className="flex items-center gap-1 text-xs text-gray-600">
+              <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#FEE2E2', border: '1px solid #800000' }} />
+              Out
+            </span>
+          </div>
+          {helmetItems.length > 0 && (
+            <span className="text-[11px] text-gray-400">Click "Helmets" for model breakdown</span>
+          )}
+        </div>
+      </div>
+      </div>
+      )}
+
       {/* Chart management toolbar */}
       <div className="flex items-center gap-3" style={{ marginTop: '0.5in' }}>
         <button
@@ -765,7 +908,7 @@ export default function Dashboard() {
               </button>
             </div>
             <div className="space-y-2">
-              {CHART_OPTIONS.map((opt) => {
+              {CHART_OPTIONS.filter((opt) => !isStudentManager || (opt.id !== 'budget' && opt.id !== 'orders-arriving')).map((opt) => {
                 const isVisible = visibleCharts.has(opt.id);
                 return (
                   <button
@@ -862,6 +1005,112 @@ export default function Dashboard() {
                   </div>
                 ))
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recerts Due modal */}
+      {showRecertsDue && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowRecertsDue(false)}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
+              <h2 className="text-sm font-semibold text-white">Recertification Due</h2>
+              <button onClick={() => setShowRecertsDue(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto" style={{ padding: '0.05in' }}>
+              {recertsDue.length === 0 ? (
+                <p className="text-xs text-gray-400 text-center py-8">No recertifications due</p>
+              ) : (
+                recertsDue.map((r) => (
+                  <button key={r.key} onClick={() => { setShowRecertsDue(false); navigate(`/inventory/${r.itemId}`); }} className="w-full text-left flex items-center gap-3 p-3 border-b border-gray-100 hover:bg-gray-50">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-gray-800 truncate" style={{ marginTop: '0.05in' }}>{r.description} — {r.serialNumber}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">{r.sports.join(', ')}</p>
+                    </div>
+                    <p
+                      className="text-[11px] font-semibold shrink-0 rounded"
+                      style={{
+                        backgroundColor: r.status === 'overdue' ? '#fee2e2' : '#fef3c7',
+                        color: r.status === 'overdue' ? '#991b1b' : '#92400e',
+                        padding: '0.01in 0.03in',
+                      }}
+                    >
+                      {r.status === 'overdue' ? 'Overdue' : 'Due Soon'}
+                    </p>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Football Non-Expendable Tracker modal */}
+      {showFootballTracker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowFootballTracker(false)}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[400px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
+              <h2 className="text-sm font-semibold text-white">Football Non-Expendable Gear</h2>
+              <button onClick={() => setShowFootballTracker(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto" style={{ padding: '0.05in' }}>
+              {footballNonExpendables.length === 0 ? (
+                <p className="text-xs text-gray-400 text-center py-8">No non-expendable football items on file.</p>
+              ) : (
+                footballNonExpendables.map((item) => (
+                  <button key={item.id} onClick={() => { setShowFootballTracker(false); navigate(`/inventory/${item.id}`); }} className="w-full text-left flex items-center gap-3 p-3 border-b border-gray-100 hover:bg-gray-50">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-gray-800 truncate" style={{ marginTop: '0.05in' }}>{item.description}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">{item.qtyOnHand} checked in</p>
+                    </div>
+                    <p className={`text-[11px] font-semibold shrink-0 rounded ${item.outCount > 0 ? '' : ''}`} style={{ backgroundColor: item.outCount > 0 ? '#fef3c7' : '#dcfce7', color: item.outCount > 0 ? '#92400e' : '#166534', padding: '0.01in 0.03in' }}>
+                      {item.outCount} out
+                    </p>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Helmet model breakdown modal — opened by clicking the "Helmets" bar above */}
+      {showHelmetBreakdown && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowHelmetBreakdown(false)}>
+          <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[440px]" onClick={(e) => e.stopPropagation()}>
+            <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
+              <h2 className="text-sm font-semibold text-white">Helmets by Model</h2>
+              <button onClick={() => setShowHelmetBreakdown(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
+            </div>
+            <div className="h-64" style={{ padding: '0.15in' }}>
+              {helmetBreakdownChartData.length === 0 ? (
+                <p className="text-xs text-gray-400 text-center py-8">No helmet models on file.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={helmetBreakdownChartData} margin={{ top: 2, right: 4, left: 10, bottom: 20 }}>
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'Model', position: 'insideBottom', offset: -10, fontSize: 14, fill: '#6b7280' }} />
+                    <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} ticks={helmetBreakdownTicks} domain={[0, helmetBreakdownMax]} label={{ value: 'Count', angle: -90, position: 'insideLeft', offset: 10, fontSize: 14, fill: '#6b7280' }} />
+                    <Tooltip content={<FootballTooltip />} />
+                    <Bar dataKey="checkedIn" name="Checked In" fill="#00539F" radius={[2, 2, 0, 0]} maxBarSize={30}>
+                      <LabelList dataKey="checkedIn" content={(props) => <BarLabel {...(props as any)} />} />
+                    </Bar>
+                    <Bar dataKey="out" name="Out" fill="#FEE2E2" stroke="#800000" strokeWidth={1} radius={[2, 2, 0, 0]} maxBarSize={30}>
+                      <LabelList dataKey="out" content={(props) => <BarLabel {...(props as any)} insideColor="#800000" />} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+            <div className="flex items-center gap-3 border-t border-gray-100" style={{ padding: '0.1in 0.15in' }}>
+              <span className="flex items-center gap-1 text-xs text-gray-600">
+                <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#00539F' }} />
+                Checked In
+              </span>
+              <span className="flex items-center gap-1 text-xs text-gray-600">
+                <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: '#FEE2E2', border: '1px solid #800000' }} />
+                Out
+              </span>
             </div>
           </div>
         </div>

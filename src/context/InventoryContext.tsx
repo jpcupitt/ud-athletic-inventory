@@ -12,12 +12,15 @@ interface InventoryContextValue {
   issueItem: (itemId: string, qty: number) => void;
   returnItem: (itemId: string, qty: number) => void;
   addOnOrder: (itemId: string, qty: number) => void;
+  setNonExpendable: (itemId: string, value: boolean) => void;
+  setPhoto: (itemId: string, photoUrl: string) => void;
+  markRecertified: (itemId: string, serialNumber: string, date?: string) => void;
 }
 
 const InventoryContext = createContext<InventoryContextValue | null>(null);
 
 export function InventoryProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = usePersistentState<InventoryItem[]>('inventory', () => [...mockItems]);
+  const [items, setItems] = usePersistentState<InventoryItem[]>('inventory2', () => [...mockItems]);
   const [archivedArr, setArchivedArr] = usePersistentState<string[]>('archived', () => []);
   const archivedIds = useMemo(() => new Set(archivedArr), [archivedArr]);
 
@@ -57,8 +60,41 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  function setNonExpendable(itemId: string, value: boolean) {
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === itemId ? { ...it, isNonExpendable: value } : it
+      )
+    );
+  }
+
+  function setPhoto(itemId: string, photoUrl: string) {
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === itemId ? { ...it, photoUrl } : it
+      )
+    );
+  }
+
+  function markRecertified(itemId: string, serialNumber: string, date: string = new Date().toISOString().slice(0, 10)) {
+    setItems((prev) =>
+      prev.map((it) => {
+        if (it.id !== itemId || !it.recertification) return it;
+        return {
+          ...it,
+          recertification: {
+            ...it.recertification,
+            units: it.recertification.units.map((u) =>
+              u.serialNumber === serialNumber ? { ...u, lastCertifiedDate: date } : u
+            ),
+          },
+        };
+      })
+    );
+  }
+
   return (
-    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem, addOnOrder }}>
+    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem, addOnOrder, setNonExpendable, setPhoto, markRecertified }}>
       {children}
     </InventoryContext.Provider>
   );

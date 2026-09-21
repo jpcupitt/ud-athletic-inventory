@@ -16,7 +16,7 @@ interface AthletesContextValue {
 const AthletesContext = createContext<AthletesContextValue | null>(null);
 
 export function AthletesProvider({ children }: { children: ReactNode }) {
-  const [athletes, setAthletes] = usePersistentState<Athlete[]>('athletes', () => [...mockAthletes]);
+  const [athletes, setAthletes] = usePersistentState<Athlete[]>('athletes2', () => [...mockAthletes]);
 
   function addAthlete(athlete: Athlete) {
     setAthletes((prev) => [athlete, ...prev]);

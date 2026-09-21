@@ -1,19 +1,67 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Package, Tag, AlertTriangle, QrCode, Printer } from 'lucide-react';
+import { ArrowLeft, Package, Tag, AlertTriangle, QrCode, Printer, Camera, Upload, ShieldCheck } from 'lucide-react';
 import QRCode from 'qrcode';
 import { useAthletes } from '../../context/AthletesContext';
 import { useStaff } from '../../context/StaffContext';
 import { useInventory } from '../../context/InventoryContext';
+import { useAuth } from '../../context/AuthContext';
+import WebcamCapture from '../../components/WebcamCapture';
+import { recertDueDate, recertStatus, RECERT_STATUS_STYLE } from '../../utils/recert';
+
+function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${checked ? 'bg-[#00539F]' : 'bg-gray-200'}`}
+    >
+      <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-4' : 'translate-x-0.5'}`} />
+    </button>
+  );
+}
 
 export default function InventoryDetail() {
   const { itemId } = useParams<{ itemId: string }>();
-  const { items } = useInventory();
+  const { items, setNonExpendable, setPhoto, markRecertified } = useInventory();
   const { athletes } = useAthletes();
   const { staff: staffMembers } = useStaff();
+  const { user } = useAuth();
+  const isManager = user?.role === 'manager';
+  const canSeeCosts = user?.role !== 'student_manager';
   const item = items.find((i) => i.id === itemId);
 
   const [qrUrl, setQrUrl] = useState('');
+  const [showWebcam, setShowWebcam] = useState(false);
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file && item) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const src = ev.target?.result as string;
+        // Camera photos can be 10+ MP; downscale so the stored data URL stays small
+        const img = new Image();
+        img.onload = () => {
+          const max = 1024;
+          const scale = Math.min(1, max / Math.max(img.width, img.height));
+          if (scale === 1) {
+            setPhoto(item.id, src);
+            return;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+          setPhoto(item.id, canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.onerror = () => setPhoto(item.id, src);
+        img.src = src;
+      };
+      reader.readAsDataURL(file);
+    }
+    e.target.value = '';
+  }
   useEffect(() => {
     if (!item) return;
     QRCode.toDataURL(`EQI:ITEM:${item.id}`, { width: 480, margin: 1, color: { dark: '#003c71', light: '#ffffff' } })
@@ -56,13 +104,44 @@ export default function InventoryDetail() {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
-              {item.photoUrl ? (
+            {item.photoUrl ? (
+              <div className="w-14 h-14 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
                 <img src={item.photoUrl} alt={item.description} className="w-14 h-14 object-cover rounded-lg" />
-              ) : (
+              </div>
+            ) : isManager ? (
+              <>
+                {/* Desktop: webcam capture + file upload */}
+                <div className="hidden md:flex gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setShowWebcam(true)}
+                    title="Take Photo"
+                    className="w-14 h-14 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 hover:border-[#00539F] hover:text-[#00539F] transition-colors"
+                  >
+                    <Camera className="w-5 h-5" />
+                  </button>
+                  <label
+                    title="Upload Photo"
+                    className="w-14 h-14 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 hover:border-[#00539F] hover:text-[#00539F] transition-colors cursor-pointer"
+                  >
+                    <Upload className="w-5 h-5" />
+                    <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                  </label>
+                </div>
+                {/* Mobile: one tap opens the native camera / photo library chooser */}
+                <label
+                  title="Add Photo"
+                  className="md:hidden w-14 h-14 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 active:border-[#00539F] active:text-[#00539F] transition-colors cursor-pointer shrink-0"
+                >
+                  <Camera className="w-5 h-5" />
+                  <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handlePhotoChange} />
+                </label>
+              </>
+            ) : (
+              <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
                 <Package className="w-7 h-7 text-gray-400" />
-              )}
-            </div>
+              </div>
+            )}
             <div>
               <h1 className="text-xl font-bold text-gray-800">{item.description}</h1>
               <p className="text-sm text-gray-500 mt-0.5 font-mono">{item.itemId}</p>
@@ -105,7 +184,7 @@ export default function InventoryDetail() {
               ['Category', item.category],
               ['Unit', item.unit],
               ['Year', item.year],
-              ['Price / Unit', `$${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`],
+              canSeeCosts ? ['Price / Unit', `$${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`] : null,
               item.returnByDate ? ['Return By', item.returnByDate] : null,
             ]
               .filter(Boolean)
@@ -115,6 +194,12 @@ export default function InventoryDetail() {
                   <dd className="font-medium text-gray-800 text-right">{value}</dd>
                 </div>
               ))}
+            {isManager && (
+              <div className="flex justify-between gap-4 items-center pt-2 mt-1 border-t border-gray-100">
+                <dt className="text-gray-500">Non-Expendable (must be returned)</dt>
+                <dd><Toggle checked={item.isNonExpendable} onChange={(v) => setNonExpendable(item.id, v)} /></dd>
+              </div>
+            )}
           </dl>
           {item.notes && (
             <div className="mt-4 pt-4 border-t border-gray-100">
@@ -132,6 +217,43 @@ export default function InventoryDetail() {
               {item.serialNumbers.map((sn) => (
                 <li key={sn} className="font-mono text-sm text-gray-700 bg-gray-50 px-3 py-1.5 rounded">{sn}</li>
               ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Recertification */}
+        {item.recertification && item.recertification.units.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+            <h2 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-gray-400" /> Recertification
+            </h2>
+            <ul className="space-y-2">
+              {item.recertification.units.map((unit) => {
+                const status = recertStatus(unit, item.recertification!);
+                const due = recertDueDate(unit, item.recertification!).toISOString().slice(0, 10);
+                const style = RECERT_STATUS_STYLE[status];
+                return (
+                  <li key={unit.serialNumber} className="flex items-center justify-between gap-3 bg-gray-50 px-3 py-2 rounded">
+                    <div className="min-w-0">
+                      <p className="font-mono text-sm text-gray-700">{unit.serialNumber}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">Last certified {unit.lastCertifiedDate} · Due {due}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[11px] font-semibold rounded px-2 py-0.5" style={{ backgroundColor: style.bg, color: style.text }}>
+                        {style.label}
+                      </span>
+                      {isManager && status !== 'ok' && (
+                        <button
+                          onClick={() => markRecertified(item.id, unit.serialNumber)}
+                          className="text-[11px] font-medium text-[#00539F] hover:underline"
+                        >
+                          Mark Recertified
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
@@ -214,6 +336,13 @@ export default function InventoryDetail() {
           </div>
         )}
       </div>
+
+      {showWebcam && (
+        <WebcamCapture
+          onCapture={(dataUrl) => { setPhoto(item.id, dataUrl); setShowWebcam(false); }}
+          onClose={() => setShowWebcam(false)}
+        />
+      )}
     </div>
   );
 }

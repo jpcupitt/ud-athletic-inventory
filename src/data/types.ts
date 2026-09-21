@@ -44,6 +44,18 @@ export type DashboardWidget =
 
 // ── Inventory ──────────────────────────────────────────────
 
+export interface RecertUnit {
+  serialNumber: string;
+  /** ISO date of the unit's last NOCSAE recertification/reconditioning. */
+  lastCertifiedDate: string;
+}
+
+export interface RecertPolicy {
+  /** How often each unit must be sent out for recertification. */
+  intervalMonths: number;
+  units: RecertUnit[];
+}
+
 export interface InventoryItem {
   id: string;
   itemId: string;
@@ -63,6 +75,8 @@ export interface InventoryItem {
   isSerialized: boolean;
   serialNumbers?: string[];
   notes?: string;
+  /** Present only for equipment subject to recertification, e.g. football/lacrosse helmets. */
+  recertification?: RecertPolicy;
 }
 
 // ── People ──────────────────────────────────────────────────
@@ -171,7 +185,7 @@ export interface AppUser {
   id: string;
   name: string;
   email: string;
-  role: 'manager' | 'viewer';
+  role: 'manager' | 'student_manager' | 'viewer';
   isLead: boolean;
   assignedSports: Sport[];
 }

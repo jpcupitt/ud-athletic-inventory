@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { X, Search } from 'lucide-react';
 import { useInventory } from '../context/InventoryContext';
+import { useAuth } from '../context/AuthContext';
 import { newIssueId } from '../utils/ids';
 import type { IssuedItem, Sport } from '../data/types';
 
@@ -12,6 +13,8 @@ interface Props {
 
 export default function IssueModal({ personName, onClose, onIssue }: Props) {
   const { items, archivedIds, issueItem } = useInventory();
+  const { user } = useAuth();
+  const canSeeCosts = user?.role !== 'student_manager';
   const [search, setSearch] = useState('');
   const [selectedItemId, setSelectedItemId] = useState('');
   const [qty, setQty] = useState(1);
@@ -101,7 +104,7 @@ export default function IssueModal({ personName, onClose, onIssue }: Props) {
                       <div className={`font-medium ${item.qtyOnHand < 3 ? 'text-red-600' : item.qtyOnHand < 10 ? 'text-amber-600' : 'text-gray-700'}`}>
                         {item.qtyOnHand} on hand
                       </div>
-                      <div className="text-gray-400 text-[10px]">${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} each</div>
+                      {canSeeCosts && <div className="text-gray-400 text-[10px]">${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} each</div>}
                     </div>
                   </button>
                 ))

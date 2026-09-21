@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserPrefsProvider } from './context/UserPrefsContext';
@@ -25,6 +26,13 @@ import { OrdersProvider } from './context/OrdersContext';
 import { AthletesProvider } from './context/AthletesContext';
 import { StaffProvider } from './context/StaffContext';
 
+/** Student managers get inventory + issuing only — no orders, reports, or budget. */
+function RequireNotStudentManager({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  if (user?.role === 'student_manager') return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 function AppRoutes() {
   const { user, isLoading, page } = useAuth();
 
@@ -51,16 +59,16 @@ function AppRoutes() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/inventory" element={<InventoryList />} />
           <Route path="/inventory/:itemId" element={<InventoryDetail />} />
-          <Route path="/orders" element={<OrdersList />} />
-          <Route path="/orders/:orderId" element={<OrderDetail />} />
+          <Route path="/orders" element={<RequireNotStudentManager><OrdersList /></RequireNotStudentManager>} />
+          <Route path="/orders/:orderId" element={<RequireNotStudentManager><OrderDetail /></RequireNotStudentManager>} />
           <Route path="/athletes" element={<AthletesList />} />
           <Route path="/athletes/:athleteId" element={<AthleteProfile />} />
           <Route path="/staff" element={<StaffList />} />
           <Route path="/staff/:staffId" element={<StaffProfile />} />
-          <Route path="/reports" element={<Reports />} />
+          <Route path="/reports" element={<RequireNotStudentManager><Reports /></RequireNotStudentManager>} />
           <Route path="/returns" element={<ReturnDay />} />
           <Route path="/fitting" element={<FittingDay />} />
-          <Route path="/reorder" element={<SmartReorder />} />
+          <Route path="/reorder" element={<RequireNotStudentManager><SmartReorder /></RequireNotStudentManager>} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

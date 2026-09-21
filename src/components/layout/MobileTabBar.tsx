@@ -6,29 +6,35 @@ import { useAuth } from '../../context/AuthContext';
 const TABS = [
   { label: 'Dashboard', to: '/', icon: LayoutDashboard },
   { label: 'Inventory', to: '/inventory', icon: Package },
-  { label: 'Orders', to: '/orders', icon: ShoppingCart },
+  { label: 'Orders', to: '/orders', icon: ShoppingCart, hideFor: ['student_manager'] },
+  { label: 'Staff', to: '/staff', icon: UserCog, onlyFor: ['student_manager'] },
   { label: 'Athletes', to: '/athletes', icon: Users },
 ];
 
 const MORE_LINKS = [
-  { label: 'Staff', to: '/staff', icon: UserCog },
-  { label: 'Reports', to: '/reports', icon: BarChart3 },
+  { label: 'Staff', to: '/staff', icon: UserCog, hideFor: ['student_manager'] },
+  { label: 'Reports', to: '/reports', icon: BarChart3, hideFor: ['student_manager'] },
   { label: 'Settings', to: '/settings', icon: Settings },
 ];
 
 const EQUIPMENT_ROOM_LINKS = [
   { label: 'Fitting Day', to: '/fitting', icon: Shirt },
   { label: 'Return Day', to: '/returns', icon: ClipboardCheck },
-  { label: 'Smart Reorder', to: '/reorder', icon: PackagePlus },
+  { label: 'Smart Reorder', to: '/reorder', icon: PackagePlus, hideFor: ['student_manager'] },
 ];
 
 export default function MobileTabBar() {
-  const { user, logout } = useAuth();
+  const { user, logout, switchDemoRole } = useAuth();
   const [showMore, setShowMore] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const role = user?.role ?? '';
 
-  const moreActive = [...MORE_LINKS, ...EQUIPMENT_ROOM_LINKS].some((l) => location.pathname.startsWith(l.to));
+  const visibleTabs = TABS.filter((t) => !t.hideFor?.includes(role) && (!t.onlyFor || t.onlyFor.includes(role)));
+  const visibleMoreLinks = MORE_LINKS.filter((l) => !l.hideFor?.includes(role));
+  const visibleEquipRoomLinks = EQUIPMENT_ROOM_LINKS.filter((l) => !l.hideFor?.includes(role));
+
+  const moreActive = [...visibleMoreLinks, ...visibleEquipRoomLinks].some((l) => location.pathname.startsWith(l.to));
 
   const initials = user
     ? user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -57,8 +63,33 @@ export default function MobileTabBar() {
               </div>
             </div>
 
+            {/* Demo View switcher — presenter-only toggle, no logout required. */}
+            {(user?.role === 'manager' || user?.role === 'student_manager') && (
+              <div className="border-b border-gray-100 px-5 py-3">
+                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Demo View</p>
+                <div className="flex rounded-lg bg-gray-100 p-0.5">
+                  <button
+                    onClick={() => switchDemoRole('manager')}
+                    className={`flex-1 text-xs font-medium rounded-md py-1.5 transition-colors ${
+                      user?.role === 'manager' ? 'bg-white text-[#003c71] shadow-sm' : 'text-gray-500'
+                    }`}
+                  >
+                    Head Manager
+                  </button>
+                  <button
+                    onClick={() => switchDemoRole('student_manager')}
+                    className={`flex-1 text-xs font-medium rounded-md py-1.5 transition-colors ${
+                      user?.role === 'student_manager' ? 'bg-white text-[#003c71] shadow-sm' : 'text-gray-500'
+                    }`}
+                  >
+                    Student Manager
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="py-1">
-              {MORE_LINKS.map((link) => {
+              {visibleMoreLinks.map((link) => {
                 const Icon = link.icon;
                 const active = location.pathname.startsWith(link.to);
                 return (
@@ -77,7 +108,7 @@ export default function MobileTabBar() {
             {/* Equipment Room tools */}
             <div className="border-t border-gray-100 py-1">
               <p className="px-5 pt-2 pb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Equipment Room</p>
-              {EQUIPMENT_ROOM_LINKS.map((link) => {
+              {visibleEquipRoomLinks.map((link) => {
                 const Icon = link.icon;
                 const active = location.pathname.startsWith(link.to);
                 return (
@@ -108,7 +139,7 @@ export default function MobileTabBar() {
 
       {/* Bottom tab bar */}
       <nav className="bg-[#003c71] border-t border-white/10 flex shrink-0">
-        {TABS.map((tab) => {
+        {visibleTabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <NavLink

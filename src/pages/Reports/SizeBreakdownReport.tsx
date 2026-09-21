@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useAthletes } from '../../context/AthletesContext';
 import { useStaff } from '../../context/StaffContext';
-import type { Sport } from '../../data/types';
+import type { Athlete, Sport } from '../../data/types';
 
 const ALL_SPORTS: Sport[] = [
   'Baseball', "Basketball, Men's", "Basketball, Women's", 'Cross Country', 'Field Hockey',
@@ -13,7 +13,11 @@ const ALL_SPORTS: Sport[] = [
 
 const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
-type SizeType = 'shirt' | 'shorts' | 'shoe';
+const FIXED_SIZE_TYPES = ['shirt', 'shorts', 'shoe'] as const;
+type FixedSizeType = (typeof FIXED_SIZE_TYPES)[number];
+/** Fixed size types (shirt/shorts/shoe) plus any custom size-chart label a
+ *  manager has added on an athlete profile (e.g. "Compression Shirt"). */
+type SizeType = string;
 
 function countSizes(values: (string | undefined)[]): Record<string, number> {
   const counts: Record<string, number> = {};
@@ -62,11 +66,36 @@ export default function SizeBreakdownReport() {
 
   const allPeople = [...filteredAthletes, ...filteredStaff];
 
+  // Custom size-chart labels athletes have on file (e.g. "Compression Shirt"),
+  // offered as extra breakdown types alongside the fixed shirt/shorts/shoe fields.
+  const customLabels = useMemo(() => {
+    const set = new Set<string>();
+    filteredAthletes.forEach((a) => (a.customSizes ?? []).forEach((c) => {
+      const label = c.label.trim();
+      if (label) set.add(label);
+    }));
+    return Array.from(set).sort();
+  }, [filteredAthletes]);
+
+  function isFixedSizeType(t: SizeType): t is FixedSizeType {
+    return (FIXED_SIZE_TYPES as readonly string[]).includes(t);
+  }
+
+  // If the selected custom label filters out of view (sport/type filter changed), fall back to Shirt.
+  useEffect(() => {
+    if (!isFixedSizeType(sizeType) && !customLabels.includes(sizeType)) {
+      setSizeType('shirt');
+    }
+  }, [customLabels, sizeType]);
+
   const sizeValues = useMemo(() => {
     return allPeople.map((p) => {
       if (sizeType === 'shirt') return p.shirtSize;
       if (sizeType === 'shorts') return p.shortsSize;
-      return p.shoeSize;
+      if (sizeType === 'shoe') return p.shoeSize;
+      // Custom label — only athletes carry a size chart.
+      const customSizes = (p as Athlete).customSizes;
+      return customSizes?.find((c) => c.label.trim().toLowerCase() === sizeType.toLowerCase())?.value;
     });
   }, [allPeople, sizeType]);
 
@@ -117,14 +146,23 @@ export default function SizeBreakdownReport() {
           <option value="athlete">Athletes Only</option>
           <option value="staff">Staff Only</option>
         </select>
-        <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5">
-          {(['shirt', 'shorts', 'shoe'] as SizeType[]).map((t) => (
+        <div className="flex items-center gap-1 bg-gray-100 rounded p-0.5 flex-wrap">
+          {FIXED_SIZE_TYPES.map((t) => (
             <button
               key={t}
               onClick={() => setSizeType(t)}
               className={`px-3 py-1 text-xs rounded capitalize transition-colors ${sizeType === t ? 'bg-white text-[#003c71] font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             >
               {t}
+            </button>
+          ))}
+          {customLabels.map((label) => (
+            <button
+              key={label}
+              onClick={() => setSizeType(label)}
+              className={`px-3 py-1 text-xs rounded transition-colors ${sizeType === label ? 'bg-white text-[#003c71] font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              {label}
             </button>
           ))}
         </div>

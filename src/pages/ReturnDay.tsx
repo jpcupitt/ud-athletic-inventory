@@ -17,7 +17,8 @@ export default function ReturnDay() {
   const { accessibleSports } = useSportsAccess();
   const { athletes, resolveIssuedItem, unresolveIssuedItem } = useAthletes();
   const { items: inventoryItems, returnItem, issueItem } = useInventory();
-  const isManager = user?.role === 'manager';
+  const canTransact = user?.role === 'manager' || user?.role === 'student_manager';
+  const canSeeCosts = user?.role !== 'student_manager';
 
   const { activeSport, setActiveSport } = useActiveSport();
   // Return Day works one team at a time — 'All Sports' falls back to the first team
@@ -132,7 +133,7 @@ export default function ReturnDay() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-800 truncate">{item.description}</p>
                       <p className="text-xs text-gray-400 mt-0.5">
-                        Qty {item.qty} · issued {item.issuedDate} · {money(item.qty * item.pricePerUnit)}
+                        Qty {item.qty} · issued {item.issuedDate}{canSeeCosts && ` · ${money(item.qty * item.pricePerUnit)}`}
                         {item.returnByDate && (() => {
                           const d = relativeDueDate(item.returnByDate);
                           return (
@@ -143,7 +144,7 @@ export default function ReturnDay() {
                         })()}
                       </p>
                     </div>
-                    {isManager && (
+                    {canTransact && (
                       <div className="flex gap-2 shrink-0">
                         <button
                           onClick={() => resolve(athlete.id, item.issueId ?? item.itemId, item.itemId, 'returned', item.qty, item.description)}
@@ -174,6 +175,7 @@ export default function ReturnDay() {
       )}
 
       {/* Owes list */}
+      {canSeeCosts && (
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
         <h2 className="text-sm font-semibold text-gray-700 mb-1 flex items-center gap-2">
           <DollarSign className="w-4 h-4 text-gray-400" /> Owes List
@@ -215,6 +217,7 @@ export default function ReturnDay() {
           </>
         )}
       </div>
+      )}
       {/* Undo toast */}
       {lastAction && (
         <div className="fixed bottom-24 md:bottom-6 inset-x-4 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 z-[95] bg-gray-900 text-white text-sm rounded-lg px-4 py-3 shadow-lg flex items-center gap-3 md:min-w-[340px]">

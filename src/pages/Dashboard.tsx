@@ -28,7 +28,7 @@ const CHART_OPTIONS = [
   { id: 'transaction-history', label: 'Transaction History' },
   { id: 'budget',              label: 'Budget' },
   { id: 'orders-arriving',     label: 'Orders Arriving' },
-  { id: 'football-nonexp',     label: 'Football Non Negotiables' },
+  { id: 'football-nonexp',     label: 'Football Nonexpenditure' },
 ] as const;
 
 
@@ -319,7 +319,8 @@ export default function Dashboard() {
   const arrivingOrders = filterBySports(orders, (o) => [o.sport]).filter((o) => o.status !== 'complete');
 
   // Football-only live tracking for non-expendable gear (helmets, shoulder pads, travel
-  // gear) — lets the equipment room see at a glance what's still out each week.
+  // gear) — lets the equipment room see at a glance what's still out each week. Always
+  // shown regardless of the header sport picker, not narrowed like the other panels.
   const footballNonExpendables = accessibleSports.includes('Football') || isLead
     ? allInventoryItems
         .filter((i) => i.isNonExpendable && i.sports.includes('Football'))
@@ -827,7 +828,7 @@ export default function Dashboard() {
       <div className="relative lg:flex-1 h-80 bg-white rounded-lg flex flex-col" style={{ minWidth: '280px', ...(removeMode ? { border: '3px solid #4B5563' } : { border: '1px solid #e5e7eb' }) }}>
         {removeMode && <RemoveOverlay onRemove={() => setVisibleCharts((v) => { const n = new Set(v); n.delete('football-nonexp'); return n; })} />}
         <div className="flex items-center px-2 md:px-5" style={{ paddingTop: '0.05in', paddingBottom: '0.1in' }}>
-          <span className="flex-1 text-sm font-semibold text-gray-700" style={{ padding: '0.08in 0.15in' }}>Football Non Negotiables</span>
+          <span className="flex-1 text-sm font-semibold text-gray-700" style={{ padding: '0.08in 0.15in' }}>Football Nonexpenditure</span>
         </div>
         <div className="px-3 pb-2 flex-1" style={{ paddingTop: '0.2in' }}>
           {footballNonExpChartData.length === 0 ? (

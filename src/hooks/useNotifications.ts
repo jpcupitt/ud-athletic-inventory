@@ -5,6 +5,7 @@ import { useOrders } from '../context/OrdersContext';
 import { useAthletes } from '../context/AthletesContext';
 import { useStaff } from '../context/StaffContext';
 import { useSportsAccess } from './useSportsAccess';
+import { useActiveSport } from '../context/SportContext';
 import { recertDueDate, recertStatus } from '../utils/recert';
 
 export interface OverdueReturn {
@@ -49,12 +50,18 @@ export function useNotifications() {
   const { athletes } = useAthletes();
   const { staff } = useStaff();
   const { isLead, assignedSet } = useSportsAccess();
+  const { activeSport } = useActiveSport();
 
-  // Sport-scope helper — matches the filtering the pages use so the bell/badges
-  // reflect only what the current user can actually see.
+  // Sport-scope helper — matches filterBySports (role access, then narrowed to
+  // whatever sport is picked in the header) so the bell/badges always reflect
+  // the same sport the rest of the app is currently showing.
   const inScope = useMemo(
-    () => (sports: string[]) => isLead || sports.some((s) => assignedSet.has(s)),
-    [isLead, assignedSet]
+    () => (sports: string[]) => {
+      const roleOk = isLead || sports.some((s) => assignedSet.has(s));
+      if (!roleOk) return false;
+      return activeSport === 'All Sports' || sports.includes(activeSport);
+    },
+    [isLead, assignedSet, activeSport]
   );
 
   const overdueReturns = useMemo<OverdueReturn[]>(() => {

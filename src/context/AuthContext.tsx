@@ -56,7 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Public demo link (for now): anyone opening the app lands signed in as the
   // head manager with full access, instead of hitting the login screen first.
   // Revert this default to `null` to restore normal gated login.
-  const [user, setUser] = usePersistentState<AppUser | null>('session', () => MANAGER_USER);
+  // Key is "session2" (not "session") so browsers that already cached the old
+  // Bryce Parry / limited-sports identity get migrated to the new default
+  // instead of keeping their stale session forever.
+  const [user, setUser] = usePersistentState<AppUser | null>('session2', () => MANAGER_USER);
   const [isLoading] = useState(false);
   const [page, setPage] = useState<'login' | 'signup'>('login');
 

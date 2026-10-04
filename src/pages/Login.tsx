@@ -18,12 +18,12 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-dvh flex items-center justify-center relative px-6 py-8" style={{ backgroundImage: 'url(/delaware-stadium.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div className="min-h-dvh flex items-center justify-center relative px-6 py-8" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}delaware-stadium.jpg)`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.45)' }} />
       <div className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-10" style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)' }}>
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
-          <img src="/ud-athletics-logo-white.png" alt="UD Athletics" className="h-16 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="h-16 w-auto" />
         </div>
 
         {/* Form */}

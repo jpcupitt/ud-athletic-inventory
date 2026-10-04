@@ -38,7 +38,7 @@ export default function SignUp() {
   return (
     <div
       className="min-h-dvh flex items-center justify-center relative px-6 py-8"
-      style={{ backgroundImage: 'url(/delaware-stadium.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+      style={{ backgroundImage: `url(${import.meta.env.BASE_URL}delaware-stadium.jpg)`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.45)' }} />
 
@@ -48,7 +48,7 @@ export default function SignUp() {
       >
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
-          <img src="/ud-athletics-logo-white.png" alt="UD Athletics" className="h-16 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="h-16 w-auto" />
         </div>
 
         {/* Step: email */}

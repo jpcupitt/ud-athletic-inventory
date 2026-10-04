@@ -76,7 +76,7 @@ export default function NavBar() {
       <div className="flex items-center self-stretch overflow-x-auto px-4 gap-4 flex-1 min-w-0">
         {/* Logo */}
         <div className="flex items-center mr-2 shrink-0">
-          <img src="/ud-athletics-logo-white.png" alt="UD Athletics" className="h-6 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="h-6 w-auto" />
         </div>
 
         {/* Nav links (desktop only — mobile uses the bottom tab bar) */}

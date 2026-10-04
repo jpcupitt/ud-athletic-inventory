@@ -384,9 +384,9 @@ export default function Dashboard() {
             {!isStudentManager && <NotifBadge label="New Open Status" count={ordersForApproval.length} color="bg-[#00539F]" onClick={() => setShowNewOpenStatus(true)} />}
             <NotifBadge label="Overdue Returns" count={overdueReturns.length} color="bg-[#00a0df]" onClick={() => setShowOverdueReturns(true)} />
             {recertsDue.length > 0 && (
-              <NotifBadge label="Recerts Due" count={recertsDue.length} color="bg-[#800000]" onClick={() => setShowRecertsDue(true)} />
+              <NotifBadge label="Helmet Recerts Due" count={recertsDue.length} color="bg-[#800000]" onClick={() => setShowRecertsDue(true)} />
             )}
-            {footballNonExpendables.length > 0 && (
+            {footballNonExpendables.length > 0 && (chartSport === 'All Sports' || chartSport === 'Football') && (
               <NotifBadge
                 label="Football Gear Out"
                 count={footballNonExpendables.reduce((s, i) => s + i.outCount, 0)}
@@ -1016,7 +1016,7 @@ export default function Dashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setShowRecertsDue(false)}>
           <div className="bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden w-[calc(100vw-2rem)] max-w-[360px] max-h-[520px]" onClick={(e) => e.stopPropagation()}>
             <div className="relative flex items-center justify-center shrink-0" style={{ padding: '0.1in', backgroundColor: '#003c71' }}>
-              <h2 className="text-sm font-semibold text-white">Recertification Due</h2>
+              <h2 className="text-sm font-semibold text-white">Helmet Recertification Due</h2>
               <button onClick={() => setShowRecertsDue(false)} className="absolute text-white hover:opacity-70" style={{ right: '0.1in' }}><X className="w-4 h-4" /></button>
             </div>
             <div className="flex-1 overflow-y-auto" style={{ padding: '0.05in' }}>

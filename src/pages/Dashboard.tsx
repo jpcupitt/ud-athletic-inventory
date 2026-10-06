@@ -836,19 +836,42 @@ export default function Dashboard() {
           ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={footballNonExpChartData} margin={{ top: 2, right: 4, left: 10, bottom: 20 }}>
-              <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'Item', position: 'insideBottom', offset: -10, fontSize: 14, fill: '#6b7280' }} />
+              <XAxis
+                dataKey="name"
+                tick={(props: any) => {
+                  const { x, y, payload } = props;
+                  const isHelmets = payload.value === 'Helmets';
+                  return (
+                    <text
+                      x={x}
+                      y={y + 10}
+                      textAnchor="middle"
+                      fontSize={10}
+                      fill={isHelmets ? '#00539F' : '#6b7280'}
+                      fontWeight={isHelmets ? 700 : 400}
+                      style={isHelmets ? { cursor: 'pointer', textDecoration: 'underline' } : undefined}
+                      onClick={isHelmets ? () => setShowHelmetBreakdown(true) : undefined}
+                    >
+                      {payload.value}
+                    </text>
+                  );
+                }}
+                axisLine={false}
+                tickLine={false}
+                label={{ value: 'Item', position: 'insideBottom', offset: -10, fontSize: 14, fill: '#6b7280' }}
+              />
               <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} ticks={footballNonExpTicks} domain={[0, footballNonExpMax]} label={{ value: 'Count', angle: -90, position: 'insideLeft', offset: 10, fontSize: 14, fill: '#6b7280' }} />
               <Tooltip content={<FootballTooltip />} />
               <Bar
                 dataKey="checkedIn" name="Checked In" fill="#00539F" radius={[2, 2, 0, 0]} maxBarSize={30}
-                onClick={(data: any) => { if (data?.name === 'Helmets') setShowHelmetBreakdown(true); }}
+                onClick={(data: any) => { if (data?.payload?.name === 'Helmets') setShowHelmetBreakdown(true); }}
                 cursor="pointer"
               >
                 <LabelList dataKey="checkedIn" content={(props) => <BarLabel {...(props as any)} />} />
               </Bar>
               <Bar
                 dataKey="out" name="Out" fill="#FEE2E2" stroke="#800000" strokeWidth={1} radius={[2, 2, 0, 0]} maxBarSize={30}
-                onClick={(data: any) => { if (data?.name === 'Helmets') setShowHelmetBreakdown(true); }}
+                onClick={(data: any) => { if (data?.payload?.name === 'Helmets') setShowHelmetBreakdown(true); }}
                 cursor="pointer"
               >
                 <LabelList dataKey="out" content={(props) => <BarLabel {...(props as any)} insideColor="#800000" />} />

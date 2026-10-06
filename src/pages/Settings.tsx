@@ -1,8 +1,31 @@
 import { useState, useEffect } from 'react';
-import { Upload, ChevronRight, RotateCcw } from 'lucide-react';
+import { Upload, ChevronRight, RotateCcw, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
-import { clearPersistedState } from '../hooks/usePersistentState';
+import { clearPersistedState, usePersistentState } from '../hooks/usePersistentState';
+
+interface Member {
+  name: string;
+  phone: string;
+  email: string;
+  assignedSports: string[];
+  role: 'Equipment Manager' | 'Student Manager' | 'Assistant Coach' | 'Viewer';
+}
+
+const DEFAULT_MEMBERS: Member[] = [
+  { name: 'Peter Stevens', phone: '', email: 'pstevens@udel.edu', assignedSports: [], role: 'Equipment Manager' },
+  { name: 'Taylor Reed', phone: '', email: 'treed@udel.edu', assignedSports: [], role: 'Student Manager' },
+  { name: 'Coach Demo', phone: '', email: 'demo@udel.edu', assignedSports: [], role: 'Viewer' },
+  { name: 'Sarah Collins', phone: '', email: 'scollins@udel.edu', assignedSports: [], role: 'Viewer' },
+  { name: 'Marcus Reed', phone: '', email: 'mreed@udel.edu', assignedSports: [], role: 'Viewer' },
+];
+
+const ROLE_BADGE_STYLE: Record<Member['role'], string> = {
+  'Equipment Manager': 'bg-[#DAEAF5] text-[#00539F]',
+  'Student Manager': 'bg-amber-50 text-amber-700',
+  'Assistant Coach': 'bg-purple-50 text-purple-700',
+  'Viewer': 'bg-gray-100 text-gray-600',
+};
 
 type Tab = 'general' | 'notifications' | 'security' | 'appearance' | 'members';
 
@@ -85,6 +108,38 @@ export default function Settings() {
     setAssignedSports((prev) =>
       prev.includes(sport) ? prev.filter((s) => s !== sport) : [...prev, sport]
     );
+  }
+
+  // Members & Roles / Invite Member
+  const [members, setMembers] = usePersistentState<Member[]>('members', () => DEFAULT_MEMBERS);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteName, setInviteName] = useState('');
+  const [invitePhone, setInvitePhone] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteSports, setInviteSports] = useState<string[]>([]);
+  const [inviteRole, setInviteRole] = useState<'Student Manager' | 'Assistant Coach'>('Student Manager');
+
+  function toggleInviteSport(sport: string) {
+    setInviteSports((prev) =>
+      prev.includes(sport) ? prev.filter((s) => s !== sport) : [...prev, sport]
+    );
+  }
+
+  function resetInviteForm() {
+    setInviteName('');
+    setInvitePhone('');
+    setInviteEmail('');
+    setInviteSports([]);
+    setInviteRole('Student Manager');
+  }
+
+  function handleInviteMember() {
+    setMembers((prev) => [
+      ...prev,
+      { name: inviteName, phone: invitePhone, email: inviteEmail, assignedSports: inviteSports, role: inviteRole },
+    ]);
+    setShowInviteModal(false);
+    resetInviteForm();
   }
 
   // Notification toggles
@@ -394,29 +449,29 @@ export default function Settings() {
           {tab === 'members' && (
             <div className="flex flex-col" style={{ gap: '0.1in' }}>
               <p className="text-sm font-semibold text-gray-700 mb-1">Members & Roles</p>
-              {[
-                { name: 'Peter Stevens', email: 'pstevens@udel.edu',  role: 'Equipment Manager' },
-                { name: 'Taylor Reed',   email: 'treed@udel.edu',     role: 'Student Manager' },
-                { name: 'Coach Demo',    email: 'demo@udel.edu',      role: 'Viewer' },
-                { name: 'Sarah Collins', email: 'scollins@udel.edu',  role: 'Viewer' },
-                { name: 'Marcus Reed',   email: 'mreed@udel.edu',     role: 'Viewer' },
-              ].map((m) => (
-                <div key={m.email} className="flex items-center justify-between border-b border-gray-100" style={{ padding: '0.05in 0' }}>
-                  <div className="flex items-center gap-3">
+              {members.map((m) => (
+                <div key={m.email} className="flex items-center justify-between gap-3 border-b border-gray-100" style={{ padding: '0.05in 0' }}>
+                  <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-full bg-[#DAEAF5] flex items-center justify-center text-[#00539F] text-xs font-bold shrink-0">
                       {m.name.split(' ').map((n) => n[0]).join('')}
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-800 font-medium">{m.name}</p>
-                      <p className="text-xs text-gray-400">{m.email}</p>
+                    <div className="min-w-0">
+                      <p className="text-sm text-gray-800 font-medium truncate">{m.name}</p>
+                      <p className="text-xs text-gray-400 truncate">{m.email}{m.phone ? ` · ${m.phone}` : ''}</p>
+                      {m.assignedSports.length > 0 && (
+                        <p className="text-xs text-gray-400 truncate mt-0.5">{m.assignedSports.join(', ')}</p>
+                      )}
                     </div>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${m.role === 'Equipment Manager' ? 'bg-[#DAEAF5] text-[#00539F]' : m.role === 'Student Manager' ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${ROLE_BADGE_STYLE[m.role]}`}>
                     {m.role}
                   </span>
                 </div>
               ))}
-              <button className="self-start mt-2 px-4 py-1.5 border border-[#00539F] text-[#00539F] text-xs rounded hover:bg-[#EEF4FB] font-medium">
+              <button
+                onClick={() => setShowInviteModal(true)}
+                className="self-start mt-2 px-4 py-1.5 border border-[#00539F] text-[#00539F] text-xs rounded hover:bg-[#EEF4FB] font-medium"
+              >
                 + Invite Member
               </button>
             </div>
@@ -424,6 +479,112 @@ export default function Settings() {
 
         </div>
       </div>
+
+      {/* Invite Member modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowInviteModal(false)}>
+          <div
+            className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-md md:h-auto md:max-h-[90vh] md:rounded-xl"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl shrink-0" style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+              <span className="text-white font-semibold text-sm">Invite Member</span>
+              <button onClick={() => { setShowInviteModal(false); resetInviteForm(); }} className="text-white hover:opacity-70">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="overflow-y-auto flex-1" style={{ padding: '0.15in 0.2in' }}>
+              <div style={{ padding: '0.05in 0' }}>
+                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Name</label>
+                <input
+                  type="text"
+                  value={inviteName}
+                  onChange={(e) => setInviteName(e.target.value)}
+                  placeholder="Full name"
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                  style={{ padding: '0.05in' }}
+                />
+              </div>
+
+              <div style={{ padding: '0.05in 0' }}>
+                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Phone</label>
+                <input
+                  type="tel"
+                  value={invitePhone}
+                  onChange={(e) => setInvitePhone(e.target.value)}
+                  placeholder="(302) 555-0100"
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                  style={{ padding: '0.05in' }}
+                />
+              </div>
+
+              <div style={{ padding: '0.05in 0' }}>
+                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Email</label>
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="name@udel.edu"
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                  style={{ padding: '0.05in' }}
+                />
+              </div>
+
+              <div style={{ padding: '0.05in 0' }}>
+                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Role</label>
+                <select
+                  value={inviteRole}
+                  onChange={(e) => setInviteRole(e.target.value as 'Student Manager' | 'Assistant Coach')}
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                  style={{ padding: '0.05in' }}
+                >
+                  <option value="Student Manager">Student</option>
+                  <option value="Assistant Coach">Assistant</option>
+                </select>
+              </div>
+
+              <div style={{ padding: '0.05in 0' }}>
+                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Assigned Sports</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {ALL_SPORTS.map((sport) => {
+                    const active = inviteSports.includes(sport);
+                    return (
+                      <button
+                        key={sport}
+                        type="button"
+                        onClick={() => toggleInviteSport(sport)}
+                        className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors border ${
+                          active
+                            ? 'bg-[#00539F] text-white border-[#00539F]'
+                            : 'bg-white text-gray-500 border-gray-300 hover:border-[#00539F] hover:text-[#00539F]'
+                        }`}
+                      >
+                        {sport}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Submit */}
+              <div style={{ marginTop: '0.1in', padding: '0.05in 0' }}>
+                <button
+                  onClick={handleInviteMember}
+                  disabled={!inviteName || !inviteEmail}
+                  className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
+                  style={{ backgroundColor: '#003c71', padding: '0.08in' }}
+                >
+                  Send Invite
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

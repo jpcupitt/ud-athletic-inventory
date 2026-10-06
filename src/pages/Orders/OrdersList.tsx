@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, X, Upload } from 'lucide-react';
+import { Search, X, Upload, Loader2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useAuth } from '../../context/AuthContext';
 import { useOrders } from '../../context/OrdersContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
 import { useActiveSport } from '../../context/SportContext';
+import { parsePdfOrder } from '../../utils/parsePdfOrder';
 import type { Order, OrderLine, OrderStatus, Sport } from '../../data/types';
 
 const ALL_SPORTS: Sport[] = [
@@ -59,6 +60,8 @@ export default function OrdersList() {
   const [newOrderDate, setNewOrderDate] = useState(new Date().toISOString().split('T')[0]);
   const [newVendor, setNewVendor] = useState('');
   const [newLines, setNewLines] = useState<OrderLine[]>([{ description: '', qtyOrdered: 0, qtyReceived: 0 }]);
+  const [analyzingPdf, setAnalyzingPdf] = useState(false);
+  const [pdfAnalyzeError, setPdfAnalyzeError] = useState('');
 
   const allOrders = localOrders;
   const scopedOrders = useMemo(() => filterBySports(allOrders, (o) => [o.sport]), [allOrders, filterBySports]);
@@ -107,11 +110,37 @@ export default function OrdersList() {
     setNewOrderDate(new Date().toISOString().split('T')[0]);
     setNewVendor('');
     setNewLines([{ description: '', qtyOrdered: 0, qtyReceived: 0 }]);
+    setPdfAnalyzeError('');
+  }
+
+  async function handlePdfUpload(file: File) {
+    setPdfAnalyzeError('');
+    setAnalyzingPdf(true);
+    try {
+      const parsed = await parsePdfOrder(file);
+      setNewRefNumber((v) => v || parsed.refNumber);
+      setNewVendor((v) => v || parsed.vendor);
+      if (parsed.orderDate) setNewOrderDate(parsed.orderDate);
+      if (parsed.lines.length > 0) setNewLines(parsed.lines);
+      if (!parsed.refNumber && !parsed.vendor && parsed.lines.length === 0) {
+        setPdfAnalyzeError("Couldn't find order details in this PDF — enter them manually below.");
+      }
+    } catch (err) {
+      console.error('PDF analysis failed', err);
+      setPdfAnalyzeError("Couldn't read this PDF — enter order details manually below.");
+    } finally {
+      setAnalyzingPdf(false);
+    }
   }
 
   function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+      handlePdfUpload(file);
+      e.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (ev) => {
       const data = ev.target?.result;
@@ -431,12 +460,20 @@ export default function OrdersList() {
 
               {/* Upload confirmation / spreadsheet */}
               <div className="py-[0.05in] mb-[0.1in]">
-                <label className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-gray-200 rounded cursor-pointer hover:border-[#00539F] hover:bg-[#f0f7ff] transition-colors text-xs text-gray-500 hover:text-[#00539F] p-[0.12in]">
-                  <Upload className="w-4 h-4" />
-                  Upload order confirmation or spreadsheet (.xlsx, .xls, .csv)
-                  <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleFileUpload} />
+                <label className={`flex items-center justify-center gap-2 w-full border-2 border-dashed rounded cursor-pointer transition-colors text-xs p-[0.12in] ${
+                  analyzingPdf
+                    ? 'border-[#00539F] bg-[#f0f7ff] text-[#00539F] cursor-wait'
+                    : 'border-gray-200 hover:border-[#00539F] hover:bg-[#f0f7ff] text-gray-500 hover:text-[#00539F]'
+                }`}>
+                  {analyzingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {analyzingPdf ? 'Scanning PDF for order details…' : 'Upload order confirmation (.pdf) or spreadsheet (.xlsx, .xls, .csv)'}
+                  <input type="file" accept=".pdf,.xlsx,.xls,.csv" className="hidden" onChange={handleFileUpload} disabled={analyzingPdf} />
                 </label>
-                <p className="text-[10px] text-gray-400 text-center mt-1">Fields will be auto-filled from the file. You can edit them below.</p>
+                {pdfAnalyzeError ? (
+                  <p className="text-[10px] text-amber-600 text-center mt-1">{pdfAnalyzeError}</p>
+                ) : (
+                  <p className="text-[10px] text-gray-400 text-center mt-1">Fields will be auto-filled from the file. You can edit them below.</p>
+                )}
               </div>
 
               {/* Order ID (read-only) */}

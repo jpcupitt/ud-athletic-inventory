@@ -1,7 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Printer } from 'lucide-react';
 import { useAthletes } from '../../context/AthletesContext';
 import { useStaff } from '../../context/StaffContext';
 import type { Athlete, Sport } from '../../data/types';
+import { getAthleteSizes } from '../../utils/sizeChart';
 
 const ALL_SPORTS: Sport[] = [
   'Baseball', "Basketball, Men's", "Basketball, Women's", 'Cross Country', 'Field Hockey',
@@ -120,11 +122,28 @@ export default function SizeBreakdownReport() {
     }));
   }, [allPeople]);
 
+  // Paper size sheet for the equipment room — every athlete, grouped by sport,
+  // with every size-chart field they have on file (blank ones left for staff
+  // to pencil in by hand). Always the full roster, independent of the filters
+  // above, since this is meant to be a standing reference document.
+  const sizeSheetSports = useMemo(
+    () => ALL_SPORTS.filter((sport) => athletes.some((a) => a.sports.includes(sport))),
+    [athletes]
+  );
+
   return (
     <div className="flex flex-col gap-2 md:gap-[0.1in]">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-800">Size Breakdown</h1>
-        <span className="text-sm text-gray-400">{allPeople.length} person{allPeople.length !== 1 ? 's' : ''}</span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-gray-300 text-xs text-gray-600 hover:bg-gray-50 font-medium"
+          >
+            <Printer className="w-3.5 h-3.5" /> Print Size Sheet
+          </button>
+          <span className="text-sm text-gray-400">{allPeople.length} person{allPeople.length !== 1 ? 's' : ''}</span>
+        </div>
       </div>
 
       {/* Filters */}
@@ -281,6 +300,36 @@ export default function SizeBreakdownReport() {
           </tbody>
         </table>
         </div>
+      </div>
+
+      {/* Print-only: full size sheet, grouped by sport, one sport per printed page. */}
+      <div className="print-sheet hidden">
+        {sizeSheetSports.map((sport) => {
+          const roster = athletes
+            .filter((a) => a.sports.includes(sport))
+            .slice()
+            .sort((a, b) => a.lastName.localeCompare(b.lastName));
+          return (
+            <div key={sport} className="sheet-sport" style={{ marginBottom: '0.3in' }}>
+              <h2 style={{ fontSize: '16pt', fontWeight: 700, marginBottom: '0.05in' }}>{sport} — Size Sheet</h2>
+              <p style={{ fontSize: '9pt', color: '#666', marginBottom: '0.15in' }}>
+                {roster.length} athlete{roster.length !== 1 ? 's' : ''} · printed {new Date().toLocaleDateString()}
+              </p>
+              {roster.map((a) => (
+                <p key={a.id} className="sheet-row" style={{ fontSize: '11pt', lineHeight: 1.6, borderBottom: '1px solid #ddd', padding: '0.04in 0' }}>
+                  <strong>{a.lastName}, {a.firstName}</strong>
+                  {' — '}
+                  {getAthleteSizes(a).map((s, i) => (
+                    <span key={s.id}>
+                      {i > 0 && ', '}
+                      {s.label || 'Size'}: {s.value || '________'}
+                    </span>
+                  ))}
+                </p>
+              ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

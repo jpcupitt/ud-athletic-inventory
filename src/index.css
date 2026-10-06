@@ -55,6 +55,31 @@ html, body, #root {
     width: 2.5in !important;
     height: 2.5in !important;
   }
+
+  /* Printing the equipment-staff size sheet: hide the app, show only the sheet.
+     It's `hidden` (display:none) on screen, so the print rule must restore
+     `display` as well as `visibility` to actually render it. */
+  .print-sheet,
+  .print-sheet * {
+    visibility: visible;
+  }
+  .print-sheet {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.4in;
+  }
+  .print-sheet .sheet-sport {
+    break-before: page;
+  }
+  .print-sheet .sheet-sport:first-child {
+    break-before: avoid;
+  }
+  .print-sheet .sheet-row {
+    break-inside: avoid;
+  }
 }
 
 /* Mobile: inputs under 16px trigger iOS Safari auto-zoom on focus, so force 16px

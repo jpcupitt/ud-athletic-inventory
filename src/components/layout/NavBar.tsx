@@ -20,6 +20,7 @@ const EQUIPMENT_ROOM_LINKS = [
   { label: 'Fitting Day', to: '/fitting', hint: 'Bulk-issue a kit to the roster' },
   { label: 'Return Day', to: '/returns', hint: 'Check gear back in, build the owes list' },
   { label: 'Smart Reorder', to: '/reorder', hint: 'Draft orders for low-stock items', hideFor: ['student_manager'] },
+  { label: 'Spring Sale', to: '/spring-sale', hint: 'Archived gear priced for sale', hideFor: ['student_manager'] },
 ];
 
 export default function NavBar() {

@@ -19,12 +19,15 @@ import Settings from './pages/Settings';
 import ReturnDay from './pages/ReturnDay';
 import FittingDay from './pages/FittingDay';
 import SmartReorder from './pages/SmartReorder';
+import SpringSale from './pages/SpringSale';
+import IntakeForm from './pages/IntakeForm';
 import { SubmittedOrdersProvider } from './context/SubmittedOrdersContext';
 import { SportProvider } from './context/SportContext';
 import { InventoryProvider } from './context/InventoryContext';
 import { OrdersProvider } from './context/OrdersContext';
 import { AthletesProvider } from './context/AthletesContext';
 import { StaffProvider } from './context/StaffContext';
+import { PendingIntakesProvider } from './context/PendingIntakesContext';
 
 /** Student managers get inventory + issuing only — no orders, reports, or budget. */
 function RequireNotStudentManager({ children }: { children: ReactNode }) {
@@ -34,6 +37,16 @@ function RequireNotStudentManager({ children }: { children: ReactNode }) {
 }
 
 function AppRoutes() {
+  return (
+    <Routes>
+      {/* Public, no-login: the self-service equipment sizing form sent to new/transfer athletes. */}
+      <Route path="/intake/:token" element={<IntakeForm />} />
+      <Route path="*" element={<GatedApp />} />
+    </Routes>
+  );
+}
+
+function GatedApp() {
   const { user, isLoading, page } = useAuth();
 
   if (isLoading) {
@@ -69,6 +82,7 @@ function AppRoutes() {
           <Route path="/returns" element={<ReturnDay />} />
           <Route path="/fitting" element={<FittingDay />} />
           <Route path="/reorder" element={<RequireNotStudentManager><SmartReorder /></RequireNotStudentManager>} />
+          <Route path="/spring-sale" element={<RequireNotStudentManager><SpringSale /></RequireNotStudentManager>} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
@@ -93,7 +107,9 @@ export default function App() {
         style={{ height: 'env(safe-area-inset-top)', backgroundColor: '#003c71' }}
       />
       <AuthProvider>
-        <AppRoutes />
+        <PendingIntakesProvider>
+          <AppRoutes />
+        </PendingIntakesProvider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Upload, ChevronRight, RotateCcw, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
-import { clearPersistedState, usePersistentState } from '../hooks/usePersistentState';
+import { clearPersistedState, clearPersistedKeys, usePersistentState } from '../hooks/usePersistentState';
 
 interface Member {
   name: string;
@@ -324,17 +324,30 @@ export default function Settings() {
                 <p className="text-xs text-gray-500 mb-2">
                   Inventory, orders, athletes, and staff changes are saved on this device. Reset to restore the original sample data. This also clears your session and signs you out.
                 </p>
-                <button
-                  onClick={() => {
-                    if (window.confirm('Reset all saved data back to the original demo data? This will also sign you out. This cannot be undone.')) {
-                      clearPersistedState();
-                      window.location.href = '/';
-                    }
-                  }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-red-300 text-xs text-red-500 hover:bg-red-50 font-medium"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" /> Reset Demo Data
-                </button>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Clear out inventory (items, archive) to start real data entry? Athletes, staff, and orders stay as-is. This cannot be undone.')) {
+                        clearPersistedKeys(['inventory2', 'archived']);
+                        window.location.href = '/inventory';
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-amber-300 text-xs text-amber-600 hover:bg-amber-50 font-medium"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" /> Clear Inventory Only
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Reset all saved data back to the original demo data? This will also sign you out. This cannot be undone.')) {
+                        clearPersistedState();
+                        window.location.href = '/';
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-red-300 text-xs text-red-500 hover:bg-red-50 font-medium"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" /> Reset Everything
+                  </button>
+                </div>
               </div>
 
               {/* Sign out */}

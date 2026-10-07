@@ -99,7 +99,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const isStudentManager = user?.role === 'student_manager';
-  const { isLead, filterBySports, accessibleSports } = useSportsAccess();
+  const { isLead, filterBySports, accessibleSports, canAccess } = useSportsAccess();
   const { recordSubmission } = useSubmittedOrders();
   const { overdueReturns, lowInventory, ordersForApproval, recertsDue } = useNotifications();
   const { localOrders: orders } = useOrders();
@@ -321,7 +321,7 @@ export default function Dashboard() {
   // Football-only live tracking for non-expendable gear (helmets, shoulder pads, travel
   // gear) — lets the equipment room see at a glance what's still out each week. Always
   // shown regardless of the header sport picker, not narrowed like the other panels.
-  const footballNonExpendables = accessibleSports.includes('Football') || isLead
+  const footballNonExpendables = canAccess('Football')
     ? allInventoryItems
         .filter((i) => i.isNonExpendable && i.sports.includes('Football'))
         .map((i) => {

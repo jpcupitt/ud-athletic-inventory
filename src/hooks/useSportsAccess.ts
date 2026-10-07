@@ -17,23 +17,26 @@ export function useSportsAccess() {
 
   const isLead = user?.isLead ?? false;
   const assignedSet = useMemo(() => new Set<string>(user?.assignedSports ?? []), [user?.assignedSports]);
+  const excludedSet = useMemo(() => new Set<string>(user?.excludedSports ?? []), [user?.excludedSports]);
 
   function canAccess(sport: string): boolean {
+    if (excludedSet.has(sport)) return false;
     return isLead || assignedSet.has(sport);
   }
 
-  // Role scope first (which sports this account can see at all), then the
-  // sport picker next to the search bar narrows it further — pick a specific
-  // team there and every page that scopes its data this way shows only that team.
+  // Role scope first (which sports this account can see at all, minus any
+  // explicitly excluded sport even if isLead would otherwise grant it), then
+  // the sport picker next to the search bar narrows it further.
   function filterBySports<T>(items: T[], getSports: (item: T) => string[]): T[] {
-    const roleScoped = isLead ? items : items.filter((item) => getSports(item).some((s) => assignedSet.has(s)));
+    const roleScoped = (isLead ? items : items.filter((item) => getSports(item).some((s) => assignedSet.has(s))))
+      .filter((item) => excludedSet.size === 0 || getSports(item).some((s) => !excludedSet.has(s)));
     if (activeSport === 'All Sports') return roleScoped;
+    if (excludedSet.has(activeSport)) return [];
     return roleScoped.filter((item) => getSports(item).includes(activeSport));
   }
 
-  const accessibleSports: Sport[] = isLead
-    ? ALL_SPORTS
-    : (user?.assignedSports ?? []);
+  const accessibleSports: Sport[] = (isLead ? ALL_SPORTS : (user?.assignedSports ?? []))
+    .filter((s) => !excludedSet.has(s));
 
-  return { isLead, canAccess, filterBySports, accessibleSports, assignedSet };
+  return { isLead, canAccess, filterBySports, accessibleSports, assignedSet, excludedSet };
 }

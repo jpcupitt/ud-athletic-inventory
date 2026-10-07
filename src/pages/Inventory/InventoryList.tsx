@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Package, Search, Camera, Upload, Trash2, ScanLine } from 'lucide-react';
+import { Package, Search, Camera, Upload, Trash2, ScanLine, Tag, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useInventory } from '../../context/InventoryContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
@@ -35,6 +35,8 @@ export default function InventoryList() {
   const [viewMode, setViewMode] = useState<ViewMode>('summary');
   const [specialFilter, setSpecialFilter] = useState(searchParams.get('filter') ?? '');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showSpringSaleModal, setShowSpringSaleModal] = useState(false);
+  const [springSalePrices, setSpringSalePrices] = useState<Record<string, string>>({});
   const [showNewItem, setShowNewItem] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [scanMessage, setScanMessage] = useState('');
@@ -50,7 +52,7 @@ export default function InventoryList() {
   const [newQtyOnOrder, setNewQtyOnOrder] = useState('');
   const [newSport, setNewSport] = useState<Sport | ''>('');
   const [newPrice, setNewPrice] = useState('');
-  const { items: allItems, archivedIds, addItem, archiveItems, unarchiveItems } = useInventory();
+  const { items: allItems, archivedIds, addItem, archiveItems, unarchiveItems, setSpringSale } = useInventory();
   const [undoArchive, setUndoArchive] = useState<string[] | null>(null);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -493,6 +495,16 @@ export default function InventoryList() {
           <span className="text-sm text-gray-600 font-medium">{selectedIds.size} item{selectedIds.size !== 1 ? 's' : ''} selected</span>
           <button
             onClick={() => {
+              setSpringSalePrices({});
+              setShowSpringSaleModal(true);
+            }}
+            className="flex items-center gap-1 text-sm font-semibold text-white rounded-lg py-[0.05in] px-[0.15in]"
+            style={{ backgroundColor: '#00539F' }}
+          >
+            <Tag className="w-3.5 h-3.5" /> Move to Spring Sale
+          </button>
+          <button
+            onClick={() => {
               archiveItems(selectedIds);
               setUndoArchive([...selectedIds]);
               if (undoTimer.current) clearTimeout(undoTimer.current);
@@ -505,6 +517,61 @@ export default function InventoryList() {
             Delete
           </button>
           <button onClick={() => setSelectedIds(new Set())} className="text-sm text-gray-400 hover:text-gray-600">Cancel</button>
+        </div>
+      )}
+
+      {/* Move to Spring Sale — archives the selected items with an independent sale price */}
+      {showSpringSaleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowSpringSaleModal(false)}>
+          <div className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-md md:h-auto md:max-h-[85vh] md:rounded-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl" style={{ backgroundColor: '#003c71' }}>
+              <span className="text-white font-semibold text-sm">Move to Spring Sale</span>
+              <button onClick={() => setShowSpringSaleModal(false)} className="text-white hover:opacity-70"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="overflow-y-auto flex-1" style={{ padding: '0.15in 0.2in' }}>
+              <p className="text-xs text-gray-500 mb-3">
+                Set a sale price for each item — this is independent of its real cost, which stays unchanged in your records.
+              </p>
+              <div className="flex flex-col gap-2">
+                {[...selectedIds].map((id) => {
+                  const item = allItems.find((i) => i.id === id);
+                  if (!item) return null;
+                  return (
+                    <div key={id} className="flex items-center justify-between gap-2 bg-gray-50 rounded border border-gray-200" style={{ padding: '0.08in' }}>
+                      <span className="text-xs text-gray-700 truncate flex-1">{item.description}</span>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-xs text-gray-400">$</span>
+                        <input
+                          type="number" min={0} step="0.01"
+                          value={springSalePrices[id] ?? ''}
+                          onChange={(e) => setSpringSalePrices((prev) => ({ ...prev, [id]: e.target.value }))}
+                          placeholder="0.00"
+                          className="w-20 border border-gray-200 rounded text-xs text-right focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                          style={{ padding: '0.04in' }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => {
+                  selectedIds.forEach((id) => {
+                    const price = parseFloat(springSalePrices[id] ?? '');
+                    if (!isNaN(price) && price >= 0) setSpringSale(id, price);
+                  });
+                  archiveItems(selectedIds);
+                  setSelectedIds(new Set());
+                  setShowSpringSaleModal(false);
+                }}
+                disabled={[...selectedIds].some((id) => isNaN(parseFloat(springSalePrices[id] ?? '')))}
+                className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
+                style={{ backgroundColor: '#00539F', padding: '0.08in', marginTop: '0.12in' }}
+              >
+                Move {selectedIds.size} Item{selectedIds.size !== 1 ? 's' : ''} to Spring Sale
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

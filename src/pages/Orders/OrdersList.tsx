@@ -56,6 +56,7 @@ export default function OrdersList() {
   // New Order modal state
   const [showNewOrder, setShowNewOrder] = useState(false);
   const [newSport, setNewSport] = useState<Sport | ''>('');
+  const [newOrderNumber, setNewOrderNumber] = useState('');
   const [newRefNumber, setNewRefNumber] = useState('');
   const [newOrderDate, setNewOrderDate] = useState(new Date().toISOString().split('T')[0]);
   const [newVendor, setNewVendor] = useState('');
@@ -72,7 +73,7 @@ export default function OrdersList() {
     return scopedOrders.filter((o) => {
       if (archivedIds.has(o.id)) return false;
       const matchSport = sportFilter === 'All Sports' || o.sport === sportFilter;
-      const matchSearch = !q || o.id.toLowerCase().includes(q) || o.refNumber.toLowerCase().includes(q) || o.vendor.toLowerCase().includes(q);
+      const matchSearch = !q || o.orderNumber.toLowerCase().includes(q) || o.refNumber.toLowerCase().includes(q) || o.vendor.toLowerCase().includes(q);
       const matchStatus = viewMode === 'All' || viewMode === 'archived' || o.status === viewMode;
       return matchSport && matchSearch && matchStatus;
     });
@@ -106,6 +107,7 @@ export default function OrdersList() {
 
   function resetNewOrder() {
     setNewSport('');
+    setNewOrderNumber('');
     setNewRefNumber('');
     setNewOrderDate(new Date().toISOString().split('T')[0]);
     setNewVendor('');
@@ -118,11 +120,12 @@ export default function OrdersList() {
     setAnalyzingPdf(true);
     try {
       const parsed = await parsePdfOrder(file);
+      setNewOrderNumber((v) => v || parsed.orderNumber);
       setNewRefNumber((v) => v || parsed.refNumber);
       setNewVendor((v) => v || parsed.vendor);
       if (parsed.orderDate) setNewOrderDate(parsed.orderDate);
       if (parsed.lines.length > 0) setNewLines(parsed.lines);
-      if (!parsed.refNumber && !parsed.vendor && parsed.lines.length === 0) {
+      if (!parsed.refNumber && !parsed.orderNumber && !parsed.vendor && parsed.lines.length === 0) {
         setPdfAnalyzeError("Couldn't find order details in this PDF — enter them manually below.");
       }
     } catch (err) {
@@ -161,6 +164,7 @@ export default function OrdersList() {
         return '';
       };
 
+      setNewOrderNumber((v) => v || find(['sales order', 'order number', 'order no', 'order #', 'invoice']));
       setNewRefNumber((v) => v || find(['ref', 'reference', 'order name', 'po']));
       setNewVendor((v) => v || find(['vendor', 'supplier', 'company']));
       const dateVal = find(['date', 'order date']);
@@ -207,16 +211,21 @@ export default function OrdersList() {
   }
 
   function handleAddOrder() {
-    if (!newSport || !newRefNumber || !newVendor) return;
+    if (!newSport || !newVendor) return;
     const totalOrdered = newLines.reduce((s, l) => s + l.qtyOrdered, 0);
     const totalReceived = newLines.reduce((s, l) => s + l.qtyReceived, 0);
     const status: OrderStatus =
       totalReceived === 0 ? 'submitted' :
       totalReceived < totalOrdered ? 'incomplete' : 'complete';
 
+    const id = nextOrderId(allOrders);
+    // Most of these orders don't have a real PO — default it to the order's
+    // own title + the date it was submitted, same as a PO would identify it.
+    const autoLabel = `${newSport} Order — ${newOrderDate}`;
     const order: Order = {
-      id: nextOrderId(allOrders),
-      refNumber: newRefNumber,
+      id,
+      orderNumber: newOrderNumber || id,
+      refNumber: newRefNumber || autoLabel,
       orderDate: newOrderDate,
       vendor: newVendor,
       sport: newSport as Sport,
@@ -301,7 +310,8 @@ export default function OrdersList() {
                 </th>
               )}
               <th className="p-[0.05in] font-bold">Order ID</th>
-              <th className="p-[0.05in] font-bold">Ref Number</th>
+              <th className="p-[0.05in] font-bold">Order #</th>
+              <th className="p-[0.05in] font-bold">PO Number</th>
               <th className="p-[0.05in] font-bold">Order Date</th>
               <th className="p-[0.05in] font-bold">Vendor</th>
               <th className="p-[0.05in] font-bold">Items Ordered</th>
@@ -319,7 +329,7 @@ export default function OrdersList() {
           <tbody className="divide-y divide-gray-100">
             {displayList.length === 0 ? (
               <tr>
-                <td colSpan={(isManager ? 1 : 0) + (viewMode !== 'archived' ? 10 : 8)} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={(isManager ? 1 : 0) + (viewMode !== 'archived' ? 11 : 9)} className="px-4 py-8 text-center text-gray-400">
                   No orders found.
                 </td>
               </tr>
@@ -345,6 +355,7 @@ export default function OrdersList() {
                       </td>
                     )}
                     <td className="p-[0.05in] text-center font-mono text-[#00539F] hover:underline">{order.id}</td>
+                    <td className="p-[0.05in] text-center font-mono text-gray-700">{order.orderNumber}</td>
                     <td className="p-[0.05in] text-center font-medium text-gray-800">{order.refNumber}</td>
                     <td className="p-[0.05in] text-center text-gray-600">{order.orderDate}</td>
                     <td className="p-[0.05in] text-center text-gray-600">{order.vendor}</td>
@@ -386,7 +397,7 @@ export default function OrdersList() {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-bold text-gray-800 truncate">{order.refNumber}</span>
+                      <span className="text-sm font-bold text-gray-800 truncate">{order.orderNumber}</span>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 capitalize ${STATUS_BADGE_STYLES[order.status]}`}>
                         {order.status}
                       </span>
@@ -500,14 +511,26 @@ export default function OrdersList() {
                 </select>
               </div>
 
-              {/* Ref Number */}
+              {/* Order # — the vendor's own order/sales-order number, for looking it up with them */}
               <div className="py-[0.05in]">
-                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Ref Number</label>
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">Order # (from vendor confirmation)</label>
+                <input
+                  type="text"
+                  value={newOrderNumber}
+                  onChange={(e) => setNewOrderNumber(e.target.value)}
+                  placeholder="e.g. SO-48213 — leave blank if not on the confirmation yet"
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.05in]"
+                />
+              </div>
+
+              {/* PO Number (was "Ref Number") — defaults to a title + date if left blank */}
+              <div className="py-[0.05in]">
+                <label className="block text-xs font-semibold text-gray-600 py-[0.05in]">PO Number</label>
                 <input
                   type="text"
                   value={newRefNumber}
                   onChange={(e) => setNewRefNumber(e.target.value)}
-                  placeholder="e.g. MBB Workout Sneaker"
+                  placeholder="Defaults to e.g. Baseball Order — 2026-10-06"
                   className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] p-[0.05in]"
                 />
               </div>
@@ -616,7 +639,7 @@ export default function OrdersList() {
               <div className="mt-[0.1in] py-[0.05in]">
                 <button
                   onClick={handleAddOrder}
-                  disabled={!newSport || !newRefNumber || !newVendor}
+                  disabled={!newSport || !newVendor}
                   className="w-full text-white text-xs font-semibold rounded disabled:opacity-40 py-[0.08in]"
                   style={{ backgroundColor: '#003c71' }}
                 >

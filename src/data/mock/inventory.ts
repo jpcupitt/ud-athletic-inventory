@@ -7,6 +7,7 @@ export const inventoryItems: InventoryItem[] = [
     category: 'Top', unit: 'Each', year: '2026-27', manufacturer: 'Adidas', model: 'JX4456',
     pricePerUnit: 25.0, sports: ["Basketball, Men's", "Basketball, Women's"],
     isNonExpendable: false, qtyOnHand: 7, qtyOnOrder: 0, isSerialized: false,
+    sizeBreakdown: { S: 1, M: 2, L: 3, XL: 1 },
     photoUrl: undefined,
   },
   {
@@ -14,6 +15,7 @@ export const inventoryItems: InventoryItem[] = [
     category: 'Top', unit: 'Each', year: '2026-27', manufacturer: 'Adidas', model: 'JX4481',
     pricePerUnit: 28.0, sports: ["Basketball, Men's", "Basketball, Women's"],
     isNonExpendable: false, qtyOnHand: 9, qtyOnOrder: 0, isSerialized: false,
+    sizeBreakdown: { S: 1, M: 3, L: 3, XL: 2 },
     photoUrl: undefined,
   },
   {
@@ -21,6 +23,7 @@ export const inventoryItems: InventoryItem[] = [
     category: 'Bottom', unit: 'Each', year: '2026-27', manufacturer: 'Adidas', model: 'JX4500',
     pricePerUnit: 30.0, sports: ["Basketball, Men's", "Basketball, Women's"],
     isNonExpendable: false, qtyOnHand: 14, qtyOnOrder: 0, isSerialized: false,
+    sizeBreakdown: { S: 2, M: 4, L: 5, XL: 3 },
     photoUrl: undefined,
   },
   {

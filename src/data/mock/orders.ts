@@ -2,13 +2,13 @@ import type { Order } from '../types';
 
 export const orders: Order[] = [
   {
-    id: 'ord-200637', refNumber: 'MBB Workout Sneaker', orderDate: '2026-05-15',
+    id: 'ord-200637', orderNumber: 'SO-48213', refNumber: 'MBB Workout Sneaker', orderDate: '2026-05-15',
     vendor: 'BSN Sports - Adidas', sport: "Basketball, Men's",
     lines: [{ description: 'Workout Sneaker WHITE', qtyOrdered: 15, qtyReceived: 15 }],
     status: 'complete', createdBy: 'Stevens, Peter',
   },
   {
-    id: 'ord-193301', refNumber: 'MBB Coach Shorts', orderDate: '2026-03-10',
+    id: 'ord-193301', orderNumber: 'SO-48097', refNumber: 'MBB Coach Shorts', orderDate: '2026-03-10',
     vendor: 'BSN Sports - Adidas', sport: "Basketball, Men's",
     lines: [
       { description: 'Coach Shorts NAVY M', qtyOrdered: 8, qtyReceived: 8 },
@@ -17,7 +17,7 @@ export const orders: Order[] = [
     status: 'complete', createdBy: 'Stevens, Peter',
   },
   {
-    id: 'ord-193280', refNumber: 'MBB Hooded Tees 2026', orderDate: '2026-03-10',
+    id: 'ord-193280', orderNumber: 'SO-47955', refNumber: 'MBB Hooded Tees 2026', orderDate: '2026-03-10',
     vendor: 'BSN Sports - Adidas', sport: "Basketball, Men's",
     lines: [
       { description: 'Hooded Tee NAVY S', qtyOrdered: 20, qtyReceived: 5 },
@@ -27,7 +27,7 @@ export const orders: Order[] = [
     status: 'incomplete', createdBy: 'Stevens, Peter',
   },
   {
-    id: 'ord-193248', refNumber: 'MBB ZNE Navy 2026', orderDate: '2026-03-10',
+    id: 'ord-193248', orderNumber: 'SO-47954', refNumber: 'MBB ZNE Navy 2026', orderDate: '2026-03-10',
     vendor: 'Adidas', sport: "Basketball, Men's",
     lines: [
       { description: 'ZNE Hoodie NAVY M', qtyOrdered: 29, qtyReceived: 1 },
@@ -36,7 +36,7 @@ export const orders: Order[] = [
     status: 'incomplete', createdBy: 'Stevens, Peter',
   },
   {
-    id: 'ord-193245', refNumber: 'MBB ZNE Black 2026', orderDate: '2026-03-10',
+    id: 'ord-193245', orderNumber: 'SO-47953', refNumber: 'MBB ZNE Black 2026', orderDate: '2026-03-10',
     vendor: 'Adidas', sport: "Basketball, Men's",
     lines: [
       { description: 'ZNE Hoodie BLACK M', qtyOrdered: 29, qtyReceived: 0 },
@@ -45,7 +45,7 @@ export const orders: Order[] = [
     status: 'submitted', createdBy: 'Stevens, Peter',
   },
   {
-    id: 'ord-193242', refNumber: 'MBB Compressions 2026', orderDate: '2026-03-10',
+    id: 'ord-193242', orderNumber: 'SO-47951', refNumber: 'MBB Compressions 2026', orderDate: '2026-03-10',
     vendor: 'BSN Sports - Adidas', sport: "Basketball, Men's",
     lines: [
       { description: 'Compression Tight S', qtyOrdered: 58, qtyReceived: 58 },
@@ -55,7 +55,7 @@ export const orders: Order[] = [
     status: 'complete', createdBy: 'Stevens, Peter',
   },
   {
-    id: 'ord-192899', refNumber: 'MBB Court Shoes 2026', orderDate: '2026-03-04',
+    id: 'ord-192899', orderNumber: 'SO-47820', refNumber: 'MBB Court Shoes 2026', orderDate: '2026-03-04',
     vendor: 'Adidas', sport: "Basketball, Men's",
     lines: [
       { description: 'Court Shoes size 11', qtyOrdered: 22, qtyReceived: 0 },
@@ -66,7 +66,7 @@ export const orders: Order[] = [
     status: 'submitted', createdBy: 'Stevens, Peter',
   },
   {
-    id: 'ord-180001', refNumber: 'FB Helmet Reorder 2026', orderDate: '2026-07-01',
+    id: 'ord-180001', orderNumber: 'SO-46610', refNumber: 'FB Helmet Reorder 2026', orderDate: '2026-07-01',
     vendor: 'BSN Sports - Adidas', sport: 'Football',
     lines: [
       { description: 'Riddell SpeedFlex Helmet L', qtyOrdered: 20, qtyReceived: 20 },
@@ -75,13 +75,13 @@ export const orders: Order[] = [
     status: 'incomplete', createdBy: 'Whitfield, Al',
   },
   {
-    id: 'ord-175001', refNumber: 'FH Winter Jackets 2026', orderDate: '2026-07-15',
+    id: 'ord-175001', orderNumber: 'SO-46200', refNumber: 'FH Winter Jackets 2026', orderDate: '2026-07-15',
     vendor: 'Adidas', sport: 'Field Hockey',
     lines: [{ description: 'Winter Travel Jacket NAVY', qtyOrdered: 25, qtyReceived: 25 }],
     status: 'complete', createdBy: 'Morris, Jamie',
   },
   {
-    id: 'ord-170001', refNumber: 'BASE BP Jerseys 2026', orderDate: '2026-01-20',
+    id: 'ord-170001', orderNumber: 'SO-45110', refNumber: 'BASE BP Jerseys 2026', orderDate: '2026-01-20',
     vendor: 'BSN Sports - Adidas', sport: 'Baseball',
     lines: [
       { description: 'BP Jersey BLUE S', qtyOrdered: 10, qtyReceived: 10 },

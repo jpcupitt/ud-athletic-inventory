@@ -15,6 +15,12 @@ interface InventoryContextValue {
   setNonExpendable: (itemId: string, value: boolean) => void;
   setPhoto: (itemId: string, photoUrl: string) => void;
   markRecertified: (itemId: string, serialNumber: string, date?: string) => void;
+  /** Sets (or clears, passing undefined) the item's per-size on-hand counts.
+   *  qtyOnHand is kept in sync as the sum so totals/charts stay correct. */
+  setSizeBreakdown: (itemId: string, breakdown: Record<string, number> | undefined) => void;
+  /** Sets (or clears) the item's Spring Sale price. Never touches pricePerUnit. */
+  setSpringSale: (itemId: string, salePrice: number | undefined) => void;
+  setPositions: (itemId: string, positions: string[] | undefined) => void;
 }
 
 const InventoryContext = createContext<InventoryContextValue | null>(null);
@@ -93,8 +99,48 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  function setSizeBreakdown(itemId: string, breakdown: Record<string, number> | undefined) {
+    setItems((prev) =>
+      prev.map((it) => {
+        if (it.id !== itemId) return it;
+        if (!breakdown) {
+          const { sizeBreakdown: _drop, ...rest } = it;
+          return rest as InventoryItem;
+        }
+        const qtyOnHand = Object.values(breakdown).reduce((s, n) => s + (n || 0), 0);
+        return { ...it, sizeBreakdown: breakdown, qtyOnHand };
+      })
+    );
+  }
+
+  function setSpringSale(itemId: string, salePrice: number | undefined) {
+    setItems((prev) =>
+      prev.map((it) => {
+        if (it.id !== itemId) return it;
+        if (salePrice === undefined) {
+          const { springSale: _drop, ...rest } = it;
+          return rest as InventoryItem;
+        }
+        return { ...it, springSale: { salePrice } };
+      })
+    );
+  }
+
+  function setPositions(itemId: string, positions: string[] | undefined) {
+    setItems((prev) =>
+      prev.map((it) => {
+        if (it.id !== itemId) return it;
+        if (!positions || positions.length === 0) {
+          const { positions: _drop, ...rest } = it;
+          return rest as InventoryItem;
+        }
+        return { ...it, positions };
+      })
+    );
+  }
+
   return (
-    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem, addOnOrder, setNonExpendable, setPhoto, markRecertified }}>
+    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem, addOnOrder, setNonExpendable, setPhoto, markRecertified, setSizeBreakdown, setSpringSale, setPositions }}>
       {children}
     </InventoryContext.Provider>
   );

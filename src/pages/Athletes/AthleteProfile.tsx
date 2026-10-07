@@ -10,7 +10,7 @@ import type { CustomSizeEntry, IssuedItem } from '../../data/types';
 
 export default function AthleteProfile() {
   const { athleteId } = useParams<{ athleteId: string }>();
-  const { athletes, issueToAthlete, returnFromAthlete, setCustomSizes } = useAthletes();
+  const { athletes, issueToAthlete, returnFromAthlete, setCustomSizes, updateAthlete } = useAthletes();
   const { returnItem } = useInventory();
   const { user } = useAuth();
   const isManager = user?.role === 'manager';
@@ -18,6 +18,10 @@ export default function AthleteProfile() {
   const canSeeCosts = user?.role !== 'student_manager';
 
   const [showIssueModal, setShowIssueModal] = useState(false);
+  const [editingAthleteId, setEditingAthleteId] = useState(false);
+  const [athleteIdDraft, setAthleteIdDraft] = useState('');
+  const [editingPosition, setEditingPosition] = useState(false);
+  const [positionDraft, setPositionDraft] = useState('');
 
   const athlete = athletes.find((a) => a.id === athleteId);
 
@@ -107,11 +111,64 @@ export default function AthleteProfile() {
         <dl className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm pt-5 border-t border-gray-100">
           <div>
             <dt className="text-gray-400 text-xs uppercase tracking-wide">Athlete ID</dt>
-            <dd className="mt-1 font-mono font-medium text-gray-800">{athlete.athleteId}</dd>
+            {editingAthleteId ? (
+              <div className="flex items-center gap-1 mt-1">
+                <input
+                  type="text"
+                  autoFocus
+                  value={athleteIdDraft}
+                  onChange={(e) => setAthleteIdDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') { updateAthlete(athlete.id, { athleteId: athleteIdDraft.trim() || athlete.athleteId }); setEditingAthleteId(false); }
+                    if (e.key === 'Escape') setEditingAthleteId(false);
+                  }}
+                  className="w-24 font-mono text-sm border border-gray-300 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                />
+                <button
+                  onClick={() => { updateAthlete(athlete.id, { athleteId: athleteIdDraft.trim() || athlete.athleteId }); setEditingAthleteId(false); }}
+                  className="text-[#00539F] hover:underline text-xs font-medium"
+                >Save</button>
+              </div>
+            ) : (
+              <dd
+                className={`mt-1 font-mono font-medium text-gray-800 ${isManager ? 'cursor-pointer hover:text-[#00539F] hover:underline' : ''}`}
+                onClick={() => { if (!isManager) return; setAthleteIdDraft(athlete.athleteId); setEditingAthleteId(true); }}
+                title={isManager ? 'Click to edit' : undefined}
+              >
+                {athlete.athleteId}
+              </dd>
+            )}
           </div>
           <div>
-            <dt className="text-gray-400 text-xs uppercase tracking-wide">Barcode</dt>
-            <dd className="mt-1 font-mono font-medium text-gray-800">{athlete.barcode}</dd>
+            <dt className="text-gray-400 text-xs uppercase tracking-wide">Position</dt>
+            {editingPosition ? (
+              <div className="flex items-center gap-1 mt-1">
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="e.g. Kicker"
+                  value={positionDraft}
+                  onChange={(e) => setPositionDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') { updateAthlete(athlete.id, { position: positionDraft.trim() || undefined }); setEditingPosition(false); }
+                    if (e.key === 'Escape') setEditingPosition(false);
+                  }}
+                  className="w-28 text-sm border border-gray-300 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                />
+                <button
+                  onClick={() => { updateAthlete(athlete.id, { position: positionDraft.trim() || undefined }); setEditingPosition(false); }}
+                  className="text-[#00539F] hover:underline text-xs font-medium"
+                >Save</button>
+              </div>
+            ) : (
+              <dd
+                className={`mt-1 font-medium text-gray-800 ${isManager ? 'cursor-pointer hover:text-[#00539F] hover:underline' : ''}`}
+                onClick={() => { if (!isManager) return; setPositionDraft(athlete.position ?? ''); setEditingPosition(true); }}
+                title={isManager ? 'Click to edit' : undefined}
+              >
+                {athlete.position || (isManager ? 'Add position' : '—')}
+              </dd>
+            )}
           </div>
           <div>
             <dt className="text-gray-400 text-xs uppercase tracking-wide">Items Out</dt>
@@ -169,16 +226,26 @@ export default function AthleteProfile() {
                     placeholder="Item (e.g. Helmet)"
                     className="flex-1 min-w-0 px-3 py-1.5 border border-gray-200 rounded text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
                   />
-                  <select
-                    value={s.value}
-                    onChange={(e) => updateSizeField(s.id, 'value', e.target.value)}
-                    className="w-28 shrink-0 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                  >
-                    <option value="">Size</option>
-                    {sizeOptionsFor(s.label).map((opt) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
+                  {sizeOptionsFor(s.label).length > 0 ? (
+                    <select
+                      value={s.value}
+                      onChange={(e) => updateSizeField(s.id, 'value', e.target.value)}
+                      className="w-28 shrink-0 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                    >
+                      <option value="">Size</option>
+                      {sizeOptionsFor(s.label).map((opt) => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={s.value}
+                      onChange={(e) => updateSizeField(s.id, 'value', e.target.value)}
+                      placeholder="Value"
+                      className="w-28 shrink-0 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                    />
+                  )}
                   <button
                     onClick={() => removeSizeField(s.id)}
                     className="shrink-0 text-gray-400 hover:text-red-500 p-1"
@@ -340,6 +407,7 @@ export default function AthleteProfile() {
       {showIssueModal && (
         <IssueModal
           personName={`${athlete.firstName} ${athlete.lastName}`}
+          personPosition={athlete.position}
           onClose={() => setShowIssueModal(false)}
           onIssue={handleIssue}
         />

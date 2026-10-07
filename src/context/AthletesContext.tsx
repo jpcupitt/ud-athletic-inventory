@@ -11,6 +11,7 @@ interface AthletesContextValue {
   resolveIssuedItem: (athleteId: string, ref: string, resolution: 'returned' | 'missing' | 'damaged') => void;
   unresolveIssuedItem: (athleteId: string, ref: string) => void;
   setCustomSizes: (athleteId: string, sizes: CustomSizeEntry[]) => void;
+  updateAthlete: (athleteId: string, changes: Partial<Athlete>) => void;
 }
 
 const AthletesContext = createContext<AthletesContextValue | null>(null);
@@ -89,8 +90,12 @@ export function AthletesProvider({ children }: { children: ReactNode }) {
     setAthletes((prev) => prev.map((a) => (a.id === athleteId ? { ...a, customSizes: sizes } : a)));
   }
 
+  function updateAthlete(athleteId: string, changes: Partial<Athlete>) {
+    setAthletes((prev) => prev.map((a) => (a.id === athleteId ? { ...a, ...changes } : a)));
+  }
+
   return (
-    <AthletesContext.Provider value={{ athletes, addAthlete, issueToAthlete, returnFromAthlete, resolveIssuedItem, unresolveIssuedItem, setCustomSizes }}>
+    <AthletesContext.Provider value={{ athletes, addAthlete, issueToAthlete, returnFromAthlete, resolveIssuedItem, unresolveIssuedItem, setCustomSizes, updateAthlete }}>
       {children}
     </AthletesContext.Provider>
   );

@@ -41,6 +41,9 @@ const STUDENT_MANAGER_USER: AppUser = {
   role: 'student_manager',
   isLead: true,
   assignedSports: ALL_SPORTS,
+  // Student managers see quantities/inventory for every sport except football —
+  // no football quantities, who-has-what, or costs. Set per meeting 10/6/2026.
+  excludedSports: ['Football'],
 };
 
 const VIEWER_USER: AppUser = {

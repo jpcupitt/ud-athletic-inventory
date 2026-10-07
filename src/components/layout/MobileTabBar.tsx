@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Users, MoreHorizontal, UserCog, BarChart3, Settings, LogOut, Shirt, ClipboardCheck, PackagePlus } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, MoreHorizontal, UserCog, BarChart3, Settings, LogOut, Shirt, ClipboardCheck, PackagePlus, Tag } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -21,6 +21,7 @@ const EQUIPMENT_ROOM_LINKS = [
   { label: 'Fitting Day', to: '/fitting', icon: Shirt },
   { label: 'Return Day', to: '/returns', icon: ClipboardCheck },
   { label: 'Smart Reorder', to: '/reorder', icon: PackagePlus, hideFor: ['student_manager'] },
+  { label: 'Spring Sale', to: '/spring-sale', icon: Tag, hideFor: ['student_manager'] },
 ];
 
 export default function MobileTabBar() {

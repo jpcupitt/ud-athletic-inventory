@@ -119,6 +119,7 @@ export default function SmartReorder() {
     const stamp = Date.now().toString().slice(-5);
     const order: Order = {
       id: `quickorder-${stamp}`,
+      orderNumber: `quickorder-${stamp}`,
       refNumber: `QO-${stamp}`,
       orderDate: new Date().toISOString().slice(0, 10),
       vendor,
@@ -248,6 +249,7 @@ export default function SmartReorder() {
       const vendor = [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
       const order: Order = {
         id: `reorder-${stamp}-${n}`,
+        orderNumber: `reorder-${stamp}-${n}`,
         refNumber: `RO-${stamp}-${n}`,
         orderDate: new Date().toISOString().slice(0, 10),
         vendor,

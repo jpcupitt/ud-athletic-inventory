@@ -77,6 +77,16 @@ export interface InventoryItem {
   notes?: string;
   /** Present only for equipment subject to recertification, e.g. football/lacrosse helmets. */
   recertification?: RecertPolicy;
+  /** On-hand count broken out by size, e.g. { M: 12, L: 20 }. When present, the sum
+   *  always equals qtyOnHand — qtyOnHand stays the source of truth for totals/charts. */
+  sizeBreakdown?: Record<string, number>;
+  /** Set when the item has been moved to the Spring Sale — independent of the item's
+   *  real cost (pricePerUnit), which is never touched by sale pricing. */
+  springSale?: { salePrice: number };
+  /** When set, only athletes whose `position` is in this list are offered the item
+   *  when issuing — e.g. kicking cleats shouldn't show up for a lineman. Unset (the
+   *  default) means everyone on the sport can be issued it. */
+  positions?: string[];
 }
 
 // ── People ──────────────────────────────────────────────────
@@ -118,6 +128,8 @@ export interface CustomSizeEntry {
 export interface Athlete extends Person {
   athleteId: string;
   year: 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' | 'Graduate';
+  /** e.g. "Kicker", "Long Stick Midfield", "Goalie" — drives which gear is offered. */
+  position?: string;
   shirtSize?: string;
   shortsSize?: string;
   shoeSize?: string;
@@ -140,10 +152,18 @@ export interface OrderLine {
   description: string;
   qtyOrdered: number;
   qtyReceived: number;
+  /** Optional size breakdown of qtyOrdered, e.g. { S: 10, M: 20, L: 15 }. */
+  sizeBreakdown?: Record<string, number>;
 }
 
 export interface Order {
   id: string;
+  /** The vendor's own order/sales-order number from the confirmation — what you'd
+   *  search by to look the order up with the vendor. Falls back to a generated
+   *  id (order title + date) when a PDF confirmation doesn't have one yet. */
+  orderNumber: string;
+  /** PO number (was "Reference Number"). Defaults to "<title> — <date>" when
+   *  there's no real PO, since most of these orders don't have one. */
   refNumber: string;
   orderDate: string;
   vendor: string;
@@ -188,6 +208,10 @@ export interface AppUser {
   role: 'manager' | 'student_manager' | 'viewer';
   isLead: boolean;
   assignedSports: Sport[];
+  /** Sports this user is explicitly blocked from, even if isLead would otherwise
+   *  grant access to everything — e.g. a student manager who sees every sport
+   *  except football (quantities, names issued-to, and costs all excluded). */
+  excludedSports?: Sport[];
 }
 
 export interface UserPrefs {

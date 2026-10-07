@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Package, Tag, AlertTriangle, QrCode, Printer, Camera, Upload, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Package, Tag, AlertTriangle, QrCode, Printer, Camera, Upload, ShieldCheck, Layers, Plus, X } from 'lucide-react';
 import QRCode from 'qrcode';
 import { useAthletes } from '../../context/AthletesContext';
 import { useStaff } from '../../context/StaffContext';
@@ -23,7 +23,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 
 export default function InventoryDetail() {
   const { itemId } = useParams<{ itemId: string }>();
-  const { items, setNonExpendable, setPhoto, markRecertified } = useInventory();
+  const { items, setNonExpendable, setPhoto, markRecertified, setSizeBreakdown, setPositions } = useInventory();
   const { athletes } = useAthletes();
   const { staff: staffMembers } = useStaff();
   const { user } = useAuth();
@@ -33,6 +33,27 @@ export default function InventoryDetail() {
 
   const [qrUrl, setQrUrl] = useState('');
   const [showWebcam, setShowWebcam] = useState(false);
+  const [newSizeLabel, setNewSizeLabel] = useState('');
+  const [newSizeQty, setNewSizeQty] = useState('');
+
+  function addSizeRow() {
+    if (!item || !newSizeLabel.trim()) return;
+    const qty = Math.max(0, parseInt(newSizeQty, 10) || 0);
+    setSizeBreakdown(item.id, { ...(item.sizeBreakdown ?? {}), [newSizeLabel.trim()]: qty });
+    setNewSizeLabel('');
+    setNewSizeQty('');
+  }
+
+  function updateSizeRow(size: string, qty: number) {
+    if (!item?.sizeBreakdown) return;
+    setSizeBreakdown(item.id, { ...item.sizeBreakdown, [size]: Math.max(0, qty) });
+  }
+
+  function removeSizeRow(size: string) {
+    if (!item?.sizeBreakdown) return;
+    const { [size]: _drop, ...rest } = item.sizeBreakdown;
+    setSizeBreakdown(item.id, Object.keys(rest).length > 0 ? rest : undefined);
+  }
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -200,6 +221,18 @@ export default function InventoryDetail() {
                 <dd><Toggle checked={item.isNonExpendable} onChange={(v) => setNonExpendable(item.id, v)} /></dd>
               </div>
             )}
+            {isManager && (
+              <div className="pt-2 mt-1 border-t border-gray-100">
+                <dt className="text-gray-500 mb-1">Restricted to Positions (optional)</dt>
+                <input
+                  type="text"
+                  defaultValue={(item.positions ?? []).join(', ')}
+                  onBlur={(e) => setPositions(item.id, e.target.value.split(',').map((s) => s.trim()).filter(Boolean))}
+                  placeholder="e.g. Kicker, Punter — leave blank for everyone"
+                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] px-2 py-1.5"
+                />
+              </div>
+            )}
           </dl>
           {item.notes && (
             <div className="mt-4 pt-4 border-t border-gray-100">
@@ -208,6 +241,70 @@ export default function InventoryDetail() {
             </div>
           )}
         </div>
+
+        {/* Size breakdown */}
+        {(item.sizeBreakdown || isManager) && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+            <h2 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <Layers className="w-4 h-4 text-gray-400" /> Size Breakdown
+            </h2>
+            {item.sizeBreakdown && Object.keys(item.sizeBreakdown).length > 0 ? (
+              <ul className="space-y-1 mb-3">
+                {Object.entries(item.sizeBreakdown).map(([size, qty]) => (
+                  <li key={size} className="flex items-center justify-between gap-2 bg-gray-50 px-3 py-1.5 rounded">
+                    <span className="text-sm font-medium text-gray-700">{size}</span>
+                    {isManager ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={0}
+                          value={qty}
+                          onChange={(e) => updateSizeRow(size, parseInt(e.target.value) || 0)}
+                          className="w-16 border border-gray-200 rounded text-xs text-gray-700 text-right focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                          style={{ padding: '0.03in' }}
+                        />
+                        <button onClick={() => removeSizeRow(size)} className="text-gray-300 hover:text-red-500"><X className="w-3.5 h-3.5" /></button>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-gray-600">{qty}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-xs text-gray-400 mb-3">No size breakdown on file — qty on hand shown above is the bulk total.</p>
+            )}
+            {isManager && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Size (e.g. M)"
+                  value={newSizeLabel}
+                  onChange={(e) => setNewSizeLabel(e.target.value)}
+                  className="flex-1 min-w-0 border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                  style={{ padding: '0.05in' }}
+                />
+                <input
+                  type="number"
+                  min={0}
+                  placeholder="Qty"
+                  value={newSizeQty}
+                  onChange={(e) => setNewSizeQty(e.target.value)}
+                  className="w-20 border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+                  style={{ padding: '0.05in' }}
+                />
+                <button
+                  onClick={addSizeRow}
+                  disabled={!newSizeLabel.trim()}
+                  className="flex items-center gap-1 text-xs font-medium text-white rounded disabled:opacity-40 shrink-0"
+                  style={{ backgroundColor: '#00539F', padding: '0.05in 0.1in' }}
+                >
+                  <Plus className="w-3.5 h-3.5" /> Add
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Serial numbers */}
         {item.isSerialized && item.serialNumbers && item.serialNumbers.length > 0 && (

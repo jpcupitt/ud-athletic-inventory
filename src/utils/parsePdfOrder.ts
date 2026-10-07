@@ -7,7 +7,11 @@ GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 export interface ParsedOrder {
   vendor: string;
+  /** PO number specifically — distinct from the vendor's own order number. */
   refNumber: string;
+  /** The vendor's own order/sales-order/invoice number — what you'd look the
+   *  order up by with the vendor, separate from our PO. */
+  orderNumber: string;
   orderDate: string; // YYYY-MM-DD, or '' if not found
   lines: OrderLine[];
 }
@@ -71,14 +75,14 @@ function toIsoDate(raw: string): string {
   return isNaN(d.getTime()) ? '' : d.toISOString().split('T')[0];
 }
 
-const SKIP_LINE_WORDS = /subtotal|^total\b|grand total|\btax\b|shipping|handling|page \d+\s*(of|\/)\s*\d+|phone|fax|^po\s*#|balance due/i;
+const SKIP_LINE_WORDS = /subtotal|^total\b|grand total|\btax\b|shipping|handling charge|^page \d+\s*(of|\/)\s*\d+|^phone\b|^fax\b|balance due|^bill to|^ship to/i;
 
 /**
  * Best-effort "scan and analyze" of an order confirmation PDF: pulls out
- * vendor, PO/reference number, order date, and line items via pattern
- * matching on the reconstructed text. Order confirmations vary a lot in
- * layout, so this is a prefill — same as the existing spreadsheet import,
- * the manager reviews and corrects the result before submitting.
+ * vendor, PO/order number, order date, and line items via pattern matching
+ * on the reconstructed text. Order confirmations vary a lot in layout, so
+ * this is a prefill — same as the existing spreadsheet import, the manager
+ * reviews and corrects the result before submitting.
  */
 export async function parsePdfOrder(file: File): Promise<ParsedOrder> {
   const lines = await extractLines(file);
@@ -86,7 +90,11 @@ export async function parsePdfOrder(file: File): Promise<ParsedOrder> {
   const vendor = findLabeled(lines, /\b(?:vendor|supplier|sold\s*by|remit\s*to|from)\s*[:\-]\s*(.+)/i);
   const refNumber = findLabeled(
     lines,
-    /\b(?:po|p\.o\.|purchase\s*order|order|reference|confirmation)\s*(?:#|no\.?|number)?\s*[:\-]\s*([A-Za-z0-9][A-Za-z0-9-]{2,})/i
+    /\b(?:po|p\.o\.|purchase\s*order)\s*(?:#|no\.?|number)?\s*[:\-]\s*([A-Za-z0-9][A-Za-z0-9-]{2,})/i
+  );
+  const orderNumber = findLabeled(
+    lines,
+    /\b(?:sales\s*order|order|invoice|confirmation)\s*(?:#|no\.?|number)?\s*[:\-]\s*([A-Za-z0-9][A-Za-z0-9-]{2,})/i
   );
   const dateRaw = findLabeled(
     lines,
@@ -94,11 +102,15 @@ export async function parsePdfOrder(file: File): Promise<ParsedOrder> {
   );
   const orderDate = toIsoDate(dateRaw);
 
-  // Line-item rows: "<qty>  <description ...>  <price>" (price optional trailing $).
-  const lineRe = /^(\d{1,4})\s+(.+?)\s+\$?\d{1,6}(?:\.\d{2})?\s*$/;
+  // Line-item rows: a leading quantity followed by a description. A trailing
+  // price is common but NOT required — some confirmations put price in a
+  // column that doesn't land on the same reconstructed line, and requiring
+  // one meant real line items were getting dropped entirely.
+  const lineWithPriceRe = /^(\d{1,4})\s+(.+?)\s+\$?\d{1,6}(?:\.\d{2})?\s*$/;
+  const lineBareRe = /^(\d{1,4})\s+(.{3,})$/;
   const orderLines: OrderLine[] = [];
   for (const line of lines) {
-    const m = line.match(lineRe);
+    const m = line.match(lineWithPriceRe) ?? line.match(lineBareRe);
     if (!m) continue;
     const qty = parseInt(m[1], 10);
     const description = m[2].trim();
@@ -107,5 +119,5 @@ export async function parsePdfOrder(file: File): Promise<ParsedOrder> {
     orderLines.push({ description, qtyOrdered: qty, qtyReceived: 0 });
   }
 
-  return { vendor, refNumber, orderDate, lines: orderLines };
+  return { vendor, refNumber, orderNumber, orderDate, lines: orderLines };
 }

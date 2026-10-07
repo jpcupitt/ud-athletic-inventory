@@ -44,3 +44,9 @@ export function clearPersistedState() {
   }
   doomed.forEach((k) => localStorage.removeItem(k));
 }
+
+/** Wipe only the given persisted keys (unprefixed, e.g. "inventory2") — used to
+ *  clear out demo inventory before real data entry without touching rosters. */
+export function clearPersistedKeys(keys: string[]) {
+  keys.forEach((k) => localStorage.removeItem(STORAGE_PREFIX + k));
+}

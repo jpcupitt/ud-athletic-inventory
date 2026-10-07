@@ -1,4 +1,4 @@
-import type { Athlete, CustomSizeEntry, ItemCategory } from '../data/types';
+import type { Athlete, CustomSizeEntry, ItemCategory, Sport } from '../data/types';
 
 export const CLOTHING_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'];
 export const SHOE_SIZES = Array.from({ length: 25 }, (_, i) => { // '5'..'17' in half-size steps
@@ -31,10 +31,11 @@ export function sizeOptionsFor(label: string): string[] {
   const l = label.toLowerCase();
   if (l.includes('batting glove')) return CLOTHING_SIZES;
   if (l.includes('goalie glove')) return GOALIE_GLOVE_SIZES;
+  if (l.includes('golf glove')) return CLOTHING_SIZES;
   if (l.includes('football glove') || l.includes('glove style')) return FOOTBALL_GLOVE_STYLE;
   if (l.includes('glove')) return GLOVE_SIZES;
   if (l.includes('bat')) return BAT_SIZES;
-  if (l.includes('shoe')) return SHOE_SIZES;
+  if (l.includes('cleat') || l.includes('skate') || l.includes('spike') || l.includes('shoe')) return SHOE_SIZES;
   if (l.includes('c-flap') || l.includes('cflap') || l.includes('c flap')) return YES_NO;
   if (l.includes('cage')) return YES_NO;
   if (l.includes('pant style')) return PANT_STYLE;
@@ -46,6 +47,37 @@ export function sizeOptionsFor(label: string): string[] {
   if (l.includes('curve') || l.includes('racket') || l.includes('racquet') || l.includes('event') || l.includes('model')) return [];
   return CLOTHING_SIZES;
 }
+
+/**
+ * Extra, sport-specific size-chart fields offered on top of the universal
+ * Shirt/Shorts/Shoe trio — e.g. bat/glove for Baseball, stick flex for Ice
+ * Hockey, Speedo size for Swimming. Drives both the self-service intake form
+ * and can double as a starting point for an athlete's Size Chart.
+ */
+export const SPORT_SIZE_FIELDS: Record<Sport, string[]> = {
+  Baseball: ['Glove Size', 'Bat Size', 'Batting Glove Size', 'Cleat Size', 'C-Flap', 'Pant Style'],
+  Softball: ['Glove Size', 'Bat Size', 'Batting Glove Size', 'Cleat Size', 'Face Cage', 'Pant Style'],
+  Football: ['Cleat Size', 'Glove Style', 'Practice Jersey Size', 'Practice Pant Size'],
+  "Basketball, Men's": [],
+  "Basketball, Women's": [],
+  Volleyball: ['Knee Pad Size'],
+  "Soccer, Men's": ['Cleat Size', 'Goalie Glove Size (if goalie)'],
+  "Soccer, Women's": ['Cleat Size', 'Goalie Glove Size (if goalie)'],
+  'Field Hockey': ['Cleat Size', 'Shin Guard Size'],
+  'Ice Hockey': ['Skate Size', 'Glove Size', 'Stick Flex', 'Stick Curve', 'Visor Style'],
+  "Lacrosse, Men's": ['Stick Length', 'Glove Size', 'Cleat Size'],
+  "Lacrosse, Women's": ['Stick Length', 'Cleat Size'],
+  "Golf, Men's": ['Golf Glove Size'],
+  "Golf, Women's": ['Golf Glove Size'],
+  'Cross Country': ['Spike Size'],
+  'Track & Field, Indoor': ['Event', 'Spike Size'],
+  'Track & Field, Outdoor': ['Event', 'Spike Size'],
+  Rowing: ['Unisuit Size'],
+  "Swimming & Diving, Men's": ['Speedo/Swimsuit Size'],
+  "Swimming & Diving, Women's": ['Speedo/Swimsuit Size'],
+  "Tennis, Men's": ['Racket Grip Size', 'Racket Model'],
+  "Tennis, Women's": ['Racket Grip Size', 'Racket Model'],
+};
 
 /**
  * Every athlete starts with these standard fields, pre-filled from their profile

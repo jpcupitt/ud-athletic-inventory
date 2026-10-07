@@ -10,10 +10,8 @@ export interface IntakeSubmission {
   shirtSize: string;
   shortsSize: string;
   shoeSize: string;
-  gloveSize: string;
-  cleatSize: string;
-  practiceJerseySize: string;
-  practicePantSize: string;
+  /** Sport-specific extra fields (e.g. "Glove Size", "Stick Flex", "Speedo/Swimsuit Size"), keyed by label. See SPORT_SIZE_FIELDS. */
+  sizes: Record<string, string>;
   notes: string;
   submittedAt: string;
 }

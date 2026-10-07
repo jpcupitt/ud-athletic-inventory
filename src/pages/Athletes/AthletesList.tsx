@@ -266,12 +266,9 @@ export default function AthletesList() {
     const used = new Set(existingAthleteIds);
     const athleteId = smartAthleteId(tokenRow.sport, sub.firstName, sub.lastName, sub.jersey, used);
     const localId = `local-${Date.now()}`;
-    const customSizes: CustomSizeEntry[] = [
-      sub.gloveSize && { id: `${localId}-glove`, label: 'Glove Size', value: sub.gloveSize },
-      sub.cleatSize && { id: `${localId}-cleat`, label: 'Cleat Size', value: sub.cleatSize },
-      sub.practiceJerseySize && { id: `${localId}-pj`, label: 'Practice Jersey Size', value: sub.practiceJerseySize },
-      sub.practicePantSize && { id: `${localId}-pp`, label: 'Practice Pant Size', value: sub.practicePantSize },
-    ].filter((e): e is CustomSizeEntry => Boolean(e));
+    const customSizes: CustomSizeEntry[] = Object.entries(sub.sizes ?? {})
+      .filter(([, value]) => value)
+      .map(([label, value], i) => ({ id: `${localId}-size-${i}`, label, value }));
     addAthlete({
       id: localId,
       athleteId,
@@ -398,7 +395,8 @@ export default function AthletesList() {
                   <p className="text-xs text-gray-500 truncate">
                     {intake.submission?.jersey && `#${intake.submission.jersey} · `}
                     {intake.submission?.position && `${intake.submission.position} · `}
-                    Shirt {intake.submission?.shirtSize || '—'} · Shorts {intake.submission?.shortsSize || '—'} · Shoe {intake.submission?.shoeSize || '—'} · Glove {intake.submission?.gloveSize || '—'} · Cleat {intake.submission?.cleatSize || '—'} · Practice Jersey {intake.submission?.practiceJerseySize || '—'} · Practice Pant {intake.submission?.practicePantSize || '—'}
+                    Shirt {intake.submission?.shirtSize || '—'} · Shorts {intake.submission?.shortsSize || '—'} · Shoe {intake.submission?.shoeSize || '—'}
+                    {Object.entries(intake.submission?.sizes ?? {}).filter(([, v]) => v).map(([label, v]) => ` · ${label} ${v}`).join('')}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">

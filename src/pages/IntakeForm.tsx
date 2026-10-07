@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import { usePendingIntakes } from '../context/PendingIntakesContext';
-import { CLOTHING_SIZES, SHOE_SIZES, GLOVE_SIZES } from '../utils/sizeChart';
+import { CLOTHING_SIZES, SHOE_SIZES, SPORT_SIZE_FIELDS, sizeOptionsFor } from '../utils/sizeChart';
 
 /**
  * Public, no-login form an athlete/transfer opens (in its own browser tab —
  * the "Open Form" button on Athletes opens this exact route) to submit their
- * own sizing. Demo note: this prototype has no backend, so the submission is
- * written to this browser's local storage — it only shows up for the manager
- * if they open the equipment room app in this same browser. A real
- * deployment would need a backend to sync it across devices.
+ * own sizing. The extra fields below the universal Shirt/Shorts/Shoe trio are
+ * driven by SPORT_SIZE_FIELDS, so a swimmer sees a Speedo/Swimsuit Size field
+ * while a baseball player sees Glove/Bat/Cleat fields, etc.
+ * Demo note: this prototype has no backend, so the submission is written to
+ * this browser's local storage — it only shows up for the manager if they
+ * open the equipment room app in this same browser. A real deployment would
+ * need a backend to sync it across devices.
  */
 export default function IntakeForm() {
   const { token } = useParams<{ token: string }>();
@@ -24,10 +27,7 @@ export default function IntakeForm() {
   const [shirtSize, setShirtSize] = useState('');
   const [shortsSize, setShortsSize] = useState('');
   const [shoeSize, setShoeSize] = useState('');
-  const [gloveSize, setGloveSize] = useState('');
-  const [cleatSize, setCleatSize] = useState('');
-  const [practiceJerseySize, setPracticeJerseySize] = useState('');
-  const [practicePantSize, setPracticePantSize] = useState('');
+  const [sizes, setSizes] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState('');
   const [done, setDone] = useState(false);
 
@@ -54,6 +54,8 @@ export default function IntakeForm() {
     );
   }
 
+  const extraFields = SPORT_SIZE_FIELDS[intake.sport] ?? [];
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!token || !firstName.trim() || !lastName.trim()) return;
@@ -63,7 +65,7 @@ export default function IntakeForm() {
       jersey: jersey.trim(),
       position: position.trim(),
       shirtSize, shortsSize, shoeSize,
-      gloveSize, cleatSize, practiceJerseySize, practicePantSize,
+      sizes,
       notes: notes.trim(),
       submittedAt: new Date().toISOString(),
     });
@@ -81,6 +83,17 @@ export default function IntakeForm() {
         <option value="">Select Size</option>
         {options.map((s) => <option key={s} value={s}>{s}</option>)}
       </select>
+    </div>
+  );
+
+  const TextField = ({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) => (
+    <div style={{ padding: '0.05in 0' }}>
+      <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>{label}</label>
+      <input
+        type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
+        className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
+        style={{ padding: '0.05in' }}
+      />
     </div>
   );
 
@@ -135,24 +148,20 @@ export default function IntakeForm() {
             />
           </div>
 
-          {/* Sizes */}
+          {/* Universal sizes */}
           <SelectField label="Shirt Size" value={shirtSize} onChange={setShirtSize} options={CLOTHING_SIZES} />
           <SelectField label="Shorts Size" value={shortsSize} onChange={setShortsSize} options={CLOTHING_SIZES} />
+          <SelectField label="Shoe Size" value={shoeSize} onChange={setShoeSize} options={SHOE_SIZES} />
 
-          <div style={{ padding: '0.05in 0' }}>
-            <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Shoe Size</label>
-            <input
-              type="text" value={shoeSize} onChange={(e) => setShoeSize(e.target.value)}
-              placeholder="e.g. 10.5"
-              className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-              style={{ padding: '0.05in' }}
-            />
-          </div>
-
-          <SelectField label="Glove Size" value={gloveSize} onChange={setGloveSize} options={GLOVE_SIZES} />
-          <SelectField label="Cleat Size" value={cleatSize} onChange={setCleatSize} options={SHOE_SIZES} />
-          <SelectField label="Practice Jersey Size" value={practiceJerseySize} onChange={setPracticeJerseySize} options={CLOTHING_SIZES} />
-          <SelectField label="Practice Pant Size" value={practicePantSize} onChange={setPracticePantSize} options={CLOTHING_SIZES} />
+          {/* Sport-specific sizes, e.g. Glove/Bat for Baseball, Speedo/Swimsuit for Swimming */}
+          {extraFields.map((label) => {
+            const options = sizeOptionsFor(label);
+            const value = sizes[label] ?? '';
+            const onChange = (v: string) => setSizes((prev) => ({ ...prev, [label]: v }));
+            return options.length > 0
+              ? <SelectField key={label} label={label} value={value} onChange={onChange} options={options} />
+              : <TextField key={label} label={label} value={value} onChange={onChange} placeholder="Type here" />;
+          })}
 
           {/* Notes */}
           <div style={{ padding: '0.05in 0' }}>

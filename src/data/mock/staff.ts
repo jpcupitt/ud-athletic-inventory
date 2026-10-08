@@ -160,7 +160,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F9%2F18%2FBSB_Headshots_Mams_rEzpe.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st8',
@@ -173,7 +173,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F9%2F26%2FChris_Brensahan_HS.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st9',
@@ -186,7 +186,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F9%2F26%2FDaniel_Sweeney_HS.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st10',
@@ -199,7 +199,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F9%2F18%2FBSB_Headshots_Tyler_Ds34E.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st11',
@@ -212,7 +212,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F22%2FTy_Caplin_R1lT3.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st12',
@@ -225,7 +225,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F22%2FAidan_Lipman_jdS32.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st13',
@@ -238,7 +238,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F22%2FParker_Herman_dOvcg.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st14',
@@ -251,7 +251,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Baseball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F22%2FWill_Brundage_0JnKA.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Men's Basketball Coaching Staff (bluehens.com) ────────────
@@ -266,7 +266,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F10%2F15%2FMartin_Ingelseby_HS.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st16',
@@ -279,7 +279,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F6%2F1%2FMcCrae_HS_Cropped.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st17',
@@ -292,7 +292,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F9%2F17%2FAntoni_Wyche.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st18',
@@ -305,7 +305,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F10%2F17%2FDanny_O_Connor_HS_OrLTc.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st19',
@@ -318,7 +318,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F4%2F16%2FDavid__Tee__Johnson_HS_Cropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Women's Basketball Coaching Staff (bluehens.com) ────────────
@@ -333,7 +333,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F21%2FSarah_Jenkins.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st21',
@@ -346,7 +346,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F21%2FKristina_Baugh.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st22',
@@ -359,7 +359,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F21%2FBilly_Lovett_HS.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st23',
@@ -372,7 +372,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Basketball, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F21%2FAndre_Jurko.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Cross Country Coaching Staff (bluehens.com) ────────────
@@ -387,7 +387,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Cross Country'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F10%2F25%2FJosh_Hayman_Headshot_Copy.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st25',
@@ -400,7 +400,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Cross Country'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fss-dummy-data.s3.us-east-1.amazonaws.com%2Fimages%2Fperson-default.png&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Field Hockey Coaching Staff (bluehens.com) ────────────
@@ -415,7 +415,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Field Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F1%2FAR8A6974.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st27',
@@ -428,7 +428,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Field Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F1%2FAR8A6946-2.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st28',
@@ -441,7 +441,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Field Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F10%2FDevin_Kinzel.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st29',
@@ -454,7 +454,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Field Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F10%2FAR8A7161.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st30',
@@ -467,7 +467,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Field Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F8%2F20%2FNico_HS.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st31',
@@ -480,7 +480,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Field Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F15%2FvanWijk_Josephine.png&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Football Coaching Staff (bluehens.com) ────────────
@@ -495,7 +495,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FCarty_Ryan.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st33',
@@ -508,7 +508,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FArcher_Terence.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st34',
@@ -521,7 +521,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FRojas_Manny.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st35',
@@ -534,7 +534,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FDiMeco_Rocco.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st36',
@@ -547,7 +547,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FRogers_Chris.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st37',
@@ -560,7 +560,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FDye_Xavier.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st38',
@@ -573,7 +573,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FClecidor_Marvin.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st39',
@@ -586,7 +586,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FFerguson_Tyler.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st40',
@@ -599,7 +599,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FHawkins_Kyre.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st41',
@@ -612,7 +612,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FHolley_Jarred.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st42',
@@ -625,7 +625,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FSmith_Garrett.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st43',
@@ -638,7 +638,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FTownsend_Jourdan.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st44',
@@ -651,7 +651,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FBrown_Theo.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st45',
@@ -664,7 +664,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FPlack_Noah.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st46',
@@ -677,7 +677,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FMendez_Gabriel.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st47',
@@ -690,7 +690,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FPratt_Erik.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st48',
@@ -703,7 +703,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FMcGowan_Chase.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st49',
@@ -716,7 +716,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FPuntolillo_Anthony.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st50',
@@ -729,7 +729,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Football'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F12%2FTurner_Carson.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Men's Golf Coaching Staff (bluehens.com) ────────────
@@ -744,7 +744,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Golf, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2022%2F8%2F29%2Fpost-patty-hs23.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st52',
@@ -757,7 +757,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Golf, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F9%2F18%2FPost_Brendon_Ax9Dt.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st53',
@@ -770,7 +770,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Golf, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F3%2FCoble_Drew.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Women's Golf Coaching Staff (bluehens.com) ────────────
@@ -785,7 +785,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Golf, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2022%2F8%2F29%2Fpost-patty-hs23.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st55',
@@ -798,7 +798,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Golf, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F3%2FAmeczua_Isabel.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Ice Hockey Coaching Staff (bluehens.com) ────────────
@@ -813,7 +813,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Ice Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F28%2FCoomey_Allison.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st57',
@@ -826,7 +826,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Ice Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F28%2FSamoskevich_Melissa.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st58',
@@ -839,7 +839,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Ice Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F28%2FWillard_Taylor.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st59',
@@ -852,7 +852,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Ice Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F8%2FLarocque_Michel.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st60',
@@ -865,7 +865,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Ice Hockey'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F4%2FRice_Wasyn.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Men's Lacrosse Coaching Staff (bluehens.com) ────────────
@@ -880,7 +880,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2017%2F10%2F6%2FTPRJYTTSHFSEMKP.20171006191221.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st62',
@@ -893,7 +893,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2022%2F10%2F10%2FWilkes_Trey_b5oda.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st63',
@@ -906,7 +906,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F8%2F4%2FBieda_headshot.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st64',
@@ -919,7 +919,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F9%2F21%2FWasson_Tate.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st65',
@@ -932,7 +932,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F12%2F25%2FBlue_Hen_Linktree.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st66',
@@ -945,7 +945,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F1%2F15%2Fmlaxhsedited-01.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st67',
@@ -958,7 +958,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F12%2F25%2FBlue_Hen_Linktree.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st68',
@@ -971,7 +971,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F1%2F15%2Fmlaxhsedited-02.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Women's Lacrosse Coaching Staff (bluehens.com) ────────────
@@ -986,7 +986,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2019%2F10%2F16%2FAmy_Altig_UDWL20_Headshots_01_3x4.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st70',
@@ -999,7 +999,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F8%2F30%2Fomw-6.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st71',
@@ -1012,7 +1012,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2022%2F10%2F31%2FNakrasius_Kara_HS.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st72',
@@ -1025,7 +1025,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Lacrosse, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F10%2F2%2Frecruits-127.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Rowing Coaching Staff (bluehens.com) ────────────
@@ -1040,7 +1040,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Rowing'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F1%2F23%2FAsiya_Mahmud.jpg.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st74',
@@ -1053,7 +1053,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Rowing'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F1%2F23%2FKirby_Droogan_vuWWl.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st75',
@@ -1066,7 +1066,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Rowing'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F1%2F23%2FAmy_Hildebrandt_HS.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st76',
@@ -1079,7 +1079,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Rowing'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F6%2FDanielle_Swan_Cropped.png&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Men's Soccer Coaching Staff (bluehens.com) ────────────
@@ -1094,7 +1094,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Soccer, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F15%2FTommy_McMenemy_HS_Cropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st78',
@@ -1107,7 +1107,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Soccer, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F15%2FJustin_Makar_HS_Cropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st79',
@@ -1120,7 +1120,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Soccer, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F15%2FDarian_McCauley_HS_Cropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st80',
@@ -1133,7 +1133,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Soccer, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F15%2FYawo_Baah_HS_Cropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Women's Soccer Coaching Staff (bluehens.com) ────────────
@@ -1148,7 +1148,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Soccer, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F7%2F29%2FKelly_Lawrence_2WXfU.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st82',
@@ -1161,7 +1161,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Soccer, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F1%2F9%2FIMG_2737_wPaEG.JPG&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Softball Coaching Staff (bluehens.com) ────────────
@@ -1176,7 +1176,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Softball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2021%2F2%2F10%2Fsteele_jen_hs21.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st84',
@@ -1189,7 +1189,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Softball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2021%2F2%2F10%2Fbellisari_amy_hs21.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st85',
@@ -1202,7 +1202,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Softball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F20%2FNikki_Andrade_.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st86',
@@ -1215,7 +1215,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Softball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F10%2F10%2FMoore__Jill_1.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st87',
@@ -1228,7 +1228,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Softball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F8%2F31%2FFlores__Karolina_.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Men's Swimming & Diving Coaching Staff (bluehens.com) ────────────
@@ -1243,7 +1243,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2021%2F9%2F7%2FPablo_Marmolejo.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st89',
@@ -1256,7 +1256,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F9%2F27%2F6J0A8903.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st90',
@@ -1269,7 +1269,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F12%2F14%2FKatie_Squires_headshot.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st91',
@@ -1282,7 +1282,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F8%2F31%2FPeri_Farling_Headshot_e6ABI.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st92',
@@ -1295,7 +1295,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F8%2F31%2FMackenzie_Niness_Headshot_SM6Eq.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st93',
@@ -1308,7 +1308,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F21%2FVance_AdamCropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Women's Swimming & Diving Coaching Staff (bluehens.com) ────────────
@@ -1323,7 +1323,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2021%2F9%2F7%2FPablo_Marmolejo.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st95',
@@ -1336,7 +1336,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F9%2F27%2F6J0A8903.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st96',
@@ -1349,7 +1349,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2023%2F12%2F14%2FKatie_Squires_headshot.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st97',
@@ -1362,7 +1362,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F8%2F31%2FPeri_Farling_Headshot_e6ABI.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st98',
@@ -1375,7 +1375,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F8%2F31%2FMackenzie_Niness_Headshot_SM6Eq.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st99',
@@ -1388,7 +1388,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Swimming & Diving, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F21%2FVance_AdamCropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Men's Tennis Coaching Staff (bluehens.com) ────────────
@@ -1403,7 +1403,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Tennis, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F3%2FTennis_Content_Day_-_8.31.26_-_EHV-230.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st101',
@@ -1416,7 +1416,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Tennis, Men's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F3%2FTennis_Content_Day_-_8.31.26_-_EHV-229.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Women's Tennis Coaching Staff (bluehens.com) ────────────
@@ -1431,7 +1431,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Tennis, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F3%2FTennis_Content_Day_-_8.31.26_-_EHV-230.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st103',
@@ -1444,7 +1444,7 @@ export const staffMembers: StaffMember[] = [
     sports: ["Tennis, Women's"],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F9%2F3%2FTennis_Content_Day_-_8.31.26_-_EHV-227.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Track & Field Coaching Staff (bluehens.com) ────────────
@@ -1459,7 +1459,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Track & Field, Indoor', 'Track & Field, Outdoor'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F10%2F25%2FJosh_Hayman_Headshot_Copy.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st105',
@@ -1472,7 +1472,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Track & Field, Indoor', 'Track & Field, Outdoor'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F9%2F12%2FSebastien_O_Neill_HS_ZeHAU.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st106',
@@ -1485,7 +1485,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Track & Field, Indoor', 'Track & Field, Outdoor'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2018%2F8%2F23%2F200x200_8_AthleticsPrimary.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st107',
@@ -1498,7 +1498,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Track & Field, Indoor', 'Track & Field, Outdoor'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fss-dummy-data.s3.us-east-1.amazonaws.com%2Fimages%2Fperson-default.png&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st108',
@@ -1511,7 +1511,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Track & Field, Indoor', 'Track & Field, Outdoor'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2024%2F10%2F15%2FLindsay_Hayman_Headshot_Copy.jpg&width=300&height=300&gravity=north&type=webp',
   },
 
   // ── Volleyball Coaching Staff (bluehens.com) ────────────
@@ -1526,7 +1526,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Volleyball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F7%2F11%2FKimberly_Lambert_cropped.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st110',
@@ -1539,7 +1539,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Volleyball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2025%2F6%2F9%2FLenika_Vazquez.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st111',
@@ -1552,7 +1552,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Volleyball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F7%2F8%2FAnna_Palmer.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st112',
@@ -1565,7 +1565,7 @@ export const staffMembers: StaffMember[] = [
     sports: ['Volleyball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2026%2F7%2F8%2FJayden_Nembhard.jpg&width=300&height=300&gravity=north&type=webp',
   },
   {
     id: 'st113',
@@ -1578,6 +1578,6 @@ export const staffMembers: StaffMember[] = [
     sports: ['Volleyball'],
     notes: '',
     issuedItems: [],
-    photoUrl: undefined,
+    photoUrl: 'https://images.sidearmdev.com/crop?url=https%3A%2F%2Fdxbhsrqyrr690.cloudfront.net%2Fsidearm.nextgen.sites%2Fbluehens.com%2Fimages%2F2022%2F8%2F4%2FLudovic_Nkamji.jpg&width=300&height=300&gravity=north&type=webp',
   },
 ];

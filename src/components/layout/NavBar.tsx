@@ -70,13 +70,13 @@ export default function NavBar() {
 
   return (
     <nav
-      className="bg-[#003c71] text-white flex items-center h-14 shrink-0 relative z-50 md:min-w-[900px]"
-      style={{ paddingTop: 'env(safe-area-inset-top)', height: 'calc(3.5rem + env(safe-area-inset-top))' }}
+      className="bg-[#003c71] text-white flex items-center h-20 shrink-0 relative z-50 md:min-w-[900px]"
+      style={{ paddingTop: 'env(safe-area-inset-top)', height: 'calc(5rem + env(safe-area-inset-top))' }}
     >
       {/* Scrollable left section: logo + links */}
       <div className="flex items-center self-stretch overflow-x-auto px-4 gap-4 flex-1 min-w-0">
         {/* Logo — fills the bar's full height edge to edge, aspect ratio intact */}
-        <div className="flex items-center self-stretch mr-2 shrink-0 py-1">
+        <div className="flex items-center self-stretch mr-2 shrink-0">
           <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="h-full w-auto" />
         </div>
 

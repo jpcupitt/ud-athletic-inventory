@@ -29,7 +29,7 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-10" style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)' }}>
         {/* Logo — fixed height so it doesn't grow the card's vertical space */}
         <div className="flex items-center justify-center mb-8">
-          <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="h-32 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-navy-text.png`} alt="Blue Hen Athletic Systems" className="h-32 w-auto" />
         </div>
 
         {/* Form */}

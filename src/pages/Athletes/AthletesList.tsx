@@ -1,6 +1,6 @@
 import { Fragment, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, X, Upload, Printer, Link as LinkIcon, Share2, ExternalLink } from 'lucide-react';
+import { Search, X, Upload, Printer, Link as LinkIcon } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useAuth } from '../../context/AuthContext';
 import { useAthletes } from '../../context/AthletesContext';
@@ -63,10 +63,6 @@ export default function AthletesList() {
   const [archivedIds, setArchivedIds] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<ViewMode>('active');
   const [rosterUploadMsg, setRosterUploadMsg] = useState('');
-  const [showQuickForm, setShowQuickForm] = useState(false);
-  const [quickFormEmails, setQuickFormEmails] = useState('');
-  const [quickFormSport, setQuickFormSport] = useState<Sport | ''>('');
-  const [quickFormLinks, setQuickFormLinks] = useState<{ token: string; url: string; lastName: string }[]>([]);
 
   // New Athlete modal state
   const [showNewAthlete, setShowNewAthlete] = useState(false);
@@ -288,22 +284,14 @@ export default function AthletesList() {
     markApproved(tokenRow.token);
   }
 
-  function handleCreateQuickLinks() {
-    if (!quickFormSport) return;
-    const names = quickFormEmails.split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
-    const links = names.map((name) => {
-      const { token, url } = createIntakeLink(quickFormSport as Sport, name);
-      return { token, url, lastName: name };
-    });
-    setQuickFormLinks(links);
-  }
-
-  async function shareIntakeLink(url: string, lastName: string) {
-    const shareData = { title: 'UD Athletics Equipment Form', text: `Fill out your equipment sizing for ${lastName}:`, url };
-    if (navigator.share) {
-      try { await navigator.share(shareData); return; } catch { /* user cancelled — fall through to copy */ }
-    }
-    await navigator.clipboard?.writeText(url).catch(() => {});
+  /** Opens the real sign-up form directly in a new tab, defaulting to whichever sport is
+   *  active in the header picker. The form's own "Share" button (top right) is where a
+   *  manager generates/distributes named links for other athletes. */
+  function handleQuickEquipmentForm() {
+    const sport: Sport | undefined = sportFilter !== 'All Sports' ? sportFilter : (isLead ? ALL_SPORTS : accessibleSports)[0];
+    if (!sport) return;
+    const { url } = createIntakeLink(sport, '');
+    window.open(url, '_blank');
   }
 
   return (
@@ -342,7 +330,7 @@ export default function AthletesList() {
                 + New Athlete
               </button>
               <button
-                onClick={() => { setQuickFormLinks([]); setQuickFormEmails(''); setQuickFormSport(''); setShowQuickForm(true); }}
+                onClick={handleQuickEquipmentForm}
                 className="flex items-center gap-1 text-[#00539F] font-semibold text-sm border border-[#00539F] bg-transparent focus:outline-none cursor-pointer rounded-md hover:bg-[#EFF6FF]"
                 style={{ padding: '0.025in 0.1in' }}
               >
@@ -770,84 +758,6 @@ export default function AthletesList() {
         </div>
       )}
 
-      {/* Quick Equipment Form — generate self-service sizing links for new/transfer athletes */}
-      {showQuickForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-md md:h-auto md:max-h-[90vh] md:rounded-xl" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-            <div className="flex items-center justify-between px-5 py-3 md:rounded-t-xl" style={{ backgroundColor: '#003c71', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
-              <span className="text-white font-semibold text-sm">Quick Equipment Form</span>
-              <button onClick={() => setShowQuickForm(false)} className="text-white hover:opacity-70"><X className="w-4 h-4" /></button>
-            </div>
-            <div className="overflow-y-scroll flex-1" style={{ padding: '0.15in 0.2in' }}>
-              <p className="text-xs text-gray-500 mb-3">
-                Generate a link for a new or transferring athlete to fill out their own sizing on their phone.
-                Copy it into a text or email yourself — approve the submission here once it comes in.
-              </p>
-
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Sport</label>
-                <select
-                  value={quickFormSport}
-                  onChange={(e) => setQuickFormSport(e.target.value as Sport)}
-                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                  style={{ padding: '0.05in' }}
-                >
-                  <option value="">Select Sport</option>
-                  {ALL_SPORTS.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-
-              <div style={{ padding: '0.05in 0' }}>
-                <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Last Name(s) — one per line, for mass distribution</label>
-                <textarea
-                  value={quickFormEmails}
-                  onChange={(e) => setQuickFormEmails(e.target.value)}
-                  placeholder={'Hart\nDaniels\nJohnson'}
-                  rows={4}
-                  className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
-                  style={{ padding: '0.05in' }}
-                />
-              </div>
-
-              <button
-                onClick={handleCreateQuickLinks}
-                disabled={!quickFormSport || !quickFormEmails.trim()}
-                className="w-full text-white text-xs font-semibold rounded disabled:opacity-40"
-                style={{ backgroundColor: '#003c71', padding: '0.08in', marginTop: '0.05in' }}
-              >
-                Generate Link{quickFormEmails.split(/[,\n]/).filter((s) => s.trim()).length > 1 ? 's' : ''}
-              </button>
-
-              {quickFormLinks.length > 0 && (
-                <div className="mt-3 flex flex-col gap-1.5">
-                  {quickFormLinks.map((link) => (
-                    <div key={link.token} className="flex items-center justify-between gap-2 bg-gray-50 border border-gray-200 rounded px-3 py-2">
-                      <span className="text-xs font-medium text-gray-700 truncate">{link.lastName}</span>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <button
-                          onClick={() => window.open(link.url, '_blank')}
-                          className="flex items-center gap-1 text-[11px] font-medium text-[#00539F] hover:underline"
-                        >
-                          <ExternalLink className="w-3 h-3" /> Open Form
-                        </button>
-                        <button
-                          onClick={() => shareIntakeLink(link.url, link.lastName)}
-                          className="flex items-center gap-1 text-[11px] font-medium text-[#00539F] hover:underline"
-                        >
-                          <Share2 className="w-3 h-3" /> Share
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  <p className="text-[10px] text-gray-400 mt-0.5">
-                    "Open Form" opens the real sign-up page — a full page in its own tab, exactly what the athlete will see. "Share" opens your phone's share sheet (text, email, etc.), or copies the link.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

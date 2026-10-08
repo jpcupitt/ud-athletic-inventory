@@ -1,7 +1,7 @@
 /* EQI service worker — app-shell caching for offline use.
    All app data is in-memory mock data, so caching the shell + assets
    makes the app fully functional offline after the first visit. */
-const CACHE = 'eqi-v4';
+const CACHE = 'eqi-v5';
 const BASE = new URL('./', self.registration.scope).pathname;
 const CORE = [
   BASE,
@@ -30,9 +30,14 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   // SPA navigations: network first, fall back to cached shell for offline deep links.
+  // `cache: 'no-store'` is required — GitHub Pages serves index.html with
+  // `Cache-Control: max-age=600`, so a plain fetch() can be silently satisfied
+  // from the browser's own HTTP cache for up to 10 minutes after a deploy,
+  // even though this handler is "network first" from the service worker's
+  // point of view.
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: 'no-store' })
         .then((res) => {
           const copy = res.clone();
           caches.open(CACHE).then((cache) => cache.put(`${BASE}index.html`, copy));
@@ -72,7 +77,7 @@ self.addEventListener('fetch', (event) => {
   // than caching it once and never updating it again.
   event.respondWith(
     caches.match(request).then((cached) => {
-      const refresh = fetch(request).then(cacheResponse).catch(() => cached);
+      const refresh = fetch(request, { cache: 'no-store' }).then(cacheResponse).catch(() => cached);
       return cached || refresh;
     })
   );

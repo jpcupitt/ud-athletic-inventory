@@ -86,7 +86,7 @@ function NotifBadge({ label, count, color, onClick }: { label: string; count: nu
   return (
     <button
       onClick={onClick}
-      className={`${color} rounded-lg text-white text-center cursor-pointer hover:opacity-90 transition-opacity`}
+      className={`${color} rounded-lg text-white text-center cursor-pointer hover:opacity-90 transition-opacity w-full md:w-36`}
       style={{ padding: '0.1in 0.1in' }}
     >
       <p className="text-2xl font-bold leading-none">{count}</p>
@@ -398,7 +398,7 @@ export default function Dashboard() {
             <div className="relative">
               <button
                 onClick={() => { setShowQuickSubmit(true); setQuickSubmitOrder(null); }}
-                className="w-full h-full md:w-auto md:h-auto rounded-lg text-center transition-colors hover:opacity-90 cursor-pointer"
+                className="w-full h-full md:w-36 md:h-auto rounded-lg text-center transition-colors hover:opacity-90 cursor-pointer"
                 style={{ padding: '0.1in', backgroundColor: '#FFD200', color: '#003c71' }}
               >
                 <p className="text-2xl font-bold leading-none">+</p>

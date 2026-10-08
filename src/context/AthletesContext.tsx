@@ -1,7 +1,9 @@
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import type { Athlete, CustomSizeEntry, IssuedItem } from '../data/types';
 import { athletes as mockAthletes } from '../data/mock/athletes';
 import { usePersistentState } from '../hooks/usePersistentState';
+
+const mockAthleteById = new Map(mockAthletes.map((a) => [a.id, a]));
 
 interface AthletesContextValue {
   athletes: Athlete[];
@@ -17,7 +19,18 @@ interface AthletesContextValue {
 const AthletesContext = createContext<AthletesContextValue | null>(null);
 
 export function AthletesProvider({ children }: { children: ReactNode }) {
-  const [athletes, setAthletes] = usePersistentState<Athlete[]>('athletes2', () => [...mockAthletes]);
+  const [athletesRaw, setAthletes] = usePersistentState<Athlete[]>('athletes2', () => [...mockAthletes]);
+
+  // A returning browser's persisted copy can predate a mock-data refresh (new
+  // ID scheme, new photos). Forward-sync those two identity fields from the
+  // current seed on every load, for any record this app itself seeded —
+  // user-added athletes (not in mockAthletes) are left untouched.
+  const athletes = useMemo(() => athletesRaw.map((a) => {
+    const seed = mockAthleteById.get(a.id);
+    if (!seed) return a;
+    if (seed.athleteId === a.athleteId && seed.photoUrl === a.photoUrl) return a;
+    return { ...a, athleteId: seed.athleteId, photoUrl: seed.photoUrl };
+  }), [athletesRaw]);
 
   function addAthlete(athlete: Athlete) {
     setAthletes((prev) => [athlete, ...prev]);

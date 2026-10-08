@@ -1,7 +1,7 @@
 /* EQI service worker — app-shell caching for offline use.
    All app data is in-memory mock data, so caching the shell + assets
    makes the app fully functional offline after the first visit. */
-const CACHE = 'eqi-v3';
+const CACHE = 'eqi-v4';
 const BASE = new URL('./', self.registration.scope).pathname;
 const CORE = [
   BASE,
@@ -43,23 +43,37 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets (own hashed bundles + Google Fonts): cache first, then network.
+  // Static assets (own bundles + Google Fonts).
   const url = new URL(request.url);
   const cacheable = url.origin === self.location.origin
     || url.hostname === 'fonts.googleapis.com'
     || url.hostname === 'fonts.gstatic.com';
   if (!cacheable) return;
 
+  function cacheResponse(res) {
+    if (res.ok && (res.type === 'basic' || res.type === 'cors')) {
+      caches.open(CACHE).then((cache) => cache.put(request, res.clone()));
+    }
+    return res;
+  }
+
+  // Vite's own JS/CSS bundles are content-hashed (a new build gets a new
+  // filename), so a cached one is never stale — cache first is safe and fast.
+  if (/-[A-Za-z0-9_-]{6,}\.(js|css)$/.test(url.pathname)) {
+    event.respondWith(
+      caches.match(request).then((cached) => cached || fetch(request).then(cacheResponse))
+    );
+    return;
+  }
+
+  // Everything else at a stable URL (logo, favicon, manifest, fonts) can change
+  // without its filename changing, so serve the cached copy immediately but
+  // always refetch in the background to keep the next load current — rather
+  // than caching it once and never updating it again.
   event.respondWith(
     caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((res) => {
-        if (res.ok && (res.type === 'basic' || res.type === 'cors')) {
-          const copy = res.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
-        }
-        return res;
-      });
+      const refresh = fetch(request).then(cacheResponse).catch(() => cached);
+      return cached || refresh;
     })
   );
 });

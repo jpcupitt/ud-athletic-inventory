@@ -27,9 +27,9 @@ export default function Login() {
       </svg>
       <div className="absolute inset-0 pointer-events-none" style={{ filter: 'url(#login-bg-noise)', opacity: 0.25, mixBlendMode: 'overlay' }} />
       <div className="relative z-10 w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-10" style={{ backgroundColor: 'rgba(255,255,255,0.20)', backdropFilter: 'blur(12px)' }}>
-        {/* Logo */}
+        {/* Logo — fills the card's full content width edge to edge, aspect ratio intact */}
         <div className="flex items-center justify-center mb-8">
-          <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="h-16 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="w-full h-auto" />
         </div>
 
         {/* Form */}

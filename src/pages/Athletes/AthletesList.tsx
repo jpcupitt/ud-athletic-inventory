@@ -7,6 +7,7 @@ import { useAthletes } from '../../context/AthletesContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
 import { useActiveSport } from '../../context/SportContext';
 import { usePendingIntakes } from '../../context/PendingIntakesContext';
+import { smartAthleteId } from '../../utils/ids';
 import type { Athlete, Sport, CustomSizeEntry } from '../../data/types';
 
 const ALL_SPORTS: Sport[] = [
@@ -21,32 +22,6 @@ const SHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 const SHORTS_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
 type ViewMode = 'active' | 'archived';
-
-const SPORT_ABBR: Partial<Record<Sport, string>> = {
-  'Baseball': 'BASE', "Basketball, Men's": 'MBB', "Basketball, Women's": 'WBB',
-  'Cross Country': 'XC', 'Field Hockey': 'FH', 'Football': 'FB',
-  "Golf, Men's": 'MGOLF', "Golf, Women's": 'WGOLF', 'Ice Hockey': 'IH',
-  "Lacrosse, Men's": 'MLAX', "Lacrosse, Women's": 'WLAX', 'Rowing': 'ROW',
-  "Soccer, Men's": 'MSOC', "Soccer, Women's": 'WSOC', 'Softball': 'SB',
-  "Swimming & Diving, Men's": 'MSWIM', "Swimming & Diving, Women's": 'WSWIM',
-  "Tennis, Men's": 'MTEN', "Tennis, Women's": 'WTEN',
-  'Track & Field, Indoor': 'TRK', 'Track & Field, Outdoor': 'TRK', 'Volleyball': 'VB',
-};
-
-/** Sport + initials + jersey number, e.g. "FB-NM4" — consistent across every
- *  sport. Falls back to appending the current year (then a counter) on a
- *  collision, e.g. a repeat jersey number the following season. */
-function smartAthleteId(sport: Sport, firstName: string, lastName: string, jersey: string, existing: Set<string>): string {
-  const abbr = SPORT_ABBR[sport] ?? 'ATH';
-  const initials = `${(firstName[0] ?? '').toUpperCase()}${(lastName[0] ?? '').toUpperCase()}`;
-  const base = jersey.trim() ? `${abbr}-${initials}${jersey.trim()}` : `${abbr}-${initials}`;
-  if (!existing.has(base)) return base;
-  const yearSuffix = String(new Date().getFullYear()).slice(-2);
-  let candidate = `${base}-${yearSuffix}`;
-  let n = 2;
-  while (existing.has(candidate)) { candidate = `${base}-${yearSuffix}${n}`; n++; }
-  return candidate;
-}
 
 export default function AthletesList() {
   const navigate = useNavigate();

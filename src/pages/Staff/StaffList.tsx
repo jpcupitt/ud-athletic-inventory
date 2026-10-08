@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useStaff } from '../../context/StaffContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
 import { useActiveSport } from '../../context/SportContext';
+import { smartStaffId } from '../../utils/ids';
 import type { Sport, StaffMember } from '../../data/types';
 
 const ALL_SPORTS: Sport[] = [
@@ -18,12 +19,6 @@ const SHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 const SHORTS_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
 type ViewMode = 'active' | 'archived';
-
-function nextStaffId(all: StaffMember[]): string {
-  const nums = all.map((s) => parseInt(s.staffId.replace(/\D/g, ''), 10)).filter((n) => !isNaN(n));
-  const max = nums.length > 0 ? Math.max(...nums) : 0;
-  return `UDSG${max + 1}`;
-}
 
 export default function StaffList() {
   const navigate = useNavigate();
@@ -52,6 +47,12 @@ export default function StaffList() {
   const [newShirtSize, setNewShirtSize] = useState('');
   const [newShortsSize, setNewShortsSize] = useState('');
   const [newShoeSize, setNewShoeSize] = useState('');
+
+  const existingStaffIds = useMemo(() => new Set(allStaff.map((s) => s.staffId)), [allStaff]);
+  const newStaffIdPreview = useMemo(
+    () => smartStaffId(newSport, newTitle || 'Staff', newFirstName, newLastName, existingStaffIds),
+    [newSport, newTitle, newFirstName, newLastName, existingStaffIds]
+  );
 
   const scopedStaff = useMemo(() => filterBySports(allStaff, (s) => s.sports as string[]), [allStaff, filterBySports]);
 
@@ -114,7 +115,7 @@ export default function StaffList() {
     const id = `local-staff-${Date.now()}`;
     const member: StaffMember = {
       id,
-      staffId: nextStaffId(allStaff),
+      staffId: newStaffIdPreview,
       firstName: newFirstName,
       lastName: newLastName,
       barcode: newBarcode || id,
@@ -388,7 +389,7 @@ export default function StaffList() {
                 <input
                   type="text"
                   readOnly
-                  value={nextStaffId(allStaff)}
+                  value={newStaffIdPreview}
                   className="w-full border border-gray-200 rounded text-xs text-gray-400 bg-gray-50 focus:outline-none"
                   style={{ padding: '0.05in' }}
                 />

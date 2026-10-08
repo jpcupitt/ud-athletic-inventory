@@ -4,7 +4,7 @@ export const staffMembers: StaffMember[] = [
   // ── Equipment Staff ─────────────────────────────────────────
   {
     id: 'st1',
-    staffId: 'UDSG2023',
+    staffId: 'UDMBBDIRSG',
     firstName: 'Steve',
     lastName: 'Galgano',
     barcode: 'UDSG2023',
@@ -27,7 +27,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st2',
-    staffId: 'UDPS2026',
+    staffId: 'UDBASEEQPS',
     firstName: 'Peter',
     lastName: 'Stevens',
     barcode: 'UDPS2026',
@@ -63,7 +63,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st3',
-    staffId: 'UDPK2023',
+    staffId: 'UDBASEEQPK',
     firstName: 'Pete',
     lastName: 'Kernan',
     barcode: 'UDPK2023',
@@ -99,7 +99,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st4',
-    staffId: 'UDAL2024',
+    staffId: 'UDFBEQAW',
     firstName: 'Al',
     lastName: 'Whitfield',
     barcode: 'UDAL2024',
@@ -123,7 +123,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st5',
-    staffId: 'UDJM2025',
+    staffId: 'UDFHEQJM',
     firstName: 'Jamie',
     lastName: 'Morris',
     barcode: 'UDJM2025',
@@ -136,7 +136,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st6',
-    staffId: 'UDTR2025',
+    staffId: 'UDMBBMGRTR',
     firstName: 'Taylor',
     lastName: 'Reed',
     barcode: 'UDTR2025',
@@ -151,7 +151,7 @@ export const staffMembers: StaffMember[] = [
   // ── Baseball Coaching Staff (bluehens.com) ────────────
   {
     id: 'st7',
-    staffId: 'UDBBC001',
+    staffId: 'UDBASEHCGM',
     firstName: 'Greg',
     lastName: 'Mamula',
     barcode: 'UDBBC001',
@@ -164,7 +164,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st8',
-    staffId: 'UDBBC002',
+    staffId: 'UDBASEACCB',
     firstName: 'Chris',
     lastName: 'Bresnahan',
     barcode: 'UDBBC002',
@@ -177,7 +177,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st9',
-    staffId: 'UDBBC003',
+    staffId: 'UDBASEACDS',
     firstName: 'Daniel',
     lastName: 'Sweeney',
     barcode: 'UDBBC003',
@@ -190,7 +190,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st10',
-    staffId: 'UDBBC004',
+    staffId: 'UDBASEACTL',
     firstName: 'Tyler',
     lastName: 'Leach',
     barcode: 'UDBBC004',
@@ -203,7 +203,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st11',
-    staffId: 'UDBBC005',
+    staffId: 'UDBASEMGRTC',
     firstName: 'Ty',
     lastName: 'Caplan',
     barcode: 'UDBBC005',
@@ -216,7 +216,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st12',
-    staffId: 'UDBBC006',
+    staffId: 'UDBASEMGRAL',
     firstName: 'Aidan',
     lastName: 'Lipman',
     barcode: 'UDBBC006',
@@ -229,7 +229,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st13',
-    staffId: 'UDBBC007',
+    staffId: 'UDBASEMGRPH',
     firstName: 'Parker',
     lastName: 'Herman',
     barcode: 'UDBBC007',
@@ -242,113 +242,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st14',
-    staffId: 'UDBBC008',
-    firstName: 'Will',
-    lastName: 'Brundage',
-    barcode: 'UDBBC008',
-    title: 'Student Manager',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-
-  // ── Baseball Coaching Staff (bluehens.com) ────────────
-  {
-    id: 'st7',
-    staffId: 'UDBBC001',
-    firstName: 'Greg',
-    lastName: 'Mamula',
-    barcode: 'UDBBC001',
-    title: 'Head Coach',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-  {
-    id: 'st8',
-    staffId: 'UDBBC002',
-    firstName: 'Chris',
-    lastName: 'Bresnahan',
-    barcode: 'UDBBC002',
-    title: 'Recruiting Coordinator',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-  {
-    id: 'st9',
-    staffId: 'UDBBC003',
-    firstName: 'Daniel',
-    lastName: 'Sweeney',
-    barcode: 'UDBBC003',
-    title: 'Pitching Coach',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-  {
-    id: 'st10',
-    staffId: 'UDBBC004',
-    firstName: 'Tyler',
-    lastName: 'Leach',
-    barcode: 'UDBBC004',
-    title: 'Assistant Coach',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-  {
-    id: 'st11',
-    staffId: 'UDBBC005',
-    firstName: 'Ty',
-    lastName: 'Caplan',
-    barcode: 'UDBBC005',
-    title: 'Student-Manager',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-  {
-    id: 'st12',
-    staffId: 'UDBBC006',
-    firstName: 'Aidan',
-    lastName: 'Lipman',
-    barcode: 'UDBBC006',
-    title: 'Student Manager/ Bullpen Catcher',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-  {
-    id: 'st13',
-    staffId: 'UDBBC007',
-    firstName: 'Parker',
-    lastName: 'Herman',
-    barcode: 'UDBBC007',
-    title: 'Student Manager',
-    locker: undefined,
-    sports: ['Baseball'],
-    notes: '',
-    issuedItems: [],
-    photoUrl: undefined,
-  },
-  {
-    id: 'st14',
-    staffId: 'UDBBC008',
+    staffId: 'UDBASEMGRWB',
     firstName: 'Will',
     lastName: 'Brundage',
     barcode: 'UDBBC008',
@@ -363,7 +257,7 @@ export const staffMembers: StaffMember[] = [
   // ── Men's Basketball Coaching Staff (bluehens.com) ────────────
   {
     id: 'st15',
-    staffId: 'UDMBC001',
+    staffId: 'UDMBBHCMI',
     firstName: 'Martin',
     lastName: 'Ingelsby',
     barcode: 'UDMBC001',
@@ -376,7 +270,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st16',
-    staffId: 'UDMBC002',
+    staffId: 'UDMBBACCM',
     firstName: 'Corey',
     lastName: 'McCrae',
     barcode: 'UDMBC002',
@@ -389,7 +283,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st17',
-    staffId: 'UDMBC003',
+    staffId: 'UDMBBACAW',
     firstName: 'Antoni',
     lastName: 'Wyche',
     barcode: 'UDMBC003',
@@ -402,7 +296,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st18',
-    staffId: 'UDMBC004',
+    staffId: 'UDMBBACDO',
     firstName: 'Danny',
     lastName: "O'Connor",
     barcode: 'UDMBC004',
@@ -415,7 +309,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st19',
-    staffId: 'UDMBC005',
+    staffId: 'UDMBBDIRDJ',
     firstName: 'David',
     lastName: "'Tee' Johnson",
     barcode: 'UDMBC005',
@@ -430,7 +324,7 @@ export const staffMembers: StaffMember[] = [
   // ── Women's Basketball Coaching Staff (bluehens.com) ────────────
   {
     id: 'st20',
-    staffId: 'UDWBC001',
+    staffId: 'UDWBBHCSJ',
     firstName: 'Sarah',
     lastName: 'Jenkins',
     barcode: 'UDWBC001',
@@ -443,7 +337,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st21',
-    staffId: 'UDWBC002',
+    staffId: 'UDWBBACKB',
     firstName: 'Kristina',
     lastName: 'Baugh',
     barcode: 'UDWBC002',
@@ -456,7 +350,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st22',
-    staffId: 'UDWBC003',
+    staffId: 'UDWBBACBL',
     firstName: 'Billy',
     lastName: 'Lovett',
     barcode: 'UDWBC003',
@@ -469,7 +363,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st23',
-    staffId: 'UDWBC004',
+    staffId: 'UDWBBACAJ',
     firstName: 'Andre',
     lastName: 'Jurko',
     barcode: 'UDWBC004',
@@ -484,7 +378,7 @@ export const staffMembers: StaffMember[] = [
   // ── Cross Country Coaching Staff (bluehens.com) ────────────
   {
     id: 'st24',
-    staffId: 'UDXCC001',
+    staffId: 'UDXCHCJH',
     firstName: 'Josh',
     lastName: 'Hayman',
     barcode: 'UDXCC001',
@@ -497,7 +391,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st25',
-    staffId: 'UDXCC002',
+    staffId: 'UDXCACCJ',
     firstName: 'Caitlin',
     lastName: 'Jorgensen',
     barcode: 'UDXCC002',
@@ -512,7 +406,7 @@ export const staffMembers: StaffMember[] = [
   // ── Field Hockey Coaching Staff (bluehens.com) ────────────
   {
     id: 'st26',
-    staffId: 'UDFHC001',
+    staffId: 'UDFHHCTZ',
     firstName: 'Tara',
     lastName: 'Zollinger',
     barcode: 'UDFHC001',
@@ -525,7 +419,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st27',
-    staffId: 'UDFHC002',
+    staffId: 'UDFHACAM',
     firstName: 'Ally',
     lastName: 'Mooney',
     barcode: 'UDFHC002',
@@ -538,7 +432,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st28',
-    staffId: 'UDFHC003',
+    staffId: 'UDFHACDK',
     firstName: 'Devin',
     lastName: 'Kinzel',
     barcode: 'UDFHC003',
@@ -551,7 +445,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st29',
-    staffId: 'UDFHC004',
+    staffId: 'UDFHACSR',
     firstName: 'Sydney',
     lastName: 'Rhodes-James',
     barcode: 'UDFHC004',
@@ -564,7 +458,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st30',
-    staffId: 'UDFHC005',
+    staffId: 'UDFHACNC',
     firstName: 'Nico',
     lastName: 'Campbell',
     barcode: 'UDFHC005',
@@ -577,7 +471,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st31',
-    staffId: 'UDFHC006',
+    staffId: 'UDFHMGRJV',
     firstName: 'Josephine',
     lastName: 'van Wijk',
     barcode: 'UDFHC006',
@@ -592,7 +486,7 @@ export const staffMembers: StaffMember[] = [
   // ── Football Coaching Staff (bluehens.com) ────────────
   {
     id: 'st32',
-    staffId: 'UDFBC001',
+    staffId: 'UDFBHCRC',
     firstName: 'Ryan',
     lastName: 'Carty',
     barcode: 'UDFBC001',
@@ -605,7 +499,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st33',
-    staffId: 'UDFBC002',
+    staffId: 'UDFBACTA',
     firstName: 'Terence',
     lastName: 'Archer',
     barcode: 'UDFBC002',
@@ -618,7 +512,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st34',
-    staffId: 'UDFBC003',
+    staffId: 'UDFBACMR',
     firstName: 'Manny',
     lastName: 'Rojas',
     barcode: 'UDFBC003',
@@ -631,7 +525,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st35',
-    staffId: 'UDFBC004',
+    staffId: 'UDFBACRD',
     firstName: 'Rocco',
     lastName: 'DiMeco',
     barcode: 'UDFBC004',
@@ -644,7 +538,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st36',
-    staffId: 'UDFBC005',
+    staffId: 'UDFBACCR',
     firstName: 'Chris',
     lastName: 'Rogers',
     barcode: 'UDFBC005',
@@ -657,7 +551,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st37',
-    staffId: 'UDFBC006',
+    staffId: 'UDFBACXD',
     firstName: 'Xavier',
     lastName: 'Dye',
     barcode: 'UDFBC006',
@@ -670,7 +564,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st38',
-    staffId: 'UDFBC007',
+    staffId: 'UDFBACMC',
     firstName: 'Marvin',
     lastName: 'Clecidor',
     barcode: 'UDFBC007',
@@ -683,7 +577,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st39',
-    staffId: 'UDFBC008',
+    staffId: 'UDFBACTF',
     firstName: 'Tyler',
     lastName: 'Ferguson',
     barcode: 'UDFBC008',
@@ -696,7 +590,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st40',
-    staffId: 'UDFBC009',
+    staffId: 'UDFBACKH',
     firstName: 'Kyre',
     lastName: 'Hawkins',
     barcode: 'UDFBC009',
@@ -709,7 +603,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st41',
-    staffId: 'UDFBC010',
+    staffId: 'UDFBACJH',
     firstName: 'Jarred',
     lastName: 'Holley',
     barcode: 'UDFBC010',
@@ -722,7 +616,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st42',
-    staffId: 'UDFBC011',
+    staffId: 'UDFBACGS',
     firstName: 'Garrett',
     lastName: 'Smith',
     barcode: 'UDFBC011',
@@ -735,7 +629,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st43',
-    staffId: 'UDFBC012',
+    staffId: 'UDFBACJT',
     firstName: 'Jourdan',
     lastName: 'Townsend',
     barcode: 'UDFBC012',
@@ -748,7 +642,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st44',
-    staffId: 'UDFBC013',
+    staffId: 'UDFBACTB',
     firstName: 'Theo',
     lastName: 'Brown',
     barcode: 'UDFBC013',
@@ -761,7 +655,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st45',
-    staffId: 'UDFBC014',
+    staffId: 'UDFBACNP',
     firstName: 'Noah',
     lastName: 'Plack',
     barcode: 'UDFBC014',
@@ -774,7 +668,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st46',
-    staffId: 'UDFBC015',
+    staffId: 'UDFBACGM',
     firstName: 'Gabriel',
     lastName: 'Mendez',
     barcode: 'UDFBC015',
@@ -787,7 +681,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st47',
-    staffId: 'UDFBC016',
+    staffId: 'UDFBACEP',
     firstName: 'Erik',
     lastName: 'Pratt',
     barcode: 'UDFBC016',
@@ -800,7 +694,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st48',
-    staffId: 'UDFBC017',
+    staffId: 'UDFBACCM',
     firstName: 'Chase',
     lastName: 'McGowan',
     barcode: 'UDFBC017',
@@ -813,7 +707,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st49',
-    staffId: 'UDFBC018',
+    staffId: 'UDFBACAP',
     firstName: 'Anthony',
     lastName: 'Puntolillo',
     barcode: 'UDFBC018',
@@ -826,7 +720,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st50',
-    staffId: 'UDFBC019',
+    staffId: 'UDFBACCT',
     firstName: 'Carson',
     lastName: 'Turner',
     barcode: 'UDFBC019',
@@ -841,7 +735,7 @@ export const staffMembers: StaffMember[] = [
   // ── Men's Golf Coaching Staff (bluehens.com) ────────────
   {
     id: 'st51',
-    staffId: 'UDMGLC001',
+    staffId: 'UDMGOLFDIRPP',
     firstName: 'Patty',
     lastName: 'Post',
     barcode: 'UDMGLC001',
@@ -854,7 +748,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st52',
-    staffId: 'UDMGLC002',
+    staffId: 'UDMGOLFHCBP',
     firstName: 'Brendon',
     lastName: 'Post',
     barcode: 'UDMGLC002',
@@ -867,7 +761,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st53',
-    staffId: 'UDMGLC003',
+    staffId: 'UDMGOLFACDC',
     firstName: 'Drew',
     lastName: 'Coble',
     barcode: 'UDMGLC003',
@@ -882,7 +776,7 @@ export const staffMembers: StaffMember[] = [
   // ── Women's Golf Coaching Staff (bluehens.com) ────────────
   {
     id: 'st54',
-    staffId: 'UDWGLC001',
+    staffId: 'UDWGOLFDIRPP',
     firstName: 'Patty',
     lastName: 'Post',
     barcode: 'UDWGLC001',
@@ -895,7 +789,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st55',
-    staffId: 'UDWGLC002',
+    staffId: 'UDWGOLFACIA',
     firstName: 'Isabel',
     lastName: 'Amezcua',
     barcode: 'UDWGLC002',
@@ -910,7 +804,7 @@ export const staffMembers: StaffMember[] = [
   // ── Ice Hockey Coaching Staff (bluehens.com) ────────────
   {
     id: 'st56',
-    staffId: 'UDIHC001',
+    staffId: 'UDIHHCAC',
     firstName: 'Allison',
     lastName: 'Coomey',
     barcode: 'UDIHC001',
@@ -923,7 +817,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st57',
-    staffId: 'UDIHC002',
+    staffId: 'UDIHACMS',
     firstName: 'Melissa',
     lastName: 'Samoskevich',
     barcode: 'UDIHC002',
@@ -936,7 +830,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st58',
-    staffId: 'UDIHC003',
+    staffId: 'UDIHACTW',
     firstName: 'Taylor',
     lastName: 'Willard',
     barcode: 'UDIHC003',
@@ -949,7 +843,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st59',
-    staffId: 'UDIHC004',
+    staffId: 'UDIHACML',
     firstName: 'Michel',
     lastName: 'Larocque',
     barcode: 'UDIHC004',
@@ -962,7 +856,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st60',
-    staffId: 'UDIHC005',
+    staffId: 'UDIHDIRWR',
     firstName: 'Wasyn',
     lastName: 'Rice',
     barcode: 'UDIHC005',
@@ -977,7 +871,7 @@ export const staffMembers: StaffMember[] = [
   // ── Men's Lacrosse Coaching Staff (bluehens.com) ────────────
   {
     id: 'st61',
-    staffId: 'UDMLXC001',
+    staffId: 'UDMLAXHCBD',
     firstName: 'Ben',
     lastName: 'DeLuca',
     barcode: 'UDMLXC001',
@@ -990,7 +884,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st62',
-    staffId: 'UDMLXC002',
+    staffId: 'UDMLAXACTW',
     firstName: 'Trey',
     lastName: 'Wilkes',
     barcode: 'UDMLXC002',
@@ -1003,7 +897,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st63',
-    staffId: 'UDMLXC003',
+    staffId: 'UDMLAXACMB',
     firstName: 'Mark',
     lastName: 'Bieda',
     barcode: 'UDMLXC003',
@@ -1016,7 +910,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st64',
-    staffId: 'UDMLXC004',
+    staffId: 'UDMLAXACTW2',
     firstName: 'Tate',
     lastName: 'Wasson',
     barcode: 'UDMLXC004',
@@ -1029,7 +923,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st65',
-    staffId: 'UDMLXC005',
+    staffId: 'UDMLAXMGRTD',
     firstName: 'TJ',
     lastName: 'Denney',
     barcode: 'UDMLXC005',
@@ -1042,7 +936,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st66',
-    staffId: 'UDMLXC006',
+    staffId: 'UDMLAXMGRMR',
     firstName: 'Michael',
     lastName: 'Russo',
     barcode: 'UDMLXC006',
@@ -1055,7 +949,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st67',
-    staffId: 'UDMLXC007',
+    staffId: 'UDMLAXMGRJS',
     firstName: 'Justin',
     lastName: 'Shank',
     barcode: 'UDMLXC007',
@@ -1068,7 +962,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st68',
-    staffId: 'UDMLXC008',
+    staffId: 'UDMLAXMGRCW',
     firstName: 'Cole',
     lastName: 'Williams',
     barcode: 'UDMLXC008',
@@ -1083,7 +977,7 @@ export const staffMembers: StaffMember[] = [
   // ── Women's Lacrosse Coaching Staff (bluehens.com) ────────────
   {
     id: 'st69',
-    staffId: 'UDWLXC001',
+    staffId: 'UDWLAXHCAA',
     firstName: 'Amy',
     lastName: 'Altig',
     barcode: 'UDWLXC001',
@@ -1096,7 +990,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st70',
-    staffId: 'UDWLXC002',
+    staffId: 'UDWLAXACSP',
     firstName: 'Sam',
     lastName: 'Pratt',
     barcode: 'UDWLXC002',
@@ -1109,7 +1003,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st71',
-    staffId: 'UDWLXC003',
+    staffId: 'UDWLAXACKN',
     firstName: 'Kara',
     lastName: 'Nakrasius',
     barcode: 'UDWLXC003',
@@ -1122,7 +1016,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st72',
-    staffId: 'UDWLXC004',
+    staffId: 'UDWLAXACLS',
     firstName: 'Lilly',
     lastName: 'Siskind',
     barcode: 'UDWLXC004',
@@ -1137,7 +1031,7 @@ export const staffMembers: StaffMember[] = [
   // ── Rowing Coaching Staff (bluehens.com) ────────────
   {
     id: 'st73',
-    staffId: 'UDROWC001',
+    staffId: 'UDROWHCAM',
     firstName: 'Asiya',
     lastName: 'Mahmud',
     barcode: 'UDROWC001',
@@ -1150,7 +1044,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st74',
-    staffId: 'UDROWC002',
+    staffId: 'UDROWACKD',
     firstName: 'Kirby',
     lastName: 'Droogan',
     barcode: 'UDROWC002',
@@ -1163,7 +1057,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st75',
-    staffId: 'UDROWC003',
+    staffId: 'UDROWACAH',
     firstName: 'Amy',
     lastName: 'Hildebrandt',
     barcode: 'UDROWC003',
@@ -1176,7 +1070,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st76',
-    staffId: 'UDROWC004',
+    staffId: 'UDROWACDS',
     firstName: 'Danielle',
     lastName: 'Swan',
     barcode: 'UDROWC004',
@@ -1191,7 +1085,7 @@ export const staffMembers: StaffMember[] = [
   // ── Men's Soccer Coaching Staff (bluehens.com) ────────────
   {
     id: 'st77',
-    staffId: 'UDMSCC001',
+    staffId: 'UDMSOCHCTM',
     firstName: 'Tommy',
     lastName: 'McMenemy',
     barcode: 'UDMSCC001',
@@ -1204,7 +1098,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st78',
-    staffId: 'UDMSCC002',
+    staffId: 'UDMSOCACJM',
     firstName: 'Justin',
     lastName: 'Makar',
     barcode: 'UDMSCC002',
@@ -1217,7 +1111,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st79',
-    staffId: 'UDMSCC003',
+    staffId: 'UDMSOCACDM',
     firstName: 'Darian',
     lastName: 'McCauley',
     barcode: 'UDMSCC003',
@@ -1230,7 +1124,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st80',
-    staffId: 'UDMSCC004',
+    staffId: 'UDMSOCACYB',
     firstName: 'Yawo',
     lastName: 'Baah',
     barcode: 'UDMSCC004',
@@ -1245,7 +1139,7 @@ export const staffMembers: StaffMember[] = [
   // ── Women's Soccer Coaching Staff (bluehens.com) ────────────
   {
     id: 'st81',
-    staffId: 'UDWSCC001',
+    staffId: 'UDWSOCHCKL',
     firstName: 'Kelly',
     lastName: 'Lawrence',
     barcode: 'UDWSCC001',
@@ -1258,7 +1152,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st82',
-    staffId: 'UDWSCC002',
+    staffId: 'UDWSOCACSC',
     firstName: 'Shannon',
     lastName: 'Coley',
     barcode: 'UDWSCC002',
@@ -1273,7 +1167,7 @@ export const staffMembers: StaffMember[] = [
   // ── Softball Coaching Staff (bluehens.com) ────────────
   {
     id: 'st83',
-    staffId: 'UDSBC001',
+    staffId: 'UDSBHCJS',
     firstName: 'Jen',
     lastName: 'Steele',
     barcode: 'UDSBC001',
@@ -1286,7 +1180,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st84',
-    staffId: 'UDSBC002',
+    staffId: 'UDSBACAB',
     firstName: 'Amy',
     lastName: 'Bellisari',
     barcode: 'UDSBC002',
@@ -1299,7 +1193,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st85',
-    staffId: 'UDSBC003',
+    staffId: 'UDSBACNA',
     firstName: 'Nikki',
     lastName: 'Andrade',
     barcode: 'UDSBC003',
@@ -1312,7 +1206,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st86',
-    staffId: 'UDSBC004',
+    staffId: 'UDSBACJM',
     firstName: 'Jill',
     lastName: 'Moore',
     barcode: 'UDSBC004',
@@ -1325,7 +1219,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st87',
-    staffId: 'UDSBC005',
+    staffId: 'UDSBDIRKF',
     firstName: 'Karolina',
     lastName: 'Flores',
     barcode: 'UDSBC005',
@@ -1340,7 +1234,7 @@ export const staffMembers: StaffMember[] = [
   // ── Men's Swimming & Diving Coaching Staff (bluehens.com) ────────────
   {
     id: 'st88',
-    staffId: 'UDMSWC001',
+    staffId: 'UDMSWIMHCPM',
     firstName: 'Pablo',
     lastName: 'Marmolejo',
     barcode: 'UDMSWC001',
@@ -1353,7 +1247,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st89',
-    staffId: 'UDMSWC002',
+    staffId: 'UDMSWIMACRG',
     firstName: 'Ross',
     lastName: 'Glegg',
     barcode: 'UDMSWC002',
@@ -1366,7 +1260,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st90',
-    staffId: 'UDMSWC003',
+    staffId: 'UDMSWIMACKS',
     firstName: 'Katie',
     lastName: 'Squires',
     barcode: 'UDMSWC003',
@@ -1379,7 +1273,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st91',
-    staffId: 'UDMSWC004',
+    staffId: 'UDMSWIMACPF',
     firstName: 'Peri',
     lastName: 'Farling',
     barcode: 'UDMSWC004',
@@ -1392,7 +1286,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st92',
-    staffId: 'UDMSWC005',
+    staffId: 'UDMSWIMACMN',
     firstName: 'Mackenzie',
     lastName: 'Niness',
     barcode: 'UDMSWC005',
@@ -1405,7 +1299,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st93',
-    staffId: 'UDMSWC006',
+    staffId: 'UDMSWIMACAV',
     firstName: 'Adam',
     lastName: 'Vance',
     barcode: 'UDMSWC006',
@@ -1420,7 +1314,7 @@ export const staffMembers: StaffMember[] = [
   // ── Women's Swimming & Diving Coaching Staff (bluehens.com) ────────────
   {
     id: 'st94',
-    staffId: 'UDWSWC001',
+    staffId: 'UDWSWIMHCPM',
     firstName: 'Pablo',
     lastName: 'Marmolejo',
     barcode: 'UDWSWC001',
@@ -1433,7 +1327,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st95',
-    staffId: 'UDWSWC002',
+    staffId: 'UDWSWIMACRG',
     firstName: 'Ross',
     lastName: 'Glegg',
     barcode: 'UDWSWC002',
@@ -1446,7 +1340,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st96',
-    staffId: 'UDWSWC003',
+    staffId: 'UDWSWIMACKS',
     firstName: 'Katie',
     lastName: 'Squires',
     barcode: 'UDWSWC003',
@@ -1459,7 +1353,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st97',
-    staffId: 'UDWSWC004',
+    staffId: 'UDWSWIMACPF',
     firstName: 'Peri',
     lastName: 'Farling',
     barcode: 'UDWSWC004',
@@ -1472,7 +1366,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st98',
-    staffId: 'UDWSWC005',
+    staffId: 'UDWSWIMACMN',
     firstName: 'Mackenzie',
     lastName: 'Niness',
     barcode: 'UDWSWC005',
@@ -1485,7 +1379,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st99',
-    staffId: 'UDWSWC006',
+    staffId: 'UDWSWIMACAV',
     firstName: 'Adam',
     lastName: 'Vance',
     barcode: 'UDWSWC006',
@@ -1500,7 +1394,7 @@ export const staffMembers: StaffMember[] = [
   // ── Men's Tennis Coaching Staff (bluehens.com) ────────────
   {
     id: 'st100',
-    staffId: 'UDMTNC001',
+    staffId: 'UDMTENDIRPM',
     firstName: 'Pablo',
     lastName: 'Montana',
     barcode: 'UDMTNC001',
@@ -1513,7 +1407,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st101',
-    staffId: 'UDMTNC002',
+    staffId: 'UDMTENHCNP',
     firstName: 'Nathan',
     lastName: 'Perrone',
     barcode: 'UDMTNC002',
@@ -1528,7 +1422,7 @@ export const staffMembers: StaffMember[] = [
   // ── Women's Tennis Coaching Staff (bluehens.com) ────────────
   {
     id: 'st102',
-    staffId: 'UDWTNC001',
+    staffId: 'UDWTENHCPM',
     firstName: 'Pablo',
     lastName: 'Montana',
     barcode: 'UDWTNC001',
@@ -1541,7 +1435,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st103',
-    staffId: 'UDWTNC002',
+    staffId: 'UDWTENACKM',
     firstName: 'Kylie',
     lastName: 'Moulin',
     barcode: 'UDWTNC002',
@@ -1556,7 +1450,7 @@ export const staffMembers: StaffMember[] = [
   // ── Track & Field Coaching Staff (bluehens.com) ────────────
   {
     id: 'st104',
-    staffId: 'UDTRKC001',
+    staffId: 'UDTRKHCJH',
     firstName: 'Josh',
     lastName: 'Hayman',
     barcode: 'UDTRKC001',
@@ -1569,7 +1463,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st105',
-    staffId: 'UDTRKC002',
+    staffId: 'UDTRKACSO',
     firstName: 'Sebastien',
     lastName: 'O’Neill',
     barcode: 'UDTRKC002',
@@ -1582,7 +1476,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st106',
-    staffId: 'UDTRKC003',
+    staffId: 'UDTRKACMJ',
     firstName: 'Montel',
     lastName: 'Johnson',
     barcode: 'UDTRKC003',
@@ -1595,7 +1489,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st107',
-    staffId: 'UDTRKC004',
+    staffId: 'UDTRKACCJ',
     firstName: 'Caitlin',
     lastName: 'Jorgensen',
     barcode: 'UDTRKC004',
@@ -1608,7 +1502,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st108',
-    staffId: 'UDTRKC005',
+    staffId: 'UDTRKACLH',
     firstName: 'Lindsay',
     lastName: 'Hayman',
     barcode: 'UDTRKC005',
@@ -1623,7 +1517,7 @@ export const staffMembers: StaffMember[] = [
   // ── Volleyball Coaching Staff (bluehens.com) ────────────
   {
     id: 'st109',
-    staffId: 'UDVBC001',
+    staffId: 'UDVBHCKL',
     firstName: 'Kimberly',
     lastName: 'Lambert',
     barcode: 'UDVBC001',
@@ -1636,7 +1530,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st110',
-    staffId: 'UDVBC002',
+    staffId: 'UDVBACLV',
     firstName: 'Lenika',
     lastName: 'Vazquez',
     barcode: 'UDVBC002',
@@ -1649,7 +1543,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st111',
-    staffId: 'UDVBC003',
+    staffId: 'UDVBACAP',
     firstName: 'Anna',
     lastName: 'Palmer',
     barcode: 'UDVBC003',
@@ -1662,7 +1556,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st112',
-    staffId: 'UDVBC004',
+    staffId: 'UDVBACJN',
     firstName: 'Jayden',
     lastName: 'Nembhard',
     barcode: 'UDVBC004',
@@ -1675,7 +1569,7 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: 'st113',
-    staffId: 'UDVBC005',
+    staffId: 'UDVBACLN',
     firstName: 'Ludovic',
     lastName: 'Nkamji',
     barcode: 'UDVBC005',

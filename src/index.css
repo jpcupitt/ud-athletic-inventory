@@ -162,3 +162,37 @@ html.dark select {
 html.dark .shadow-sm {
   box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
 }
+
+/* ── Login page: navy textured background ── */
+.navy-textured-bg {
+  position: relative;
+  background-color: #020617;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.navy-textured-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 0% 0%, rgba(30, 64, 175, 0.75) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(30, 64, 175, 0.525) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.navy-textured-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="1.75" fill="rgba(255%2C%20255%2C%20255%2C%200.3)"/></svg>');
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.navy-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(2, 6, 23, 0.16) 100%);
+  pointer-events: none;
+}

@@ -76,7 +76,7 @@ export default function NavBar() {
       {/* Scrollable left section: logo + links */}
       <div className="flex items-center self-stretch overflow-x-auto px-4 gap-4 flex-1 min-w-0">
         {/* Logo — fills the bar's full height edge to edge, aspect ratio intact */}
-        <div className="flex items-center self-stretch mr-2 shrink-0 py-2">
+        <div className="flex items-center self-stretch mr-2 shrink-0 py-1">
           <img src={`${import.meta.env.BASE_URL}ud-athletics-logo-white.png`} alt="UD Athletics" className="h-full w-auto" />
         </div>
 

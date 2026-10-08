@@ -94,10 +94,6 @@ export default function StaffProfile() {
             <dd className="mt-1 font-mono font-medium text-gray-800">{member.staffId}</dd>
           </div>
           <div>
-            <dt className="text-gray-400 text-xs uppercase tracking-wide">Barcode</dt>
-            <dd className="mt-1 font-mono font-medium text-gray-800">{member.barcode}</dd>
-          </div>
-          <div>
             <dt className="text-gray-400 text-xs uppercase tracking-wide">Locker</dt>
             <dd className="mt-1 font-medium text-gray-800">{member.locker ?? '—'}</dd>
           </div>

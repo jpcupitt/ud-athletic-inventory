@@ -388,7 +388,6 @@ export default function AthletesList() {
                 </th>
               )}
               <th style={{ padding: '0.05in' }} className="font-bold">Athlete ID</th>
-              <th style={{ padding: '0.05in' }} className="font-bold">Barcode</th>
               <th style={{ padding: '0.05in' }} className="font-bold text-left">Name</th>
               <th style={{ padding: '0.05in' }} className="font-bold">Year</th>
               <th style={{ padding: '0.05in' }} className="font-bold">Assigned Sports</th>
@@ -400,7 +399,7 @@ export default function AthletesList() {
           <tbody className="divide-y divide-gray-100">
             {displayList.length === 0 ? (
               <tr>
-                <td colSpan={(isManager ? 1 : 0) + (viewMode !== 'archived' ? 6 : 5)} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={(isManager ? 1 : 0) + (viewMode !== 'archived' ? 5 : 4)} className="px-4 py-8 text-center text-gray-400">
                   No athletes found.
                 </td>
               </tr>
@@ -424,7 +423,6 @@ export default function AthletesList() {
                       </td>
                     )}
                     <td style={{ padding: '0.05in' }} className="text-center font-mono text-[#00539F]">{a.athleteId}</td>
-                    <td style={{ padding: '0.05in' }} className="text-center font-mono text-gray-500">{a.barcode}</td>
                     <td style={{ padding: '0.05in' }}>
                       <div className="flex items-center gap-2">
                         {a.photoUrl ? (

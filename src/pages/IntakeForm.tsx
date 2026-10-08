@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CheckCircle2, Share2, ExternalLink, X } from 'lucide-react';
 import { usePendingIntakes } from '../context/PendingIntakesContext';
-import { CLOTHING_SIZES, SHOE_SIZES, SPORT_SIZE_FIELDS, ALL_SPORTS, sizeOptionsFor } from '../utils/sizeChart';
+import { CLOTHING_SIZES, SHOE_SIZES, SPORT_SIZE_FIELDS, ALL_SPORTS, POSITION_EXAMPLE, sizeOptionsFor } from '../utils/sizeChart';
 import type { Sport } from '../data/types';
 
 async function shareIntakeLink(url: string, lastName: string) {
@@ -175,7 +175,7 @@ export default function IntakeForm() {
             <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Position</label>
             <input
               type="text" value={position} onChange={(e) => setPosition(e.target.value)}
-              placeholder="e.g. Kicker"
+              placeholder={`e.g. ${POSITION_EXAMPLE[intake.sport]}`}
               className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"
               style={{ padding: '0.05in' }}
             />
@@ -204,7 +204,7 @@ export default function IntakeForm() {
 
           {/* Notes */}
           <div style={{ padding: '0.05in 0' }}>
-            <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Notes (preferences, allergies, anything else)</label>
+            <label className="block text-xs font-semibold text-gray-600" style={{ padding: '0.05in 0' }}>Notes (cleat preference, injury accommodations, anything else)</label>
             <textarea
               value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
               className="w-full border border-gray-200 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F]"

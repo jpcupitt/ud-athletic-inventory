@@ -87,6 +87,32 @@ export const SPORT_SIZE_FIELDS: Record<Sport, string[]> = {
 /** Every sport, alphabetical — derived from SPORT_SIZE_FIELDS so there's one source of truth. */
 export const ALL_SPORTS = (Object.keys(SPORT_SIZE_FIELDS) as Sport[]).sort();
 
+/** Example position/role shown as the Position field's placeholder on the intake form, per sport. */
+export const POSITION_EXAMPLE: Record<Sport, string> = {
+  Baseball: 'Shortstop',
+  Softball: 'Catcher',
+  Football: 'Kicker',
+  "Basketball, Men's": 'Point Guard',
+  "Basketball, Women's": 'Point Guard',
+  Volleyball: 'Outside Hitter',
+  "Soccer, Men's": 'Goalkeeper',
+  "Soccer, Women's": 'Goalkeeper',
+  'Field Hockey': 'Midfielder',
+  'Ice Hockey': 'Goalie',
+  "Lacrosse, Men's": 'Attack',
+  "Lacrosse, Women's": 'Attack',
+  "Golf, Men's": 'N/A',
+  "Golf, Women's": 'N/A',
+  'Cross Country': 'Distance Runner',
+  'Track & Field, Indoor': 'Sprinter',
+  'Track & Field, Outdoor': 'Sprinter',
+  Rowing: 'Coxswain',
+  "Swimming & Diving, Men's": 'Freestyle',
+  "Swimming & Diving, Women's": 'Freestyle',
+  "Tennis, Men's": 'Singles',
+  "Tennis, Women's": 'Singles',
+};
+
 /**
  * Every athlete starts with these standard fields, pre-filled from their profile
  * sizes where available. Once a manager edits/adds/removes anything on the athlete's

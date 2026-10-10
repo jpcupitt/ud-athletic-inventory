@@ -380,17 +380,17 @@ export default function Dashboard() {
         <div className="flex w-full flex-col items-end gap-1.5 min-w-0 md:w-auto">
           <span className="font-semibold text-[18px] self-start text-gray-500">Quick Links</span>
           <div className="grid w-full grid-cols-2 gap-2 md:flex md:w-auto md:flex-wrap">
-            <NotifBadge label="Low Inventory" count={lowInventory.length} color="bg-[#00539F]" onClick={() => setShowLowInventory(true)} />
-            {!isStudentManager && <NotifBadge label="New Open Status" count={ordersForApproval.length} color="bg-[#00539F]" onClick={() => setShowNewOpenStatus(true)} />}
-            <NotifBadge label="Overdue Returns" count={overdueReturns.length} color="bg-[#00539F]" onClick={() => setShowOverdueReturns(true)} />
+            <NotifBadge label="Low Inventory" count={lowInventory.length} color="bg-[#7BAFD4]" onClick={() => setShowLowInventory(true)} />
+            {!isStudentManager && <NotifBadge label="New Open Status" count={ordersForApproval.length} color="bg-[#7BAFD4]" onClick={() => setShowNewOpenStatus(true)} />}
+            <NotifBadge label="Overdue Returns" count={overdueReturns.length} color="bg-[#7BAFD4]" onClick={() => setShowOverdueReturns(true)} />
             {recertsDue.length > 0 && (
-              <NotifBadge label="Helmet Recerts Due" count={recertsDue.length} color="bg-[#00539F]" onClick={() => setShowRecertsDue(true)} />
+              <NotifBadge label="Helmet Recerts Due" count={recertsDue.length} color="bg-[#7BAFD4]" onClick={() => setShowRecertsDue(true)} />
             )}
             {footballNonExpendables.length > 0 && (chartSport === 'All Sports' || chartSport === 'Football') && (
               <NotifBadge
                 label="Football Gear Out"
                 count={footballNonExpendables.reduce((s, i) => s + i.outCount, 0)}
-                color="bg-[#00539F]"
+                color="bg-[#7BAFD4]"
                 onClick={() => setShowFootballTracker(true)}
               />
             )}

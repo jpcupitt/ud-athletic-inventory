@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, X, Upload, Printer, Link as LinkIcon } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useAuth } from '../../context/AuthContext';
-import { useAthletes } from '../../context/AthletesContext';
+import { useAthletes, formatAthleteYear } from '../../context/AthletesContext';
 import { useSportsAccess } from '../../hooks/useSportsAccess';
 import { useActiveSport } from '../../context/SportContext';
 import { usePendingIntakes } from '../../context/PendingIntakesContext';
@@ -434,7 +434,7 @@ export default function AthletesList() {
                         <span className="font-medium text-gray-800">{a.lastName}, {a.firstName}</span>
                       </div>
                     </td>
-                    <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{a.year}</td>
+                    <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{formatAthleteYear(a.year)}</td>
                     <td style={{ padding: '0.05in' }} className="text-center text-gray-600">{a.sports.join(', ')}</td>
                     {viewMode !== 'archived' && (
                       <td style={{ padding: '0.05in' }} className="text-center font-medium text-gray-700">{activeItems.length || '—'}</td>
@@ -480,7 +480,7 @@ export default function AthletesList() {
                       <span className="font-bold text-sm text-gray-800 truncate">{a.lastName}, {a.firstName}</span>
                       <span className="font-mono text-xs text-[#00539F] shrink-0">{a.athleteId}</span>
                     </div>
-                    <p className="text-xs text-gray-500 truncate">{a.year} · {a.sports.join(', ')}</p>
+                    <p className="text-xs text-gray-500 truncate">{formatAthleteYear(a.year)} · {a.sports.join(', ')}</p>
                     {viewMode !== 'archived' && (
                       <p className="text-xs text-gray-500">{activeItems.length || 0} item{activeItems.length !== 1 ? 's' : ''} issued</p>
                     )}

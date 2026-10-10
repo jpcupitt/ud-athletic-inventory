@@ -13,6 +13,16 @@ const NEXT_YEAR: Partial<Record<Athlete['year'], Athlete['year']>> = {
   Junior: 'Senior',
 };
 
+/** Senior/Graduate have no next year to promote to — same rule season rollover uses to decide who graduates. */
+export function isFinalEligibilityYear(year: Athlete['year']): boolean {
+  return !NEXT_YEAR[year];
+}
+
+/** Athlete's class year for display, flagged with a trailing asterisk when it's their last year of eligibility. */
+export function formatAthleteYear(year: Athlete['year']): string {
+  return isFinalEligibilityYear(year) ? `${year}*` : year;
+}
+
 interface AthletesContextValue {
   athletes: Athlete[];
   archivedIds: Set<string>;

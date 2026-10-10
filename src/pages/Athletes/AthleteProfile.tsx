@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Package, RotateCcw, Plus, Ruler, X } from 'lucide-react';
-import { useAthletes } from '../../context/AthletesContext';
+import { useAthletes, formatAthleteYear } from '../../context/AthletesContext';
 import { useInventory } from '../../context/InventoryContext';
 import { useAuth } from '../../context/AuthContext';
 import IssueModal from '../../components/IssueModal';
@@ -93,7 +93,7 @@ export default function AthleteProfile() {
           )}
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-800">{athlete.firstName} {athlete.lastName}</h1>
-            <p className="text-gray-500 mt-0.5">{athlete.year}</p>
+            <p className="text-gray-500 mt-0.5">{formatAthleteYear(athlete.year)}</p>
             <div className="flex flex-wrap gap-1 mt-2">
               {athlete.sports.map((s) => (
                 <span key={s} className="px-2 py-0.5 bg-[#DAEAF5] text-[#00539F] rounded text-xs">{s}</span>

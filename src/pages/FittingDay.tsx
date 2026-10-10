@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle2, Shirt, X, Users } from 'lucide-react';
-import { useAthletes } from '../context/AthletesContext';
+import { useAthletes, formatAthleteYear } from '../context/AthletesContext';
 import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
@@ -188,7 +188,7 @@ export default function FittingDay() {
                 >
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-gray-800 truncate">{a.lastName}, {a.firstName}</p>
-                    <p className="text-xs text-gray-400 mt-0.5 truncate">{a.year} · {sizeLine(a)}</p>
+                    <p className="text-xs text-gray-400 mt-0.5 truncate">{formatAthleteYear(a.year)} · {sizeLine(a)}</p>
                   </div>
                   {done && <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />}
                 </button>

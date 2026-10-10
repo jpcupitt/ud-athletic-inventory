@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Package, User, UserCog, ShoppingCart, X } from 'lucide-react';
 import { useInventory } from '../context/InventoryContext';
-import { useAthletes } from '../context/AthletesContext';
+import { useAthletes, formatAthleteYear } from '../context/AthletesContext';
 import { useStaff } from '../context/StaffContext';
 import { useOrders } from '../context/OrdersContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
@@ -116,7 +116,7 @@ export default function GlobalSearch({ mobile, onClose }: Props) {
               <User className="w-4 h-4 text-gray-400 shrink-0" />
               <span className="flex-1 min-w-0">
                 <span className="block text-sm text-gray-800 truncate">{a.lastName}, {a.firstName}</span>
-                <span className="block text-xs text-gray-400">{a.year} · {a.sports[0]}</span>
+                <span className="block text-xs text-gray-400">{formatAthleteYear(a.year)} · {a.sports[0]}</span>
               </span>
             </button>
           ))}

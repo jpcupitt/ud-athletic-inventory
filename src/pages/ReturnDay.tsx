@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, AlertTriangle, HelpCircle, ClipboardCheck, DollarSign } from 'lucide-react';
-import { useAthletes } from '../context/AthletesContext';
+import { useAthletes, formatAthleteYear } from '../context/AthletesContext';
 import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
@@ -125,7 +125,7 @@ export default function ReturnDay() {
                 <Link to={`/athletes/${athlete.id}`} className="font-semibold text-sm text-[#00539F] hover:underline">
                   {athlete.lastName}, {athlete.firstName}
                 </Link>
-                <span className="text-xs text-gray-400">{athlete.year} · {items.length} item{items.length !== 1 ? 's' : ''} out</span>
+                <span className="text-xs text-gray-400">{formatAthleteYear(athlete.year)} · {items.length} item{items.length !== 1 ? 's' : ''} out</span>
               </div>
               <div className="divide-y divide-gray-50">
                 {items.map((item, idx) => (

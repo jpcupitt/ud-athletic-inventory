@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useAthletes } from '../context/AthletesContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
 import { clearPersistedState, clearPersistedKeys, usePersistentState } from '../hooks/usePersistentState';
+import type { Sport } from '../data/types';
 
 interface Member {
   name: string;
@@ -99,26 +100,29 @@ export default function Settings() {
   const isManager = user?.role === 'manager';
   const [tab, setTab] = useState<Tab>('general');
   const [rolloverMsg, setRolloverMsg] = useState('');
+  const [rolloverSport, setRolloverSport] = useState<Sport | 'All Sports'>('All Sports');
 
-  // Live preview of what a rollover would do, recomputed as the roster changes.
+  // Live preview of what a rollover would do for the selected sport (or everyone), recomputed as the roster changes.
   const rolloverPreview = useMemo(() => {
     let graduating = 0, promoting = 0;
     for (const a of athletes) {
       if (archivedAthleteIds.has(a.id)) continue;
+      if (rolloverSport !== 'All Sports' && !a.sports.includes(rolloverSport)) continue;
       if (a.year === 'Senior' || a.year === 'Graduate') graduating++;
       else promoting++;
     }
     return { graduating, promoting };
-  }, [athletes, archivedAthleteIds]);
+  }, [athletes, archivedAthleteIds, rolloverSport]);
 
   function handleRollover() {
     const { graduating, promoting } = rolloverPreview;
     if (graduating === 0 && promoting === 0) return;
+    const scopeLabel = rolloverSport === 'All Sports' ? 'every sport' : rolloverSport;
     if (!window.confirm(
-      `Roll over the season?\n\n${graduating} Senior/Graduate athlete${graduating !== 1 ? 's' : ''} will be archived (graduated).\n${promoting} athlete${promoting !== 1 ? 's' : ''} will be promoted one class year.\n\nThis cannot be undone.`
+      `Roll over the season for ${scopeLabel}?\n\n${graduating} Senior/Graduate athlete${graduating !== 1 ? 's' : ''} will be archived (graduated).\n${promoting} athlete${promoting !== 1 ? 's' : ''} will be promoted one class year.\n\nThis cannot be undone.`
     )) return;
-    const result = rolloverSeason();
-    setRolloverMsg(`Done — ${result.graduated} graduated and archived, ${result.promoted} promoted to their next class year.`);
+    const result = rolloverSeason(rolloverSport === 'All Sports' ? undefined : rolloverSport);
+    setRolloverMsg(`Done for ${scopeLabel} — ${result.graduated} graduated and archived, ${result.promoted} promoted to their next class year.`);
   }
 
   // General editing state
@@ -349,10 +353,21 @@ export default function Settings() {
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Season Rollover</p>
                   <p className="text-xs text-gray-500 mb-2">
                     Archives every active Senior/Graduate athlete as graduated, and promotes everyone else
-                    one class year (Freshman → Sophomore → Junior → Senior). Run this once per season.
+                    one class year (Freshman → Sophomore → Junior → Senior). Different sports finish their
+                    seasons at different times, so run this per sport rather than all at once if it's not
+                    everyone's turn yet.
                   </p>
+                  <select
+                    value={rolloverSport}
+                    onChange={(e) => { setRolloverSport(e.target.value as Sport | 'All Sports'); setRolloverMsg(''); }}
+                    className="w-full max-w-xs border border-gray-300 rounded text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#00539F] mb-2"
+                    style={{ padding: '0.05in' }}
+                  >
+                    <option value="All Sports">All Sports</option>
+                    {ALL_SPORTS.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
                   <p className="text-xs text-gray-600 mb-2">
-                    Next run: <span className="font-semibold text-[#00539F]">{rolloverPreview.graduating}</span> will graduate,{' '}
+                    Next run ({rolloverSport}): <span className="font-semibold text-[#00539F]">{rolloverPreview.graduating}</span> will graduate,{' '}
                     <span className="font-semibold text-[#00539F]">{rolloverPreview.promoting}</span> will be promoted.
                   </p>
                   <button

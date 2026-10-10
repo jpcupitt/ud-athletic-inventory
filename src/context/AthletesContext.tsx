@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
-import type { Athlete, CustomSizeEntry, IssuedItem } from '../data/types';
+import type { Athlete, CustomSizeEntry, IssuedItem, Sport } from '../data/types';
 import { athletes as mockAthletes } from '../data/mock/athletes';
 import { usePersistentState } from '../hooks/usePersistentState';
 
@@ -27,8 +27,10 @@ interface AthletesContextValue {
   updateAthlete: (athleteId: string, changes: Partial<Athlete>) => void;
   /** Season rollover: every active Senior/Graduate is archived (graduated),
    *  everyone else is promoted one class year. Already-archived athletes are
-   *  left alone. Returns the counts so the caller can show a summary. */
-  rolloverSeason: () => { graduated: number; promoted: number };
+   *  left alone. Pass a sport to scope it to just that roster (a multi-sport
+   *  athlete is still affected if any of their sports matches); omit it to
+   *  roll over every sport at once. Returns the counts for a summary. */
+  rolloverSeason: (sport?: Sport) => { graduated: number; promoted: number };
 }
 
 const AthletesContext = createContext<AthletesContextValue | null>(null);
@@ -132,19 +134,21 @@ export function AthletesProvider({ children }: { children: ReactNode }) {
     setAthletes((prev) => prev.map((a) => (a.id === athleteId ? { ...a, ...changes } : a)));
   }
 
-  function rolloverSeason() {
+  function rolloverSeason(sport?: Sport) {
+    const inScope = (a: Athlete) => !archivedIds.has(a.id) && (!sport || a.sports.includes(sport));
     const toGraduate = new Set<string>();
     let promoted = 0;
     for (const a of athletes) {
-      if (archivedIds.has(a.id)) continue;
+      if (!inScope(a)) continue;
       const next = NEXT_YEAR[a.year];
       if (next) promoted++;
       else toGraduate.add(a.id);
     }
     setAthletes((prev) =>
       prev.map((a) => {
+        if (!inScope(a)) return a;
         const next = NEXT_YEAR[a.year];
-        return !archivedIds.has(a.id) && next ? { ...a, year: next } : a;
+        return next ? { ...a, year: next } : a;
       })
     );
     if (toGraduate.size > 0) archiveAthletes(toGraduate);

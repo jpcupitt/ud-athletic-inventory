@@ -5,21 +5,46 @@ import { usePersistentState } from '../hooks/usePersistentState';
 
 const mockAthleteById = new Map(mockAthletes.map((a) => [a.id, a]));
 
+/** Freshman -> Sophomore -> Junior -> Senior. Seniors and Graduates have no
+ *  next year — they graduate (archive) at rollover instead of promoting. */
+const NEXT_YEAR: Partial<Record<Athlete['year'], Athlete['year']>> = {
+  Freshman: 'Sophomore',
+  Sophomore: 'Junior',
+  Junior: 'Senior',
+};
+
 interface AthletesContextValue {
   athletes: Athlete[];
+  archivedIds: Set<string>;
   addAthlete: (athlete: Athlete) => void;
+  archiveAthletes: (ids: Set<string>) => void;
+  unarchiveAthletes: (ids: string[]) => void;
   issueToAthlete: (athleteId: string, item: IssuedItem) => void;
   returnFromAthlete: (athleteId: string, itemId: string) => void;
   resolveIssuedItem: (athleteId: string, ref: string, resolution: 'returned' | 'missing' | 'damaged') => void;
   unresolveIssuedItem: (athleteId: string, ref: string) => void;
   setCustomSizes: (athleteId: string, sizes: CustomSizeEntry[]) => void;
   updateAthlete: (athleteId: string, changes: Partial<Athlete>) => void;
+  /** Season rollover: every active Senior/Graduate is archived (graduated),
+   *  everyone else is promoted one class year. Already-archived athletes are
+   *  left alone. Returns the counts so the caller can show a summary. */
+  rolloverSeason: () => { graduated: number; promoted: number };
 }
 
 const AthletesContext = createContext<AthletesContextValue | null>(null);
 
 export function AthletesProvider({ children }: { children: ReactNode }) {
   const [athletesRaw, setAthletes] = usePersistentState<Athlete[]>('athletes2', () => [...mockAthletes]);
+  const [archivedArr, setArchivedArr] = usePersistentState<string[]>('athletesArchived', () => []);
+  const archivedIds = useMemo(() => new Set(archivedArr), [archivedArr]);
+
+  function archiveAthletes(ids: Set<string>) {
+    setArchivedArr((prev) => [...new Set([...prev, ...ids])]);
+  }
+
+  function unarchiveAthletes(ids: string[]) {
+    setArchivedArr((prev) => prev.filter((id) => !ids.includes(id)));
+  }
 
   // A returning browser's persisted copy can predate a mock-data refresh (new
   // ID scheme, new photos). Forward-sync those two identity fields from the
@@ -107,8 +132,27 @@ export function AthletesProvider({ children }: { children: ReactNode }) {
     setAthletes((prev) => prev.map((a) => (a.id === athleteId ? { ...a, ...changes } : a)));
   }
 
+  function rolloverSeason() {
+    const toGraduate = new Set<string>();
+    let promoted = 0;
+    for (const a of athletes) {
+      if (archivedIds.has(a.id)) continue;
+      const next = NEXT_YEAR[a.year];
+      if (next) promoted++;
+      else toGraduate.add(a.id);
+    }
+    setAthletes((prev) =>
+      prev.map((a) => {
+        const next = NEXT_YEAR[a.year];
+        return !archivedIds.has(a.id) && next ? { ...a, year: next } : a;
+      })
+    );
+    if (toGraduate.size > 0) archiveAthletes(toGraduate);
+    return { graduated: toGraduate.size, promoted };
+  }
+
   return (
-    <AthletesContext.Provider value={{ athletes, addAthlete, issueToAthlete, returnFromAthlete, resolveIssuedItem, unresolveIssuedItem, setCustomSizes, updateAthlete }}>
+    <AthletesContext.Provider value={{ athletes, archivedIds, addAthlete, archiveAthletes, unarchiveAthletes, issueToAthlete, returnFromAthlete, resolveIssuedItem, unresolveIssuedItem, setCustomSizes, updateAthlete, rolloverSeason }}>
       {children}
     </AthletesContext.Provider>
   );

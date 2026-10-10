@@ -26,7 +26,7 @@ type ViewMode = 'active' | 'archived';
 export default function AthletesList() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { athletes: allAthletes, addAthlete } = useAthletes();
+  const { athletes: allAthletes, archivedIds, addAthlete, archiveAthletes } = useAthletes();
 
   const { isLead, filterBySports, accessibleSports } = useSportsAccess();
   const isManager = user?.role === 'manager';
@@ -35,7 +35,6 @@ export default function AthletesList() {
   const [yearFilter, setYearFilter] = useState('All Years');
   const [search, setSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [archivedIds, setArchivedIds] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<ViewMode>('active');
   const [rosterUploadMsg, setRosterUploadMsg] = useState('');
 
@@ -85,7 +84,7 @@ export default function AthletesList() {
   }
 
   function archiveSelected() {
-    setArchivedIds((prev) => new Set([...prev, ...selectedIds]));
+    archiveAthletes(selectedIds);
     setSelectedIds(new Set());
   }
 

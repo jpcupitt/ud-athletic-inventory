@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Upload, ChevronRight, RotateCcw, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Upload, ChevronRight, RotateCcw, GraduationCap, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useAthletes } from '../context/AthletesContext';
 import { useSportsAccess } from '../hooks/useSportsAccess';
 import { clearPersistedState, clearPersistedKeys, usePersistentState } from '../hooks/usePersistentState';
 
@@ -94,7 +95,31 @@ function NotifRow({ label, description, checked, onChange }: { label: string; de
 export default function Settings() {
   const { user, logout, updateUser } = useAuth();
   const { isLead } = useSportsAccess();
+  const { athletes, archivedIds: archivedAthleteIds, rolloverSeason } = useAthletes();
+  const isManager = user?.role === 'manager';
   const [tab, setTab] = useState<Tab>('general');
+  const [rolloverMsg, setRolloverMsg] = useState('');
+
+  // Live preview of what a rollover would do, recomputed as the roster changes.
+  const rolloverPreview = useMemo(() => {
+    let graduating = 0, promoting = 0;
+    for (const a of athletes) {
+      if (archivedAthleteIds.has(a.id)) continue;
+      if (a.year === 'Senior' || a.year === 'Graduate') graduating++;
+      else promoting++;
+    }
+    return { graduating, promoting };
+  }, [athletes, archivedAthleteIds]);
+
+  function handleRollover() {
+    const { graduating, promoting } = rolloverPreview;
+    if (graduating === 0 && promoting === 0) return;
+    if (!window.confirm(
+      `Roll over the season?\n\n${graduating} Senior/Graduate athlete${graduating !== 1 ? 's' : ''} will be archived (graduated).\n${promoting} athlete${promoting !== 1 ? 's' : ''} will be promoted one class year.\n\nThis cannot be undone.`
+    )) return;
+    const result = rolloverSeason();
+    setRolloverMsg(`Done — ${result.graduated} graduated and archived, ${result.promoted} promoted to their next class year.`);
+  }
 
   // General editing state
   const [editingName, setEditingName] = useState(false);
@@ -317,6 +342,29 @@ export default function Settings() {
                   </div>
                 )}
               </div>
+
+              {/* Season rollover */}
+              {isManager && (
+                <div className="border-b border-gray-100" style={{ padding: '0.05in 0' }}>
+                  <p className="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Season Rollover</p>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Archives every active Senior/Graduate athlete as graduated, and promotes everyone else
+                    one class year (Freshman → Sophomore → Junior → Senior). Run this once per season.
+                  </p>
+                  <p className="text-xs text-gray-600 mb-2">
+                    Next run: <span className="font-semibold text-[#00539F]">{rolloverPreview.graduating}</span> will graduate,{' '}
+                    <span className="font-semibold text-[#00539F]">{rolloverPreview.promoting}</span> will be promoted.
+                  </p>
+                  <button
+                    onClick={handleRollover}
+                    disabled={rolloverPreview.graduating === 0 && rolloverPreview.promoting === 0}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-[#00539F] text-xs text-[#00539F] hover:bg-[#EEF4FB] font-medium disabled:opacity-40"
+                  >
+                    <GraduationCap className="w-3.5 h-3.5" /> Run Season Rollover
+                  </button>
+                  {rolloverMsg && <p className="text-xs text-green-600 mt-2">{rolloverMsg}</p>}
+                </div>
+              )}
 
               {/* Reset demo data */}
               <div className="border-b border-gray-100" style={{ padding: '0.05in 0' }}>

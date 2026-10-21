@@ -1,7 +1,7 @@
 /* EQI service worker — app-shell caching for offline use.
    All app data is in-memory mock data, so caching the shell + assets
    makes the app fully functional offline after the first visit. */
-const CACHE = 'eqi-v5';
+const CACHE = 'eqi-v6';
 const BASE = new URL('./', self.registration.scope).pathname;
 const CORE = [
   BASE,
@@ -72,13 +72,14 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Everything else at a stable URL (logo, favicon, manifest, fonts) can change
-  // without its filename changing, so serve the cached copy immediately but
-  // always refetch in the background to keep the next load current — rather
-  // than caching it once and never updating it again.
+  // without its filename changing. Network first, not stale-while-revalidate —
+  // the latter serves the OLD cached copy on the very visit that's supposed to
+  // show a just-shipped change (it only refreshes the cache in the background
+  // for the load after that), which is exactly the kind of "it's not there"
+  // confusion this app has hit more than once. These are small files, so
+  // paying for a real network round-trip is cheap; cache is purely the
+  // offline fallback.
   event.respondWith(
-    caches.match(request).then((cached) => {
-      const refresh = fetch(request, { cache: 'no-store' }).then(cacheResponse).catch(() => cached);
-      return cached || refresh;
-    })
+    fetch(request, { cache: 'no-store' }).then(cacheResponse).catch(() => caches.match(request))
   );
 });

@@ -12,14 +12,15 @@ interface Member {
   email: string;
   assignedSports: string[];
   role: 'Equipment Manager' | 'Student Manager' | 'Assistant Coach' | 'Viewer';
+  status: 'Active' | 'Pending';
 }
 
 const DEFAULT_MEMBERS: Member[] = [
-  { name: 'Peter Stevens', phone: '', email: 'pstevens@udel.edu', assignedSports: [], role: 'Equipment Manager' },
-  { name: 'Taylor Reed', phone: '', email: 'treed@udel.edu', assignedSports: [], role: 'Student Manager' },
-  { name: 'Coach Demo', phone: '', email: 'demo@udel.edu', assignedSports: [], role: 'Viewer' },
-  { name: 'Sarah Collins', phone: '', email: 'scollins@udel.edu', assignedSports: [], role: 'Viewer' },
-  { name: 'Marcus Reed', phone: '', email: 'mreed@udel.edu', assignedSports: [], role: 'Viewer' },
+  { name: 'Peter Stevens', phone: '', email: 'pstevens@udel.edu', assignedSports: [], role: 'Equipment Manager', status: 'Active' },
+  { name: 'Taylor Reed', phone: '', email: 'treed@udel.edu', assignedSports: [], role: 'Student Manager', status: 'Active' },
+  { name: 'Coach Demo', phone: '', email: 'demo@udel.edu', assignedSports: [], role: 'Viewer', status: 'Active' },
+  { name: 'Sarah Collins', phone: '', email: 'scollins@udel.edu', assignedSports: [], role: 'Viewer', status: 'Active' },
+  { name: 'Marcus Reed', phone: '', email: 'mreed@udel.edu', assignedSports: [], role: 'Viewer', status: 'Active' },
 ];
 
 const ROLE_BADGE_STYLE: Record<Member['role'], string> = {
@@ -147,6 +148,7 @@ export default function Settings() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteSports, setInviteSports] = useState<string[]>([]);
   const [inviteRole, setInviteRole] = useState<'Student Manager' | 'Assistant Coach'>('Student Manager');
+  const [inviteSentMsg, setInviteSentMsg] = useState('');
 
   function toggleInviteSport(sport: string) {
     setInviteSports((prev) =>
@@ -165,10 +167,15 @@ export default function Settings() {
   function handleInviteMember() {
     setMembers((prev) => [
       ...prev,
-      { name: inviteName, phone: invitePhone, email: inviteEmail, assignedSports: inviteSports, role: inviteRole },
+      { name: inviteName, phone: invitePhone, email: inviteEmail, assignedSports: inviteSports, role: inviteRole, status: 'Pending' },
     ]);
+    setInviteSentMsg(`Invite email sent to ${inviteEmail} — they'll get a link to sign up and gain access.`);
     setShowInviteModal(false);
     resetInviteForm();
+  }
+
+  function markMemberJoined(email: string) {
+    setMembers((prev) => prev.map((m) => (m.email === email ? { ...m, status: 'Active' } : m)));
   }
 
   // Notification toggles
@@ -539,17 +546,31 @@ export default function Settings() {
                       )}
                     </div>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${ROLE_BADGE_STYLE[m.role]}`}>
-                    {m.role}
-                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {m.status === 'Pending' && (
+                      <button
+                        onClick={() => markMemberJoined(m.email)}
+                        title="Simulate the invite being accepted"
+                        className="px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100"
+                      >
+                        Pending
+                      </button>
+                    )}
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${ROLE_BADGE_STYLE[m.role]}`}>
+                      {m.role}
+                    </span>
+                  </div>
                 </div>
               ))}
               <button
-                onClick={() => setShowInviteModal(true)}
+                onClick={() => { setShowInviteModal(true); setInviteSentMsg(''); }}
                 className="self-start mt-2 px-4 py-1.5 border border-[#00539F] text-[#00539F] text-xs rounded hover:bg-[#EEF4FB] font-medium"
               >
                 + Invite Member
               </button>
+              {inviteSentMsg && (
+                <p className="text-xs text-green-700">{inviteSentMsg}</p>
+              )}
             </div>
           )}
 

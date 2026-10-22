@@ -149,6 +149,7 @@ export default function Settings() {
   const [inviteSports, setInviteSports] = useState<string[]>([]);
   const [inviteRole, setInviteRole] = useState<'Student Manager' | 'Assistant Coach'>('Student Manager');
   const [inviteSentMsg, setInviteSentMsg] = useState('');
+  const [inviteError, setInviteError] = useState('');
 
   function toggleInviteSport(sport: string) {
     setInviteSports((prev) =>
@@ -162,9 +163,15 @@ export default function Settings() {
     setInviteEmail('');
     setInviteSports([]);
     setInviteRole('Student Manager');
+    setInviteError('');
   }
 
   function handleInviteMember() {
+    if (members.some((m) => m.email.toLowerCase() === inviteEmail.toLowerCase())) {
+      setInviteError(`${inviteEmail} is already a member.`);
+      return;
+    }
+    setInviteError('');
     setMembers((prev) => [
       ...prev,
       { name: inviteName, phone: invitePhone, email: inviteEmail, assignedSports: inviteSports, role: inviteRole, status: 'Pending' },
@@ -228,7 +235,7 @@ export default function Settings() {
           {TABS.map((t) => (
             <button
               key={t.id}
-              onClick={() => setTab(t.id)}
+              onClick={() => { setTab(t.id); setInviteSentMsg(''); }}
               className={`w-auto shrink-0 whitespace-nowrap md:w-full text-left text-sm pr-4 transition-colors flex items-center justify-between gap-1 ${
                 tab === t.id
                   ? 'text-[#00539F] font-semibold bg-[#EEF4FB]'
@@ -579,7 +586,7 @@ export default function Settings() {
 
       {/* Invite Member modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowInviteModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => { setShowInviteModal(false); resetInviteForm(); }}>
           <div
             className="bg-white shadow-2xl flex flex-col w-full h-full rounded-none md:w-full md:max-w-md md:h-auto md:max-h-[90vh] md:rounded-xl"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
@@ -668,6 +675,9 @@ export default function Settings() {
               </div>
 
               {/* Submit */}
+              {inviteError && (
+                <p className="text-xs text-red-600" style={{ padding: '0.05in 0' }}>{inviteError}</p>
+              )}
               <div style={{ marginTop: '0.1in', padding: '0.05in 0' }}>
                 <button
                   onClick={handleInviteMember}

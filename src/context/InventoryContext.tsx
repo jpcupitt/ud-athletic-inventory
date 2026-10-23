@@ -12,6 +12,8 @@ interface InventoryContextValue {
   issueItem: (itemId: string, qty: number) => void;
   returnItem: (itemId: string, qty: number) => void;
   addOnOrder: (itemId: string, qty: number) => void;
+  /** Moves qty from on-order to on-hand (negative qty reverses a receipt). */
+  receiveItem: (itemId: string, qty: number) => void;
   setNonExpendable: (itemId: string, value: boolean) => void;
   setPhoto: (itemId: string, photoUrl: string) => void;
   markRecertified: (itemId: string, serialNumber: string, date?: string) => void;
@@ -62,6 +64,16 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     setItems((prev) =>
       prev.map((it) =>
         it.id === itemId ? { ...it, qtyOnOrder: it.qtyOnOrder + qty } : it
+      )
+    );
+  }
+
+  function receiveItem(itemId: string, qty: number) {
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === itemId
+          ? { ...it, qtyOnHand: Math.max(0, it.qtyOnHand + qty), qtyOnOrder: Math.max(0, it.qtyOnOrder - qty) }
+          : it
       )
     );
   }
@@ -140,7 +152,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem, addOnOrder, setNonExpendable, setPhoto, markRecertified, setSizeBreakdown, setSpringSale, setPositions }}>
+    <InventoryContext.Provider value={{ items, archivedIds, addItem, archiveItems, unarchiveItems, issueItem, returnItem, addOnOrder, receiveItem, setNonExpendable, setPhoto, markRecertified, setSizeBreakdown, setSpringSale, setPositions }}>
       {children}
     </InventoryContext.Provider>
   );

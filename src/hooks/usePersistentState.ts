@@ -32,6 +32,20 @@ export function usePersistentState<T>(
     }
   }, [storageKey, state]);
 
+  // Pick up writes from other open tabs (e.g. an intake form submitted in a new tab).
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== storageKey || e.newValue === null) return;
+      try {
+        setState(JSON.parse(e.newValue) as T);
+      } catch {
+        /* ignore malformed write */
+      }
+    }
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [storageKey]);
+
   return [state, setState];
 }
 

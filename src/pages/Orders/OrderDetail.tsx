@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, CheckCircle2, Save } from 'lucide-react';
 import { useOrders } from '../../context/OrdersContext';
+import { useInventory } from '../../context/InventoryContext';
 import type { OrderStatus, OrderLine } from '../../data/types';
 
 function StatusBadge({ status }: { status: OrderStatus }) {
@@ -28,6 +29,7 @@ function computeStatus(lines: OrderLine[]): OrderStatus {
 export default function OrderDetail() {
   const { orderId } = useParams<{ orderId: string }>();
   const { localOrders, updateOrder } = useOrders();
+  const { receiveItem } = useInventory();
   const order = localOrders.find((o) => o.id === orderId);
 
   const [editedLines, setEditedLines] = useState<OrderLine[] | null>(null);
@@ -65,6 +67,10 @@ export default function OrderDetail() {
 
   function handleSave() {
     if (!editedLines) return;
+    editedLines.forEach((line, i) => {
+      const delta = line.qtyReceived - (order!.lines[i]?.qtyReceived ?? 0);
+      if (line.itemId && delta !== 0) receiveItem(line.itemId, delta);
+    });
     const newStatus = computeStatus(editedLines);
     updateOrder(order!.id, { lines: editedLines, status: newStatus });
     setEditedLines(null);

@@ -9,7 +9,8 @@ interface StaffContextValue {
   staff: StaffMember[];
   addStaff: (member: StaffMember) => void;
   issueToStaff: (staffId: string, item: IssuedItem) => void;
-  returnFromStaff: (staffId: string, itemId: string) => void;
+  /** Marks one issued row returned; ref is its issueId, or the item # for legacy rows without one. */
+  returnFromStaff: (staffId: string, ref: string) => void;
 }
 
 const StaffContext = createContext<StaffContextValue | null>(null);
@@ -42,18 +43,16 @@ export function StaffProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  function returnFromStaff(staffId: string, itemId: string) {
+  function returnFromStaff(staffId: string, ref: string) {
     setStaff((prev) =>
-      prev.map((s) =>
-        s.id === staffId
-          ? {
-              ...s,
-              issuedItems: s.issuedItems.map((i) =>
-                i.itemId === itemId ? { ...i, returned: true } : i
-              ),
-            }
-          : s
-      )
+      prev.map((s) => {
+        if (s.id !== staffId) return s;
+        const idx = s.issuedItems.findIndex(
+          (i) => !i.returned && (i.issueId === ref || (!i.issueId && i.itemId === ref))
+        );
+        if (idx === -1) return s;
+        return { ...s, issuedItems: s.issuedItems.map((i, n) => (n === idx ? { ...i, returned: true } : i)) };
+      })
     );
   }
 

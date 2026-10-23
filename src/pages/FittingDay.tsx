@@ -11,7 +11,7 @@ import type { Athlete, Sport } from '../data/types';
 export default function FittingDay() {
   const { user } = useAuth();
   const { accessibleSports } = useSportsAccess();
-  const { athletes, issueToAthlete } = useAthletes();
+  const { athletes, archivedIds: archivedAthleteIds, issueToAthlete } = useAthletes();
   const { items: inventoryItems, archivedIds, issueItem } = useInventory();
   const canTransact = user?.role === 'manager' || user?.role === 'student_manager';
 
@@ -33,9 +33,9 @@ export default function FittingDay() {
   const roster = useMemo(
     () =>
       athletes
-        .filter((a) => sport && a.sports.includes(sport as Sport))
+        .filter((a) => sport && a.sports.includes(sport as Sport) && !archivedAthleteIds.has(a.id))
         .sort((a, b) => a.lastName.localeCompare(b.lastName)),
-    [athletes, sport]
+    [athletes, sport, archivedAthleteIds]
   );
 
   const kit = sportItems.filter((i) => kitIds.has(i.id));

@@ -858,7 +858,8 @@ export default function InventoryList() {
 
               <button
                 onClick={handleAddItem}
-                className="w-full text-white font-semibold rounded text-xs py-[0.08in]"
+                disabled={!newDescription.trim() || !newSport}
+                className="w-full text-white font-semibold rounded text-xs py-[0.08in] disabled:opacity-40"
                 style={{ backgroundColor: '#00539F' }}
               >
                 Add Item

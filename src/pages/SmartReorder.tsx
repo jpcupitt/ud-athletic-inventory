@@ -254,7 +254,7 @@ export default function SmartReorder() {
         orderDate: new Date().toISOString().slice(0, 10),
         vendor,
         sport,
-        lines: selected.map((l) => ({ description: l.description, qtyOrdered: qtyFor(l), qtyReceived: 0 })),
+        lines: selected.map((l) => ({ description: l.description, qtyOrdered: qtyFor(l), qtyReceived: 0, itemId: l.itemId })),
         status: 'submitted',
         createdBy: user?.name ?? 'Unknown',
       };

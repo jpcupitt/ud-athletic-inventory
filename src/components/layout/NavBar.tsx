@@ -1,5 +1,5 @@
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Bell, Search, Settings, LogOut, ChevronDown, User, Trophy, AlertTriangle, Package, ShoppingCart, X } from 'lucide-react';
+import { Bell, Search, Settings, LogOut, ChevronDown, User, Trophy, AlertTriangle, Package, ShoppingCart, ShieldCheck, X } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
@@ -25,7 +25,7 @@ const EQUIPMENT_ROOM_LINKS = [
 
 export default function NavBar() {
   const { user, logout, switchDemoRole } = useAuth();
-  const { overdueReturns, lowInventory, ordersForApproval } = useNotifications();
+  const { overdueReturns, lowInventory, ordersForApproval, recertsDue } = useNotifications();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
   const [showSports, setShowSports] = useState(false);
@@ -48,6 +48,7 @@ export default function NavBar() {
       ...overdueReturns.map((n) => n.key),
       ...lowInventory.map((n) => n.key),
       ...ordersForApproval.map((n) => n.key),
+      ...recertsDue.map((n) => n.key),
     ];
     setDismissed(new Set(allKeys));
   }
@@ -62,7 +63,8 @@ export default function NavBar() {
   const visibleOverdue = overdueReturns.filter((n) => !dismissed.has(n.key));
   const visibleLow = lowInventory.filter((n) => !dismissed.has(n.key));
   const visibleOrders = isStudentManager ? [] : ordersForApproval.filter((n) => !dismissed.has(n.key));
-  const totalVisible = visibleOverdue.length + visibleLow.length + visibleOrders.length;
+  const visibleRecerts = recertsDue.filter((n) => !dismissed.has(n.key));
+  const totalVisible = visibleOverdue.length + visibleLow.length + visibleOrders.length + visibleRecerts.length;
 
   const initials = user
     ? user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -284,6 +286,32 @@ export default function NavBar() {
                               <p className="text-sm font-medium text-gray-800 truncate">{n.refNumber}</p>
                               <p className="text-xs text-gray-500 truncate mt-0.5">{n.sport} · {n.vendor}</p>
                               <p className="text-xs text-[#00539F] mt-1 font-medium">{n.id}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Helmet recertifications */}
+                    {visibleRecerts.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest" style={{ padding: '0.12in 0.2in 0.05in' }}>Recertification Due</p>
+                        {visibleRecerts.map((n) => (
+                          <button
+                            key={n.key}
+                            onClick={() => handleNotifClick(n.key, `/inventory/${n.itemId}`)}
+                            className="flex items-start w-full hover:bg-red-50 text-left transition-colors border-b border-gray-50"
+                            style={{ gap: '0.12in', padding: '0.1in 0.2in' }}
+                          >
+                            <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
+                              <ShieldCheck className="w-3.5 h-3.5 text-[#800000]" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-800 truncate">{n.description}</p>
+                              <p className="text-xs text-gray-500 truncate mt-0.5">Serial {n.serialNumber}</p>
+                              <p className={`text-xs mt-1 font-medium ${n.status === 'overdue' ? 'text-red-500' : 'text-amber-600'}`}>
+                                {n.status === 'overdue' ? 'Overdue' : 'Due'} {n.dueDate}
+                              </p>
                             </div>
                           </button>
                         ))}

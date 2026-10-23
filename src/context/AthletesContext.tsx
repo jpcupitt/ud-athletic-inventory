@@ -30,7 +30,8 @@ interface AthletesContextValue {
   archiveAthletes: (ids: Set<string>) => void;
   unarchiveAthletes: (ids: string[]) => void;
   issueToAthlete: (athleteId: string, item: IssuedItem) => void;
-  returnFromAthlete: (athleteId: string, itemId: string) => void;
+  /** Marks one issued row returned; ref is its issueId, or the item # for legacy rows without one. */
+  returnFromAthlete: (athleteId: string, ref: string) => void;
   resolveIssuedItem: (athleteId: string, ref: string, resolution: 'returned' | 'missing' | 'damaged') => void;
   unresolveIssuedItem: (athleteId: string, ref: string) => void;
   setCustomSizes: (athleteId: string, sizes: CustomSizeEntry[]) => void;
@@ -83,18 +84,16 @@ export function AthletesProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  function returnFromAthlete(athleteId: string, itemId: string) {
+  function returnFromAthlete(athleteId: string, ref: string) {
     setAthletes((prev) =>
-      prev.map((a) =>
-        a.id === athleteId
-          ? {
-              ...a,
-              issuedItems: a.issuedItems.map((i) =>
-                i.itemId === itemId ? { ...i, returned: true } : i
-              ),
-            }
-          : a
-      )
+      prev.map((a) => {
+        if (a.id !== athleteId) return a;
+        const idx = a.issuedItems.findIndex(
+          (i) => !i.returned && (i.issueId === ref || (!i.issueId && i.itemId === ref))
+        );
+        if (idx === -1) return a;
+        return { ...a, issuedItems: a.issuedItems.map((i, n) => (n === idx ? { ...i, returned: true } : i)) };
+      })
     );
   }
 

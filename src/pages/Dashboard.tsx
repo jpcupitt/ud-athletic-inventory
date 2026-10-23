@@ -100,7 +100,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const isStudentManager = user?.role === 'student_manager';
   const { isLead, filterBySports, accessibleSports, canAccess } = useSportsAccess();
-  const { recordSubmission } = useSubmittedOrders();
+  const { submittedRecords, recordSubmission } = useSubmittedOrders();
   const { overdueReturns, lowInventory, ordersForApproval, recertsDue } = useNotifications();
   const { localOrders: orders } = useOrders();
   const { items: allInventoryItems } = useInventory();
@@ -127,7 +127,7 @@ export default function Dashboard() {
   const [showFootballTracker, setShowFootballTracker] = useState(false);
   const [showRecertsDue, setShowRecertsDue] = useState(false);
   const [showHelmetBreakdown, setShowHelmetBreakdown] = useState(false);
-  const [submittedOrderIds, setSubmittedOrderIds] = useState<Set<string>>(new Set());
+  const submittedOrderIds = new Set(submittedRecords.map((r) => r.order.id));
   const [showOrderSubmitted, setShowOrderSubmitted] = useState(false);
   const [budgetView, setBudgetView] = useState<'overview' | 'monthly'>('overview');
   const [visibleCharts, setVisibleCharts] = useState<Set<string>>(
@@ -1208,7 +1208,6 @@ export default function Dashboard() {
                   <button
                     onClick={() => {
                       recordSubmission(quickSubmitOrder, user?.name ?? 'Unknown');
-                      setSubmittedOrderIds((prev) => new Set([...prev, quickSubmitOrder.id]));
                       setShowQuickSubmit(false);
                       setQuickSubmitOrder(null);
                       setShowOrderSubmitted(true);

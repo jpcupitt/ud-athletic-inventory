@@ -154,6 +154,8 @@ export interface OrderLine {
   qtyReceived: number;
   /** Optional size breakdown of qtyOrdered, e.g. { S: 10, M: 20, L: 15 }. */
   sizeBreakdown?: Record<string, number>;
+  /** Inventory item (InventoryItem.id) this line restocks as it's received. Free-text lines have none. */
+  itemId?: string;
 }
 
 export interface Order {

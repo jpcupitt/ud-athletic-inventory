@@ -199,7 +199,11 @@ export default function OrdersList() {
   }
 
   function updateLine(i: number, field: keyof OrderLine, value: string | number) {
-    setNewLines((prev) => prev.map((l, idx) => idx === i ? { ...l, [field]: value } : l));
+    setNewLines((prev) => prev.map((l, idx) => {
+      if (idx !== i) return l;
+      const next = { ...l, [field]: value };
+      return { ...next, qtyReceived: Math.min(next.qtyReceived, next.qtyOrdered) };
+    }));
   }
 
   function addLine() {

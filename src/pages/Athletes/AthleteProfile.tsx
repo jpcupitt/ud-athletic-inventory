@@ -44,9 +44,9 @@ export default function AthleteProfile() {
     issueToAthlete(athlete!.id, item);
   }
 
-  function handleReturn(itemId: string, qty: number) {
-    returnFromAthlete(athlete!.id, itemId);
-    returnItem(itemId, qty);
+  function handleReturn(item: IssuedItem) {
+    returnFromAthlete(athlete!.id, item.issueId ?? item.itemId);
+    returnItem(item.itemId, item.qty);
   }
 
   const customSizes: CustomSizeEntry[] = getAthleteSizes(athlete);
@@ -283,7 +283,7 @@ export default function AthleteProfile() {
                 <th className="pb-2 font-medium">Description</th>
                 <th className="pb-2 font-medium text-right">Qty</th>
                 {canSeeCosts && <th className="pb-2 font-medium text-right">Unit Price</th>}
-                <th className="pb-2 font-medium">Issued</th>
+                <th className="pb-2 pl-6 font-medium">Issued</th>
                 <th className="pb-2 font-medium">Return By</th>
                 <th className="pb-2 font-medium">Type</th>
                 {canTransact && <th className="pb-2 font-medium"></th>}
@@ -295,7 +295,7 @@ export default function AthleteProfile() {
                   <td className="py-2.5 font-medium text-gray-800">{item.description}</td>
                   <td className="py-2.5 text-right text-gray-600">{item.qty}</td>
                   {canSeeCosts && <td className="py-2.5 text-right text-gray-600">${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>}
-                  <td className="py-2.5 text-gray-500">{item.issuedDate}</td>
+                  <td className="py-2.5 pl-6 text-gray-500">{item.issuedDate}</td>
                   <td className="py-2.5">
                     {item.returnByDate ? (
                       <span className={new Date(item.returnByDate) < new Date() ? 'text-red-600 font-medium' : 'text-gray-500'}>
@@ -313,7 +313,7 @@ export default function AthleteProfile() {
                   {canTransact && (
                     <td className="py-2.5">
                       <button
-                        onClick={() => handleReturn(item.itemId, item.qty)}
+                        onClick={() => handleReturn(item)}
                         className="flex items-center gap-1 text-xs text-[#00539F] hover:text-[#003D75] font-medium"
                       >
                         <RotateCcw className="w-3 h-3" />
@@ -356,7 +356,7 @@ export default function AthleteProfile() {
                 )}
                 {canTransact && (
                   <button
-                    onClick={() => handleReturn(item.itemId, item.qty)}
+                    onClick={() => handleReturn(item)}
                     className="mt-2 flex items-center justify-center gap-1.5 w-full min-h-[44px] text-sm text-[#00539F] font-medium border border-gray-200 rounded active:bg-[#EFF6FF]"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -381,24 +381,37 @@ export default function AthleteProfile() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
           <h2 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <RotateCcw className="w-4 h-4 text-gray-400" />
-            Returned Items ({returnedItems.length})
+            Returned / Closed Out ({returnedItems.length})
           </h2>
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
                 <th className="pb-2 font-medium">Description</th>
                 <th className="pb-2 font-medium text-right">Qty</th>
-                <th className="pb-2 font-medium">Issued</th>
+                <th className="pb-2 pl-6 font-medium">Issued</th>
+                <th className="pb-2 font-medium">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {returnedItems.map((item, i) => (
-                <tr key={i} className="opacity-60">
-                  <td className="py-2 text-gray-600">{item.description}</td>
-                  <td className="py-2 text-right text-gray-500">{item.qty}</td>
-                  <td className="py-2 text-gray-400">{item.issuedDate}</td>
-                </tr>
-              ))}
+              {returnedItems.map((item, i) => {
+                const owed = item.resolution === 'missing' || item.resolution === 'damaged';
+                return (
+                  <tr key={i} className={owed ? '' : 'opacity-60'}>
+                    <td className="py-2 text-gray-600">{item.description}</td>
+                    <td className="py-2 text-right text-gray-500">{item.qty}</td>
+                    <td className="py-2 pl-6 text-gray-400">{item.issuedDate}</td>
+                    <td className="py-2">
+                      {item.resolution === 'missing' ? (
+                        <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-red-50 text-red-600">Missing — owes</span>
+                      ) : item.resolution === 'damaged' ? (
+                        <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700">Damaged — owes</span>
+                      ) : (
+                        <span className="px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-500">Returned</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

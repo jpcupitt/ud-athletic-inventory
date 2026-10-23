@@ -38,9 +38,9 @@ export default function StaffProfile() {
     issueToStaff(member!.id, item);
   }
 
-  function handleReturn(itemId: string, qty: number) {
-    returnFromStaff(member!.id, itemId);
-    returnItem(itemId, qty);
+  function handleReturn(item: IssuedItem) {
+    returnFromStaff(member!.id, item.issueId ?? item.itemId);
+    returnItem(item.itemId, item.qty);
   }
 
   return (
@@ -135,7 +135,7 @@ export default function StaffProfile() {
                 <th className="pb-2 font-medium">Description</th>
                 <th className="pb-2 font-medium text-right">Qty</th>
                 {canSeeCosts && <th className="pb-2 font-medium text-right">Unit Price</th>}
-                <th className="pb-2 font-medium">Issued</th>
+                <th className="pb-2 pl-6 font-medium">Issued</th>
                 <th className="pb-2 font-medium">Return By</th>
                 <th className="pb-2 font-medium">Type</th>
                 {canTransact && <th className="pb-2 font-medium"></th>}
@@ -147,7 +147,7 @@ export default function StaffProfile() {
                   <td className="py-2.5 font-medium text-gray-800">{item.description}</td>
                   <td className="py-2.5 text-right text-gray-600">{item.qty}</td>
                   {canSeeCosts && <td className="py-2.5 text-right text-gray-600">${item.pricePerUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>}
-                  <td className="py-2.5 text-gray-500">{item.issuedDate}</td>
+                  <td className="py-2.5 pl-6 text-gray-500">{item.issuedDate}</td>
                   <td className="py-2.5">
                     {item.returnByDate ? (
                       <span className={new Date(item.returnByDate) < new Date() ? 'text-red-600 font-medium' : 'text-gray-500'}>
@@ -165,7 +165,7 @@ export default function StaffProfile() {
                   {canTransact && (
                     <td className="py-2.5">
                       <button
-                        onClick={() => handleReturn(item.itemId, item.qty)}
+                        onClick={() => handleReturn(item)}
                         className="flex items-center gap-1 text-xs text-[#00539F] hover:text-[#003D75] font-medium"
                       >
                         <RotateCcw className="w-3 h-3" />
@@ -208,7 +208,7 @@ export default function StaffProfile() {
                 )}
                 {canTransact && (
                   <button
-                    onClick={() => handleReturn(item.itemId, item.qty)}
+                    onClick={() => handleReturn(item)}
                     className="mt-2 flex items-center justify-center gap-1.5 w-full min-h-[44px] text-sm text-[#00539F] font-medium border border-gray-200 rounded active:bg-[#EFF6FF]"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -240,7 +240,7 @@ export default function StaffProfile() {
               <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
                 <th className="pb-2 font-medium">Description</th>
                 <th className="pb-2 font-medium text-right">Qty</th>
-                <th className="pb-2 font-medium">Issued</th>
+                <th className="pb-2 pl-6 font-medium">Issued</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -248,7 +248,7 @@ export default function StaffProfile() {
                 <tr key={i} className="opacity-60">
                   <td className="py-2 text-gray-600">{item.description}</td>
                   <td className="py-2 text-right text-gray-500">{item.qty}</td>
-                  <td className="py-2 text-gray-400">{item.issuedDate}</td>
+                  <td className="py-2 pl-6 text-gray-400">{item.issuedDate}</td>
                 </tr>
               ))}
             </tbody>

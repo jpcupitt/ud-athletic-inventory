@@ -193,7 +193,7 @@ export default function GlobalSearch({ mobile, onClose }: Props) {
         onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         onKeyDown={(e) => { if (e.key === 'Escape') { setOpen(false); inputRef.current?.blur(); } }}
-        className="pl-8 pr-3 py-1.5 border border-white/50 rounded text-xs focus:outline-none focus:ring-1 focus:ring-white/50 w-56 bg-[#003c71] text-white placeholder-white/50"
+        className="pl-8 pr-3 py-1.5 border border-white/50 rounded text-xs focus:outline-none focus:ring-1 focus:ring-white/50 w-36 xl:w-40 2xl:w-56 bg-[#003c71] text-white placeholder-white/50"
       />
       {open && query.trim().length >= 2 && (
         <div className="absolute top-full right-0 mt-1.5 w-[380px] bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden z-50 pb-1">

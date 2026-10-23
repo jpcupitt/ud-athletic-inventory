@@ -81,14 +81,14 @@ export default function NavBar() {
         </div>
 
         {/* Nav links (desktop only — mobile uses the bottom tab bar) */}
-        <div className="hidden md:flex self-stretch gap-3">
+        <div className="hidden md:flex self-stretch gap-1 2xl:gap-3">
           {NAV_LINKS.filter((link) => !link.hideFor?.includes(user?.role ?? '')).map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.to === '/'}
               className={({ isActive }) =>
-                `flex items-center px-3 text-sm font-medium transition-colors border-b-4 whitespace-nowrap ${
+                `flex items-center px-2 2xl:px-3 text-sm font-medium transition-colors border-b-4 whitespace-nowrap ${
                   isActive
                     ? 'border-[#FFD200] text-white'
                     : 'border-transparent text-gray-300 hover:text-white hover:bg-white/10'
@@ -114,7 +114,7 @@ export default function NavBar() {
                 setEquipPos((e.currentTarget.parentElement as HTMLElement).getBoundingClientRect());
                 setShowEquipRoom(true);
               }}
-              className={`flex items-center gap-1 px-3 text-sm font-medium transition-colors border-b-4 whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2 2xl:px-3 text-sm font-medium transition-colors border-b-4 whitespace-nowrap ${
                 EQUIPMENT_ROOM_LINKS.some((l) => location.pathname.startsWith(l.to))
                   ? 'border-[#FFD200] text-white'
                   : 'border-transparent text-gray-300 hover:text-white hover:bg-white/10'
